@@ -5,6 +5,7 @@ import '@fontsource-variable/bricolage-grotesque';
 import './globals.css';
 import { Footer } from '@/components/Footer';
 import { Nav } from '@/components/Nav';
+import { MotionProvider } from '@/components/Reveal';
 import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -44,9 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="skip">
           Skip to content
         </a>
-        <Nav />
-        <main id="main">{children}</main>
-        <Footer />
+        <MotionProvider>
+          <Nav />
+          <main id="main">{children}</main>
+          <Footer />
+        </MotionProvider>
       </body>
     </html>
   );

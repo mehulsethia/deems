@@ -1,9 +1,8 @@
-Drop Meta's official logo files here, unmodified, from Meta's brand resources:
+Official Meta logos used in the app's "pick apps" tiles, scaled to 240px and otherwise unmodified:
 
-- instagram.png
-- threads.png
-- facebook.png
+- instagram.png: Instagram Asset Pack / 01 Gradient Glyph / Instagram_Glyph_Gradient.png
+- threads.png: Threads-Brand-Resource-Center / 01 White / Logo / threads-logo-white.png
+- facebook.png: Facebook Brand Asset Pack / Logo / Primary Logo / Facebook_Logo_Primary.png
 
-Then switch each entry in `src/brand/metaLogos.ts` from `null` to its `require(...)`.
-Do not draw, recolour or regenerate these logos. They are used only inside the
-platform tiles on the "pick apps" screen, never in the app icon, splash or name.
+Do not draw, recolour or regenerate these logos. They are used only inside the platform tiles,
+never in the app icon, splash or name.

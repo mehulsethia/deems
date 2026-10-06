@@ -36,6 +36,12 @@ Vercel: import the repo and set **Root Directory** to `site`. Any static host wo
 
 ## Notes
 
+- `public/screens/` are real screenshots of the Deems app (its web build, 1170×2532). Retake them when the app's UI
+  changes: build the app for web, walk the onboarding at 390×844 @3x and save as JPEG.
+- `public/platforms/` holds the official Instagram, Threads and Facebook logos from the brand packs in `../assets`,
+  scaled down and otherwise unmodified. Don't recolour or redraw them.
+- Animations use Motion (`motion/react`) and respect the visitor's Reduce Motion setting (`MotionProvider`).
+
 - Brand colours are CSS variables at the top of `app/globals.css` (same values as the app's tokens).
 - The receipt maths in `lib/maths.ts` is a copy of the app's `src/onboarding/maths.ts`. Keep them in step.
 - Favicons and `site.webmanifest` in `public/` come from `assets/deems-brand/favicon`.

@@ -1,24 +1,17 @@
+import Image from 'next/image';
 import { Calculator } from '@/components/Calculator';
-import { Cross, Exit, Eye, NoServer, Page, Tick } from '@/components/Icons';
-import { Phone } from '@/components/Phone';
+import { ColdOpen } from '@/components/ColdOpen';
+import { DeemsMark } from '@/components/DeemsMark';
+import { Faq } from '@/components/Faq';
+import { Hero } from '@/components/Hero';
+import { Exit, Eye, LockSmall, NoServer, Page } from '@/components/Icons';
+import { PhoneFrame, SCREENS } from '@/components/PhoneFrame';
+import { Refunded } from '@/components/Refunded';
+import { Reveal } from '@/components/Reveal';
 import { StoreButtons, TrialNote } from '@/components/StoreButtons';
+import { Tour } from '@/components/Tour';
+import { PLATFORMS } from '@/lib/platforms';
 import { contactHref, site } from '@/lib/site';
-
-const KEPT = ['Messages and group chats', 'Your friends’ stories', 'Voice notes, photos and videos in chats', 'Posts a friend sends you, one at a time'];
-const GONE = ['Feed', 'Reels', 'Explore'];
-
-const STEPS = [
-  { title: 'Pick your apps', body: 'Instagram, Threads, Facebook. One, two or all three.' },
-  { title: 'Sign in on their page', body: 'Their own sign-in page, inside Deems. Not ours.' },
-  { title: 'Reply and leave', body: 'Your inbox opens. The feed, Reels and Explore don’t.' },
-];
-
-const TRUST = [
-  { Icon: Page, title: 'Their sign-in page, not ours', body: 'You sign in on Instagram’s, Threads’ or Facebook’s own page. Deems never sees your password.' },
-  { Icon: NoServer, title: 'Nothing is stored on our servers', body: 'Deems doesn’t read, store or send your messages. Your session stays on your phone.' },
-  { Icon: Eye, title: 'No analytics. No ads.', body: 'Deems doesn’t track what you do. There is nothing to sell, so nothing is collected.' },
-  { Icon: Exit, title: 'Sign out any time in Settings', body: 'One tap signs you out and clears everything Deems kept on your phone.' },
-];
 
 const FAQ = [
   {
@@ -50,136 +43,105 @@ const FAQ = [
 export default function Home() {
   return (
     <>
-      {/* Hero */}
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div className="hero-copy">
-            <span className="label">For Instagram, Threads and Facebook</span>
-            <h1 className="display">Reply and leave.</h1>
-            <p className="lede">Your messages and your friends’ stories. No feed, no Reels, no Explore. Nothing else is coming.</p>
-            <div style={{ display: 'grid', gap: 12 }}>
-              <StoreButtons />
-              <TrialNote />
-            </div>
-          </div>
-          <Phone />
-        </div>
+      <Hero />
+
+      {/* Works with */}
+      <section className="platforms">
+        <Reveal className="wrap platforms-inner">
+          <span className="label">Works with</span>
+          {PLATFORMS.map((p) => (
+            <span className="platform" key={p.name}>
+              <Image src={p.src} alt="" width={32} height={32} />
+              {p.name}
+            </span>
+          ))}
+        </Reveal>
       </section>
 
       {/* Cold open */}
       <section className="section">
-        <div className="wrap coldopen">
-          <div className="banner" role="img" aria-label="Message from maya: you free sat?">
-            <div className="avatar">m</div>
-            <div className="banner-body">
-              <div className="banner-top">
-                <strong>maya</strong>
-                <span className="label">now</span>
-              </div>
-              <span className="muted">you free sat?</span>
-            </div>
-          </div>
-          <div style={{ display: 'grid', gap: 16 }}>
-            <h2 className="title">You opened the app to answer this.</h2>
-            <p className="title accent" style={{ margin: 0 }}>
-              That was 47 minutes ago.
-            </p>
-            <p className="lede">Every time.</p>
-          </div>
-        </div>
+        <ColdOpen />
       </section>
 
       {/* Receipt */}
       <section className="section" id="receipt">
         <div className="wrap">
-          <div className="section-head">
-            <span className="label">Add it up</span>
+          <Reveal className="section-head center">
+            <span className="eyebrow">Add it up</span>
             <h2 className="title">Here’s your receipt.</h2>
             <p className="lede">Two answers, both yours. Nothing projected, nothing multiplied.</p>
-          </div>
-          <Calculator />
+          </Reveal>
+          <Reveal>
+            <Calculator />
+          </Reveal>
         </div>
       </section>
 
-      {/* What's left */}
-      <section className="section">
-        <div className="wrap">
-          <div className="section-head">
-            <span className="label">What’s left</span>
-            <h2 className="title">Messages. Your friends’ stories. That’s the whole app.</h2>
-          </div>
-          <div className="split">
-            <div className="card">
-              <h3 className="heading">Kept</h3>
-              <ul className="list">
-                {KEPT.map((k) => (
-                  <li key={k}>
-                    <span className="tick">
-                      <Tick />
-                    </span>
-                    {k}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="card">
-              <h3 className="heading">Refunded</h3>
-              <ul className="list removed">
-                {GONE.map((g) => (
-                  <li key={g}>
-                    <span className="cross cut">
-                      <Cross />
-                    </span>
-                    <s>{g}</s>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
+      {/* Tour */}
       <section className="section" id="how">
         <div className="wrap">
-          <div className="section-head">
-            <span className="label">How it works</span>
-            <h2 className="title">Under a minute to set up.</h2>
-          </div>
-          <div className="steps">
-            {STEPS.map((s, i) => (
-              <div className="card step" key={s.title}>
-                <span className="label">Step {i + 1}</span>
-                <h3 className="heading">{s.title}</h3>
-                <p className="muted" style={{ margin: 0 }}>
-                  {s.body}
-                </p>
-              </div>
-            ))}
-          </div>
+          <Reveal className="section-head">
+            <span className="eyebrow">How it works</span>
+            <h2 className="title">Set up in under a minute.</h2>
+          </Reveal>
+          <Tour />
         </div>
       </section>
 
-      {/* Trust */}
+      {/* Kept vs refunded */}
       <section className="section">
         <div className="wrap">
-          <div className="section-head">
-            <span className="label">Privacy</span>
+          <Reveal className="section-head center">
+            <span className="eyebrow">What’s left</span>
+            <h2 className="title">Messages. Your friends’ stories. That’s the whole app.</h2>
+          </Reveal>
+          <Refunded />
+        </div>
+      </section>
+
+      {/* Privacy */}
+      <section className="section" id="privacy">
+        <div className="wrap">
+          <Reveal className="section-head">
+            <span className="eyebrow">Privacy</span>
             <h2 className="title">You sign in on their own page.</h2>
             <p className="lede">Deems never sees your password or your messages.</p>
-          </div>
-          <div className="trust">
-            {TRUST.map(({ Icon, title, body }) => (
-              <div className="card trust-row" key={title}>
-                <span className="icon">
-                  <Icon />
+          </Reveal>
+          <div className="bento">
+            <Reveal className="card span-4">
+              <span className="icon">
+                <Page />
+              </span>
+              <h3>Their sign-in page, not ours</h3>
+              <p className="muted">You sign in on Instagram’s, Threads’ or Facebook’s own page, inside Deems.</p>
+              <div className="address" aria-hidden>
+                <span className="lock">
+                  <LockSmall />
                 </span>
-                <div>
-                  <h3>{title}</h3>
-                  <p className="muted">{body}</p>
-                </div>
+                instagram.com<span className="dim">/accounts/login</span>
               </div>
-            ))}
+            </Reveal>
+            <Reveal className="card span-2" delay={0.08}>
+              <span className="icon">
+                <NoServer />
+              </span>
+              <h3>Nothing on our servers</h3>
+              <p className="muted">Your messages and session stay on your phone.</p>
+            </Reveal>
+            <Reveal className="card span-3" delay={0.12}>
+              <span className="icon">
+                <Eye />
+              </span>
+              <h3>No analytics. No ads.</h3>
+              <p className="muted">Deems doesn’t track what you do. There’s nothing to sell, so nothing is collected.</p>
+            </Reveal>
+            <Reveal className="card span-3" delay={0.16}>
+              <span className="icon">
+                <Exit />
+              </span>
+              <h3>Sign out any time</h3>
+              <p className="muted">One tap in Settings signs you out and clears everything Deems kept on your phone.</p>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -187,12 +149,11 @@ export default function Home() {
       {/* Pricing */}
       <section className="section">
         <div className="wrap price">
-          <div style={{ display: 'grid', gap: 20 }}>
-            <span className="label">Pricing</span>
-            <h2 className="title">Try it for {site.trialDays} days.</h2>
-            <p className="lede">After that, it’s billed by the App Store or Google Play. Cancel any time in your store settings.</p>
-          </div>
-          <div className="card" style={{ display: 'grid', gap: 24 }}>
+          <Reveal>
+            <span className="eyebrow">Pricing</span>
+            <h2 className="title" style={{ marginTop: 18 }}>
+              Try it for {site.trialDays} days.
+            </h2>
             <ol className="timeline">
               <li>
                 <span>
@@ -211,26 +172,27 @@ export default function Home() {
               </li>
             </ol>
             <StoreButtons />
-          </div>
+            <p className="fine" style={{ marginTop: 14 }}>
+              Billed by the App Store or Google Play. Cancel any time in your store settings.
+            </p>
+          </Reveal>
+          <Reveal className="price-phone" delay={0.1}>
+            <PhoneFrame src={SCREENS.year} alt="Deems showing your time per year: 43 full days not talking to a single person." />
+          </Reveal>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="section" id="faq">
         <div className="wrap">
-          <div className="section-head">
-            <span className="label">Questions</span>
+          <Reveal className="section-head center">
+            <span className="eyebrow">FAQ</span>
             <h2 className="title">Fair questions.</h2>
-          </div>
-          <div className="faq">
-            {FAQ.map((f) => (
-              <details key={f.q}>
-                <summary>{f.q}</summary>
-                <p>{f.a}</p>
-              </details>
-            ))}
-          </div>
-          <p className="muted" style={{ marginTop: 32 }}>
+          </Reveal>
+          <Reveal>
+            <Faq items={FAQ} />
+          </Reveal>
+          <p className="muted center" style={{ marginTop: 32, textAlign: 'center' }}>
             Something else? Email{' '}
             <a className="text-link" href={contactHref}>
               {site.contactEmail}
@@ -241,13 +203,20 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="section">
-        <div className="wrap final">
-          <h2 className="display" style={{ fontSize: 'clamp(40px, 7vw, 84px)' }}>
-            Keep the messages. Refund the rest.
-          </h2>
-          <StoreButtons align="center" />
-          <TrialNote />
+      <section className="section" style={{ paddingBottom: 0 }}>
+        <div className="wrap">
+          <Reveal className="final">
+            <span className="final-mark">
+              <DeemsMark size={48} />
+            </span>
+            <h2 className="display" style={{ fontSize: 'clamp(44px, 7.5vw, 96px)' }}>
+              Keep the messages.
+              <br />
+              <span className="accent">Refund the rest.</span>
+            </h2>
+            <StoreButtons align="center" />
+            <TrialNote />
+          </Reveal>
         </div>
       </section>
     </>
