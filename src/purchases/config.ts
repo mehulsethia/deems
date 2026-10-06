@@ -8,10 +8,14 @@ export const revenueCatKey: string | undefined = (Platform.OS === 'ios' ? IOS_KE
 
 const APPLE_STANDARD_EULA = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 
+/** The marketing site hosts the legal pages; explicit URLs override it. */
+const SITE_URL = (process.env.EXPO_PUBLIC_SITE_URL || '').replace(/\/+$/, '');
+
 export const LEGAL = {
-  terms: process.env.EXPO_PUBLIC_TERMS_URL || APPLE_STANDARD_EULA,
-  /** Required by the App Store; set EXPO_PUBLIC_PRIVACY_URL before submitting. */
-  privacy: process.env.EXPO_PUBLIC_PRIVACY_URL || '',
+  /** Our terms (which supplement Apple's standard EULA), or the EULA itself until the site is live. */
+  terms: process.env.EXPO_PUBLIC_TERMS_URL || (SITE_URL ? `${SITE_URL}/terms/` : APPLE_STANDARD_EULA),
+  /** Required by the App Store. Comes from EXPO_PUBLIC_SITE_URL or EXPO_PUBLIC_PRIVACY_URL. */
+  privacy: process.env.EXPO_PUBLIC_PRIVACY_URL || (SITE_URL ? `${SITE_URL}/privacy/` : ''),
 };
 
 export const STORE = Platform.OS === 'ios' ? ('App Store' as const) : ('Google Play' as const);

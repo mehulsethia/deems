@@ -8,7 +8,7 @@ import { AppText } from '@/components/AppText';
 import { ChevronIcon } from '@/components/Icons';
 import { DeemsMark } from '@/components/DeemsMark';
 import { Screen } from '@/components/Screen';
-import { HOW_TO_CANCEL_URL } from '@/config/links';
+import { CONTACT_EMAIL, CONTACT_URL, HOW_TO_CANCEL_URL } from '@/config/links';
 import { FEATURE_LOCK_INSTAGRAM_APP } from '@/lock/flag';
 import { cancelTrialReminder } from '@/notifications/trialReminder';
 import { formatDate, LEGAL, MANAGE_SUBSCRIPTIONS_URL } from '@/purchases';
@@ -145,13 +145,14 @@ export default function Settings() {
           <Row label="Lock the Instagram app" detail="Use Screen Time to block the Instagram app, with two 5-minute passes a day." disabled={!FEATURE_LOCK_INSTAGRAM_APP} last />
         </Section>
 
-        <Section title="Privacy">
+        <Section title="Privacy, terms and contact">
           <AppText variant="small" style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
             Deems shows each app's own website. You sign in on their page, and Deems never reads, stores or sends your password, cookies or
             messages. It has no analytics. The only things stored on this device are your onboarding answers and which accounts you're signed in to.
           </AppText>
           <Row label="Privacy policy" onPress={LEGAL.privacy ? () => open(LEGAL.privacy) : undefined} />
-          <Row label="Terms of use" onPress={() => open(LEGAL.terms)} last />
+          <Row label="Terms of use" onPress={() => open(LEGAL.terms)} />
+          <Row label="Contact" detail={CONTACT_EMAIL} onPress={() => Linking.openURL(CONTACT_URL).catch(() => {})} last />
         </Section>
 
         <Section title="About">
