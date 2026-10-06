@@ -4,23 +4,22 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
-import { LockIcon, ReloadIcon } from '@/components/Icons';
+import { CloseIcon, LockIcon, ReloadIcon } from '@/components/Icons';
 import { PlatformWebView, type PlatformWebViewHandle } from '@/components/PlatformWebView';
 import { isAllowedPath, isLoginPath, parseUrl } from '@/rules/matching';
 import { getPack } from '@/rules/store';
 import type { PlatformId } from '@/rules/types';
-import { markSignedInTo, setActivePlatform } from '@/state/platforms';
-import { radius, spacing } from '@/theme/tokens';
-import { useTheme } from '@/theme/ThemeProvider';
+import { PLATFORM_META } from '@/state/platformMeta';
+import { connectedPlatforms, markSignedInTo, setActivePlatform } from '@/state/platforms';
+import { readProgress } from '@/state/progress';
+import { colors, radius, sizes, spacing } from '@/theme/tokens';
 
-const HELP_URL = 'https://help.instagram.com/';
-
-/** Modal sheet showing Instagram's own login page. Success = the route leaves the login paths. */
+/** Modal sheet showing the platform's own login page. Success = the route leaves the login paths. */
 export default function Login() {
   const router = useRouter();
-  const { colors } = useTheme();
   const { platform = 'instagram' } = useLocalSearchParams<{ platform?: PlatformId }>();
   const pack = getPack(platform);
+  const meta = PLATFORM_META[platform];
   const webRef = useRef<PlatformWebViewHandle>(null);
   const finished = useRef(false);
   const initial = parseUrl(pack.loginUrl);
@@ -38,9 +37,12 @@ export default function Login() {
       if (finished.current) return;
       if (isAllowedPath(pack, path) && !isLoginPath(pack, path)) {
         finished.current = true;
+        const first = connectedPlatforms().length === 0;
         markSignedInTo(platform);
-        if (platform === 'instagram') {
-          router.dismissTo('/(onboarding)/setup');
+        if (!readProgress().onboardingComplete) {
+          // Onboarding: the first account signed in opens first in the inbox.
+          if (first) setActivePlatform(platform);
+          router.dismissTo({ pathname: '/(onboarding)/trust', params: { signedIn: platform } });
         } else {
           setActivePlatform(platform);
           router.dismissTo('/(main)/inbox');
@@ -50,28 +52,30 @@ export default function Login() {
     [pack, platform, router],
   );
 
+  const touch = { minWidth: sizes.touch, minHeight: sizes.touch, alignItems: 'center' as const, justifyContent: 'center' as const };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close" hitSlop={10} onPress={() => router.back()} style={{ minWidth: 44, minHeight: 44, justifyContent: 'center' }}>
-          <AppText variant="bodyMedium">Close</AppText>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Close" hitSlop={6} onPress={() => router.back()} style={touch}>
+          <CloseIcon color={colors.paper} />
         </Pressable>
         <View
           accessible
           accessibilityLabel={`Address: ${address.secure ? 'secure, ' : ''}${address.host}${address.path}`}
-          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.card, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 40, borderWidth: 1, borderColor: colors.border }}
+          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 40, borderWidth: 1, borderColor: colors.hairline }}
         >
-          {address.secure && <LockIcon color={colors.primary} />}
-          <AppText variant="small" numberOfLines={1} style={{ flex: 1 }}>
+          {address.secure && <LockIcon color={colors.keep} />}
+          <AppText variant="mono" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
             {address.host}
-            <AppText variant="small" muted>{address.path}</AppText>
+            <AppText variant="mono" muted style={{ fontSize: 13 }}>{address.path}</AppText>
           </AppText>
         </View>
-        <Pressable accessibilityRole="button" accessibilityLabel="Reload page" hitSlop={10} onPress={() => webRef.current?.reload()} style={{ minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' }}>
-          <ReloadIcon color={colors.text} />
+        <Pressable accessibilityRole="button" accessibilityLabel="Reload page" hitSlop={6} onPress={() => webRef.current?.reload()} style={touch}>
+          <ReloadIcon color={colors.paper} />
         </Pressable>
-        <Pressable accessibilityRole="link" accessibilityLabel="Help" hitSlop={10} onPress={() => WebBrowser.openBrowserAsync(HELP_URL).catch(() => {})} style={{ minHeight: 44, justifyContent: 'center' }}>
-          <AppText variant="bodyMedium" accent>Help</AppText>
+        <Pressable accessibilityRole="link" accessibilityLabel="Help" hitSlop={6} onPress={() => WebBrowser.openBrowserAsync(meta.helpUrl).catch(() => {})} style={touch}>
+          <AppText variant="bodyMedium">Help</AppText>
         </Pressable>
       </View>
 
@@ -79,9 +83,11 @@ export default function Login() {
         <PlatformWebView ref={webRef} pack={pack} uri={pack.loginUrl} showProgress onUrlChange={onUrlChange} onRoute={onRoute} />
       </View>
 
-      <AppText variant="caption" muted center style={{ padding: spacing.md }}>
-        {pack.displayName}'s own page. Hearth never sees your password.
-      </AppText>
+      <View style={{ borderTopWidth: 1, borderTopColor: colors.hairline, padding: spacing.md }}>
+        <AppText variant="caption" muted center>
+          {meta.label}'s own page. Deems never reads your password.
+        </AppText>
+      </View>
     </SafeAreaView>
   );
 }

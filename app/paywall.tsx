@@ -4,23 +4,99 @@ import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { ComparisonTable } from '@/components/ComparisonTable';
+import { CloseIcon } from '@/components/Icons';
 import { Screen } from '@/components/Screen';
+import { HOW_TO_CANCEL_URL } from '@/config/links';
+import { socialProof } from '@/config/socialProof';
+import { scheduleTrialReminder } from '@/notifications/trialReminder';
+import { trialTimeline } from '@/notifications/timeline';
+import { formatDaysCaps } from '@/onboarding/maths';
+import { useBreakdown } from '@/onboarding/useAnswers';
 import { usePayments } from '@/purchases/PaymentsProvider';
-import { billingSummary, cancellationNote, LEGAL, periodWord, STORE, yearlySavingsPercent, formatPrice } from '@/purchases';
+import {
+  billingSummary,
+  cancellationNote,
+  formatDate,
+  formatPrice,
+  LEGAL,
+  periodWord,
+  STORE,
+  trialEndDate,
+  yearlySavingsPercent,
+  type Plan,
+} from '@/purchases';
+import { progressFor } from '@/state/onboardingSteps';
 import { markOnboardingComplete, saveStep } from '@/state/progress';
-import { radius, spacing } from '@/theme/tokens';
-import { useTheme } from '@/theme/ThemeProvider';
+import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
 
 const open = (url: string) => (url ? WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url)) : undefined);
 
+function MiniReceipt({ days }: { days: string }) {
+  return (
+    <View
+      accessible
+      accessibilityLabel={`Time refunded per year: ${days.toLowerCase()}.`}
+      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
+    >
+      <AppText variant="receipt" tone="ink">TIME REFUNDED PER YEAR</AppText>
+      <AppText variant="receipt" tone="ink" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
+    </View>
+  );
+}
+
+/** "Today - your messages, nothing else", with the day in mono. Copy kept exact. */
+function Step({ day, text, last }: { day: string; text: string; last?: boolean }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: spacing.md }}>
+      <View style={{ alignItems: 'center', width: 12 }}>
+        <View style={{ width: 12, height: 12, borderRadius: 6, marginTop: 6, backgroundColor: last ? colors.paper : colors.keep }} />
+        {!last && <View style={{ flex: 1, width: 2, backgroundColor: colors.hairline, marginTop: 2 }} />}
+      </View>
+      <AppText style={{ flex: 1, paddingBottom: last ? 0 : spacing.md }}>
+        <AppText variant="mono" style={{ fontFamily: fonts.monoMedium, fontSize: 17 }}>{day}</AppText> - {text}
+      </AppText>
+    </View>
+  );
+}
+
+function PlanCard({ p, on, stacked, savings, onPress }: { p: Plan; on: boolean; stacked: boolean; savings: number | null; onPress: () => void }) {
+  const name = p.kind === 'yearly' ? 'Yearly' : 'Monthly';
+  const perMonth = p.kind === 'yearly' ? formatPrice(p.price / 12, p.currencyCode) : null;
+  return (
+    <Pressable
+      accessibilityRole="radio"
+      accessibilityState={{ selected: on }}
+      accessibilityLabel={`${name} plan, ${p.priceString} per ${periodWord(p.kind)}${perMonth ? `, ${perMonth} a month` : ''}${savings ? `, save ${savings}%` : ''}`}
+      onPress={onPress}
+      style={{ flex: stacked ? undefined : 1, minHeight: stacked ? 88 : 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.keep : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
+    >
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.sm }}>
+        <AppText variant="bodyMedium">{name}</AppText>
+        {savings ? (
+          <View style={{ backgroundColor: colors.keep, borderRadius: radius.pill, paddingHorizontal: spacing.sm }}>
+            <AppText variant="label" tone="ink">Save {savings}%</AppText>
+          </View>
+        ) : null}
+      </View>
+      <AppText variant="mono" style={{ fontSize: 20, lineHeight: 26 }}>{p.priceString}</AppText>
+      <AppText variant="caption" muted>
+        per {periodWord(p.kind)}
+        {perMonth ? ` · ${perMonth} a month` : ''}
+      </AppText>
+    </Pressable>
+  );
+}
+
 export default function Paywall() {
   const router = useRouter();
-  const { colors } = useTheme();
+  const b = useBreakdown();
   const { mode, plans, plansError, loadPlans, purchase, restore, busy, error, isPro } = usePayments();
   const [selected, setSelected] = useState<string | null>(null);
   const now = useMemo(() => new Date(), []);
+  const proof = socialProof();
+  const { narrow, fontScale } = useLayout();
+  const stackPlans = narrow || fontScale > 1.15;
 
   useEffect(() => saveStep('paywall'), []);
   useEffect(() => {
@@ -33,8 +109,12 @@ export default function Paywall() {
   const plan = plans.find((p) => p.id === selected) ?? null;
   const yearly = plans.find((p) => p.kind === 'yearly');
   const monthly = plans.find((p) => p.kind === 'monthly');
+  // A saving is only shown when computed from the store's real prices.
   const savings = yearly && monthly ? yearlySavingsPercent(monthly, yearly) : null;
-  const hasTrial = !!plan?.trialDays;
+  const trialDays = plan?.trialDays ?? null;
+  const billingDate = trialDays ? formatDate(trialEndDate(now, trialDays)) : null;
+  const timeline = trialDays ? trialTimeline(trialDays) : null;
+  const days = formatDaysCaps(b.days);
 
   const finish = () => {
     markOnboardingComplete();
@@ -50,103 +130,125 @@ export default function Paywall() {
 
   const buy = async () => {
     if (!plan) return;
-    if ((await purchase(plan.id)) === 'purchased') finish();
+    if ((await purchase(plan.id)) === 'purchased') {
+      if (plan.trialDays && billingDate) await scheduleTrialReminder(new Date(), plan.trialDays, billingDate);
+      finish();
+    }
   };
   const doRestore = async () => {
     if (await restore()) finish();
   };
 
+  const firstCharge = plan
+    ? trialDays && billingDate
+      ? `${plan.priceString} per ${periodWord(plan.kind)}, first charged on ${billingDate}.`
+      : billingSummary(plan, now)
+    : null;
+
+  const closeButton = (
+    <Pressable accessibilityRole="button" accessibilityLabel="Close" onPress={close} hitSlop={6} style={{ width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center' }}>
+      <CloseIcon color={colors.paper} />
+    </Pressable>
+  );
+
   return (
     <Screen
       back={false}
-      scroll
+      paneFirst={false}
+      progress={progressFor('paywall')}
+      headerRight={closeButton}
       footer={
         <>
-          {plan && (
-            <AppText variant="small" center accessibilityLiveRegion="polite">
-              {billingSummary(plan, now)}
-            </AppText>
-          )}
           {mode === 'dev' ? (
             <Button label="Continue (dev mode)" onPress={finish} />
           ) : (
-            <Button label={hasTrial ? `Start ${plan?.trialDays}-day free trial` : 'Subscribe'} onPress={buy} disabled={!plan || busy} />
+            <Button label={trialDays ? `Start ${trialDays} days free` : 'Subscribe'} onPress={buy} disabled={!plan || busy} />
           )}
-          {plan && (
-            <AppText variant="caption" muted center>
-              {cancellationNote(plan, now, STORE)}
+          {firstCharge && (
+            <AppText variant="small" center accessibilityLiveRegion="polite">
+              {firstCharge}
             </AppText>
           )}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.md }}>
+            <Pressable accessibilityRole="button" onPress={doRestore} disabled={busy} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
+              <AppText variant="caption" muted>Restore</AppText>
+            </Pressable>
+            <Pressable accessibilityRole="link" onPress={() => open(LEGAL.terms)} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
+              <AppText variant="caption" muted>Terms</AppText>
+            </Pressable>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityState={{ disabled: !LEGAL.privacy }}
+              onPress={() => open(LEGAL.privacy)}
+              disabled={!LEGAL.privacy}
+              style={{ minHeight: sizes.touch, justifyContent: 'center', opacity: LEGAL.privacy ? 1 : 0.4 }}
+            >
+              <AppText variant="caption" muted>Privacy</AppText>
+            </Pressable>
+            <Pressable accessibilityRole="link" onPress={() => open(HOW_TO_CANCEL_URL)} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
+              <AppText variant="caption" muted>How to cancel</AppText>
+            </Pressable>
+          </View>
         </>
       }
+      footerNote={
+        plan ? (
+          <AppText variant="caption" muted center>
+            {cancellationNote(plan, now, STORE)}
+          </AppText>
+        ) : null
+      }
+      pane={
+        <View style={{ gap: spacing.lg }}>
+          {mode === 'dev' && (
+            <AppText variant="caption" muted>
+              Dev mode: no store keys are set, so everything is unlocked. These prices are placeholders.
+            </AppText>
+          )}
+
+          {plans.length === 0 && !plansError && <ActivityIndicator color={colors.keep} accessibilityLabel="Loading plans" />}
+          {plansError && (
+            <View style={{ gap: spacing.sm }}>
+              <AppText>Couldn't load the plans.</AppText>
+              <Button label="Try again" variant="secondary" onPress={loadPlans} />
+            </View>
+          )}
+
+          {/* Side by side when they fit; stacked on narrow phones and at large text sizes. */}
+          <View style={{ flexDirection: stackPlans ? 'column' : 'row', gap: spacing.md }} accessibilityRole="radiogroup">
+            {plans.map((p) => (
+              <PlanCard key={p.id} p={p} on={p.id === selected} stacked={stackPlans} savings={p.kind === 'yearly' ? savings : null} onPress={() => setSelected(p.id)} />
+            ))}
+          </View>
+
+          {error && (
+            <AppText variant="small" tone="cut" accessibilityLiveRegion="polite">
+              {error}
+            </AppText>
+          )}
+
+          {/* Real social proof only; renders nothing while the hook is empty. */}
+          {proof.map((t) => (
+            <View key={t.attribution + t.quote} style={{ gap: spacing.xs }}>
+              <AppText>“{t.quote}”</AppText>
+              <AppText variant="caption" muted>{t.attribution}</AppText>
+            </View>
+          ))}
+        </View>
+      }
     >
-      {/* Clear, always-visible close button. */}
-      <View style={{ position: 'absolute', top: -44, right: 0, zIndex: 2 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close" onPress={close} hitSlop={12} style={{ minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' }}>
-          <AppText variant="bodyMedium">Close</AppText>
-        </Pressable>
-      </View>
+      <View style={{ gap: spacing.lg }}>
+        {days && <MiniReceipt days={days} />}
 
-      <View style={{ gap: spacing.lg, paddingBottom: spacing.lg }}>
-        <AppText variant="title">{hasTrial ? `Try Hearth free for ${plan?.trialDays} days` : 'Keep Hearth'}</AppText>
-        <AppText muted>Just your messages and friends' stories. Cancel any time.</AppText>
+        <AppText variant="title">{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AppText>
 
-        {mode === 'dev' && (
-          <Card>
-            <AppText variant="small">Dev mode: no store keys are set, so everything is unlocked. These prices are placeholders.</AppText>
-          </Card>
+        {timeline && billingDate && (
+          <View>
+            <Step day="Today" text="your messages, nothing else" />
+            {timeline.reminderDay !== null && <Step day={`Day ${timeline.reminderDay}`} text="we remind you" />}
+            <Step day={`Day ${timeline.billingDay}`} text={`billing starts on ${billingDate} unless you cancel`} last />
+          </View>
         )}
-
-        {plans.length === 0 && !plansError && <ActivityIndicator color={colors.primary} />}
-        {plansError && (
-          <Card style={{ gap: spacing.sm }}>
-            <AppText>We couldn't load the plans.</AppText>
-            <Button label="Try again" variant="ghost" onPress={loadPlans} />
-          </Card>
-        )}
-
-        <View style={{ gap: spacing.md }} accessibilityRole="radiogroup">
-          {plans.map((p) => {
-            const on = p.id === selected;
-            return (
-              <Pressable
-                key={p.id}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`${p.kind === 'yearly' ? 'Yearly' : 'Monthly'} plan, ${p.priceString} per ${periodWord(p.kind)}`}
-                onPress={() => setSelected(p.id)}
-                style={{ borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.primary : colors.border, backgroundColor: colors.card, padding: spacing.md, gap: 2 }}
-              >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <AppText variant="heading">{p.kind === 'yearly' ? 'Yearly' : 'Monthly'}</AppText>
-                  {p.kind === 'yearly' && savings ? (
-                    <AppText variant="small" accent>Save {savings}%</AppText>
-                  ) : null}
-                </View>
-                <AppText>{p.priceString} per {periodWord(p.kind)}</AppText>
-                {p.kind === 'yearly' && (
-                  <AppText variant="small" muted>{formatPrice(p.price / 12, p.currencyCode)} a month, billed yearly</AppText>
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
-
-        {error && <AppText variant="small" accent accessibilityLiveRegion="polite">{error}</AppText>}
-
-        <ComparisonTable />
-
-        <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', gap: spacing.lg }}>
-          <Pressable accessibilityRole="button" onPress={doRestore} disabled={busy} style={{ minHeight: 44, justifyContent: 'center' }}>
-            <AppText variant="small" accent>Restore purchases</AppText>
-          </Pressable>
-          <Pressable accessibilityRole="link" onPress={() => open(LEGAL.terms)} style={{ minHeight: 44, justifyContent: 'center' }}>
-            <AppText variant="small" accent>Terms</AppText>
-          </Pressable>
-          <Pressable accessibilityRole="link" onPress={() => open(LEGAL.privacy)} disabled={!LEGAL.privacy} style={{ minHeight: 44, justifyContent: 'center', opacity: LEGAL.privacy ? 1 : 0.4 }}>
-            <AppText variant="small" accent>Privacy</AppText>
-          </Pressable>
-        </View>
       </View>
     </Screen>
   );

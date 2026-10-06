@@ -1,48 +1,72 @@
+import { progressFor } from '../src/state/onboardingSteps';
 import { resolveStartRoute, type ProgressSnapshot } from '../src/state/resume';
 
-const base: ProgressSnapshot = { signedIn: false, onboardingComplete: false, step: null, hasUsage: false };
+const base: ProgressSnapshot = {
+  signedIn: false,
+  onboardingComplete: false,
+  step: null,
+  hasApps: false,
+  totalMinutes: null,
+  talkingMinutes: null,
+};
+const answered: Partial<ProgressSnapshot> = { hasApps: true, totalMinutes: 180, talkingMinutes: 10 };
 const at = (over: Partial<ProgressSnapshot>) => resolveStartRoute({ ...base, ...over });
 
 describe('resolveStartRoute', () => {
-  it('starts at welcome for a new user', () => {
-    expect(at({})).toBe('/(onboarding)/welcome');
+  it('starts at the cold open for a new user', () => {
+    expect(at({})).toBe('/(onboarding)/cold-open');
   });
 
   it('sends a finished, signed-in user straight to the inbox', () => {
-    expect(at({ signedIn: true, onboardingComplete: true, step: 'paywall', hasUsage: true })).toBe('/(main)/inbox');
+    expect(at({ ...answered, signedIn: true, onboardingComplete: true, step: 'paywall' })).toBe('/(main)/inbox');
   });
 
   it('resumes at the last step reached', () => {
-    expect(at({ step: 'what-stays', hasUsage: true })).toBe('/(onboarding)/what-stays');
-    expect(at({ step: 'usage' })).toBe('/(onboarding)/usage');
+    expect(at({ ...answered, step: 'refund' })).toBe('/(onboarding)/refund');
+    expect(at({ step: 'pick-apps' })).toBe('/(onboarding)/pick-apps');
   });
 
   it('ignores unknown stored steps', () => {
-    expect(at({ step: 'nonsense' })).toBe('/(onboarding)/welcome');
+    expect(at({ step: 'nonsense' })).toBe('/(onboarding)/cold-open');
   });
 
-  it('goes back to usage when answers are missing for screens that echo them', () => {
-    for (const step of ['calculating', 'projection', 'comparison']) {
-      expect(at({ step, hasUsage: false })).toBe('/(onboarding)/usage');
-      expect(at({ step, hasUsage: true })).toBe(`/(onboarding)/${step}`);
-    }
+  it('goes back for missing answers', () => {
+    expect(at({ step: 'receipt' })).toBe('/(onboarding)/pick-apps');
+    expect(at({ step: 'receipt', hasApps: true })).toBe('/(onboarding)/total-time');
+    expect(at({ step: 'receipt', hasApps: true, totalMinutes: 60 })).toBe('/(onboarding)/talking-time');
+    expect(at({ step: 'trust', hasApps: false, totalMinutes: 60, talkingMinutes: 5 })).toBe('/(onboarding)/pick-apps');
   });
 
-  it('reopens the login modal from the connect screen', () => {
-    expect(at({ step: 'login', hasUsage: true })).toBe('/(onboarding)/connect');
+  it('skips year and refund for someone mostly here to talk', () => {
+    const talker = { hasApps: true, totalMinutes: 45, talkingMinutes: 30 };
+    expect(at({ ...talker, step: 'year' })).toBe('/(onboarding)/whats-left');
+    expect(at({ ...talker, step: 'refund' })).toBe('/(onboarding)/whats-left');
+    expect(at({ ...talker, step: 'receipt' })).toBe('/(onboarding)/receipt');
   });
 
-  it('skips sign-in screens once already signed in', () => {
-    expect(at({ signedIn: true, step: 'connect', hasUsage: true })).toBe('/(onboarding)/setup');
-    expect(at({ signedIn: true, step: 'welcome' })).toBe('/(onboarding)/setup');
+  it('reopens the sign-in sheet from the trust screen', () => {
+    expect(at({ ...answered, step: 'login' })).toBe('/(onboarding)/trust');
+  });
+
+  it('skips earlier screens once signed in', () => {
+    expect(at({ ...answered, signedIn: true, step: 'pick-apps' })).toBe('/(onboarding)/trust');
+    expect(at({ signedIn: true, step: null })).toBe('/(onboarding)/trust');
   });
 
   it('keeps later steps for a signed-in user who has not finished', () => {
-    expect(at({ signedIn: true, step: 'reveal', hasUsage: true })).toBe('/(onboarding)/reveal');
-    expect(at({ signedIn: true, step: 'paywall', hasUsage: true })).toBe('/paywall');
+    expect(at({ ...answered, signedIn: true, step: 'reveal' })).toBe('/(onboarding)/reveal');
+    expect(at({ ...answered, signedIn: true, step: 'paywall' })).toBe('/paywall');
   });
 
   it('does not treat onboardingComplete alone as enough without a session', () => {
-    expect(at({ onboardingComplete: true, step: 'paywall', hasUsage: true })).toBe('/paywall');
+    expect(at({ ...answered, onboardingComplete: true, step: 'paywall' })).toBe('/paywall');
+  });
+});
+
+describe('progressFor', () => {
+  it('rises through the flow and ends at 1 on the paywall', () => {
+    expect(progressFor('cold-open')).toBeGreaterThan(0);
+    expect(progressFor('receipt')).toBeGreaterThan(progressFor('talking-time'));
+    expect(progressFor('paywall')).toBe(1);
   });
 });

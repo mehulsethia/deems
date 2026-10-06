@@ -3,52 +3,45 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
-import { Fraunces_400Regular, Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
-import {
-  InstrumentSans_400Regular,
-  InstrumentSans_500Medium,
-  InstrumentSans_600SemiBold,
-} from '@expo-google-fonts/instrument-sans';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold } from '@expo-google-fonts/bricolage-grotesque';
+import { Geist_400Regular, Geist_500Medium, Geist_600SemiBold } from '@expo-google-fonts/geist';
+import { GeistMono_400Regular, GeistMono_500Medium, GeistMono_700Bold } from '@expo-google-fonts/geist-mono';
 import { PaymentsProvider } from '@/purchases/PaymentsProvider';
-import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
+import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
 
-function Navigator() {
-  const { scheme, colors } = useTheme();
-  return (
-    <>
-      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(onboarding)" />
-        <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />
-        <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
-      </Stack>
-    </>
-  );
-}
-
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Fraunces_400Regular,
-    Fraunces_600SemiBold,
-    InstrumentSans_400Regular,
-    InstrumentSans_500Medium,
-    InstrumentSans_600SemiBold,
+    BricolageGrotesque_700Bold,
+    BricolageGrotesque_800ExtraBold,
+    Geist_400Regular,
+    Geist_500Medium,
+    Geist_600SemiBold,
+    GeistMono_400Regular,
+    GeistMono_500Medium,
+    GeistMono_700Bold,
   });
 
   useEffect(() => {
     if (loaded || error) SplashScreen.hideAsync();
   }, [loaded, error]);
 
+  // Block render until the brand fonts are in.
   if (!loaded && !error) return null;
 
   return (
-    <ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaymentsProvider>
-        <Navigator />
+        <StatusBar style="light" />
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(onboarding)" />
+          <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />
+          <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+        </Stack>
       </PaymentsProvider>
-    </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

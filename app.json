@@ -1,26 +1,26 @@
 {
   "expo": {
-    "name": "Hearth",
-    "slug": "hearth",
+    "name": "Deems",
+    "slug": "deems",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
-    "scheme": "hearth",
-    "userInterfaceStyle": "automatic",
+    "scheme": "deems",
+    "userInterfaceStyle": "dark",
     "ios": {
       "bundleIdentifier": "app.senseibles.hearth",
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Hearth uses the camera so you can take a photo to send in a message.",
-        "NSMicrophoneUsageDescription": "Hearth uses the microphone so you can record voice notes and video messages.",
-        "NSPhotoLibraryUsageDescription": "Hearth lets you choose photos and videos to send in a message.",
+        "NSCameraUsageDescription": "Deems uses the camera so you can take a photo to send in a message.",
+        "NSMicrophoneUsageDescription": "Deems uses the microphone so you can record voice notes and video messages.",
+        "NSPhotoLibraryUsageDescription": "Deems lets you choose photos and videos to send in a message.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "app.senseibles.hearth",
       "adaptiveIcon": {
-        "backgroundColor": "#FAF7FD",
+        "backgroundColor": "#0B0B0C",
         "foregroundImage": "./assets/icon-foreground.png"
       },
       "permissions": [
@@ -33,12 +33,13 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#FAF7FD",
+          "backgroundColor": "#0B0B0C",
           "dark": {
-            "backgroundColor": "#130F1A"
+            "backgroundColor": "#0B0B0C"
           },
           "image": "./assets/splash-icon.png",
           "imageWidth": 120

@@ -5,18 +5,23 @@ import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
+import { ChevronIcon } from '@/components/Icons';
+import { Mark } from '@/components/Logo';
 import { Screen } from '@/components/Screen';
+import { HOW_TO_CANCEL_URL } from '@/config/links';
 import { FEATURE_LOCK_INSTAGRAM_APP } from '@/lock/flag';
+import { cancelTrialReminder } from '@/notifications/trialReminder';
 import { formatDate, LEGAL, MANAGE_SUBSCRIPTIONS_URL } from '@/purchases';
 import { usePayments } from '@/purchases/PaymentsProvider';
-import { getActivePack, getPack, PLATFORM_IDS } from '@/rules/store';
+import { getActivePack, PLATFORM_IDS } from '@/rules/store';
+import { platformLabel } from '@/state/platformMeta';
 import { connectedPlatforms } from '@/state/platforms';
 import { clearProgress } from '@/state/progress';
 import { emitWebEvent } from '@/state/webEvents';
-import { spacing } from '@/theme/tokens';
+import { colors, radius, sizes, spacing, type ColorName } from '@/theme/tokens';
 
-function Row({ label, detail, onPress, disabled }: { label: string; detail?: string; onPress?: () => void; disabled?: boolean }) {
+function Row({ label, detail, onPress, disabled, tone, last }: { label: string; detail?: string; onPress?: () => void; disabled?: boolean; tone?: ColorName; last?: boolean }) {
+  const actionable = !!onPress && !disabled;
   return (
     <Pressable
       accessibilityRole={onPress ? 'button' : 'text'}
@@ -24,10 +29,23 @@ function Row({ label, detail, onPress, disabled }: { label: string; detail?: str
       accessibilityLabel={detail ? `${label}. ${detail}` : label}
       disabled={disabled || !onPress}
       onPress={onPress}
-      style={{ minHeight: 48, justifyContent: 'center', opacity: disabled ? 0.5 : 1, paddingVertical: spacing.sm }}
+      style={({ pressed }) => ({
+        minHeight: 52,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
+        opacity: disabled ? 0.4 : pressed ? 0.7 : 1,
+        borderBottomWidth: last ? 0 : 1,
+        borderBottomColor: colors.hairline,
+      })}
     >
-      <AppText variant="bodyMedium" accent={!!onPress && !disabled}>{label}</AppText>
-      {detail ? <AppText variant="small" muted>{detail}</AppText> : null}
+      <View style={{ flex: 1, gap: 2 }}>
+        <AppText variant="bodyMedium" tone={tone}>{label}</AppText>
+        {detail ? <AppText variant="small" muted>{detail}</AppText> : null}
+      </View>
+      {actionable && <ChevronIcon color={colors.muted} />}
     </Pressable>
   );
 }
@@ -35,8 +53,8 @@ function Row({ label, detail, onPress, disabled }: { label: string; detail?: str
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View style={{ gap: spacing.sm }}>
-      <AppText variant="heading">{title}</AppText>
-      <Card style={{ paddingVertical: spacing.sm }}>{children}</Card>
+      <AppText variant="label" muted accessibilityRole="header">{title}</AppText>
+      <View style={{ backgroundColor: colors.surface, borderRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden' }}>{children}</View>
     </View>
   );
 }
@@ -63,7 +81,7 @@ export default function Settings() {
   const signOut = () =>
     Alert.alert(
       'Sign out and clear data?',
-      'This signs you out of everything inside Hearth and clears everything Hearth stored on this device. Your subscription is not affected.',
+      'This signs you out of everything inside Deems and clears everything Deems stored on this device. Your subscription is not affected.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -75,6 +93,7 @@ export default function Settings() {
             } catch {}
             emitWebEvent('clear');
             clearProgress();
+            cancelTrialReminder();
             router.dismissAll();
             router.replace('/');
           },
@@ -85,28 +104,33 @@ export default function Settings() {
   const open = (url: string) => WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url));
 
   return (
-    <Screen scroll>
-      <View style={{ gap: spacing.lg, paddingBottom: spacing.xl }}>
+    <Screen>
+      <View style={{ gap: spacing.xl, paddingBottom: spacing.xl }}>
         <AppText variant="title">Settings</AppText>
 
         <Section title="Subscription">
           <Row label="Status" detail={status} />
           <Row label="Restore purchases" onPress={doRestore} disabled={busy || mode === 'dev'} />
           <Row label="Manage subscription" onPress={() => open(MANAGE_SUBSCRIPTIONS_URL)} disabled={mode === 'dev'} />
-          {note && <AppText variant="small" muted accessibilityLiveRegion="polite">{note}</AppText>}
+          <Row label="How to cancel" onPress={() => open(HOW_TO_CANCEL_URL)} last={!note} />
+          {note && (
+            <AppText variant="small" muted accessibilityLiveRegion="polite" style={{ padding: spacing.md }}>
+              {note}
+            </AppText>
+          )}
         </Section>
 
         <Section title="Accounts">
-          {PLATFORM_IDS.map((id) => {
-            const name = getPack(id).displayName;
-            const on = id === 'instagram' || connected.includes(id);
-            const beta = id !== 'instagram';
+          {PLATFORM_IDS.map((id, i) => {
+            const name = platformLabel(id);
+            const on = connected.includes(id);
             return (
               <Row
                 key={id}
                 label={on ? name : `Connect ${name}`}
-                detail={on ? `Connected${beta ? ' (beta)' : ''}` : 'Sign in on its own page (beta)'}
+                detail={on ? 'Connected' : 'Sign in on its own page'}
                 onPress={on ? undefined : () => router.push({ pathname: '/(onboarding)/login', params: { platform: id } })}
+                last={i === PLATFORM_IDS.length - 1}
               />
             );
           })}
@@ -114,27 +138,34 @@ export default function Settings() {
 
         <Section title="Show">
           <Row label="Reload current page" onPress={() => { emitWebEvent('reload'); router.back(); }} />
-          <Row label="Sign out and clear data" onPress={signOut} />
+          <Row label="Sign out and clear data" tone="cut" onPress={signOut} last />
         </Section>
 
         <Section title="Coming later">
-          <Row label="Lock the Instagram app" detail="Use Screen Time to block the Instagram app, with two 5-minute passes a day." disabled={!FEATURE_LOCK_INSTAGRAM_APP} />
+          <Row label="Lock the Instagram app" detail="Use Screen Time to block the Instagram app, with two 5-minute passes a day." disabled={!FEATURE_LOCK_INSTAGRAM_APP} last />
         </Section>
 
         <Section title="Privacy">
-          <AppText variant="small" style={{ paddingVertical: spacing.sm }}>
-            Hearth shows Instagram's own website. You sign in on Instagram's page, and Hearth never reads, stores or sends your password, cookies or
-            messages. It has no analytics. The only things stored on this device are your onboarding answers and whether you're signed in.
+          <AppText variant="small" style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+            Deems shows each app's own website. You sign in on their page, and Deems never reads, stores or sends your password, cookies or
+            messages. It has no analytics. The only things stored on this device are your onboarding answers and which accounts you're signed in to.
           </AppText>
           <Row label="Privacy policy" onPress={LEGAL.privacy ? () => open(LEGAL.privacy) : undefined} />
-          <Row label="Terms of use" onPress={() => open(LEGAL.terms)} />
+          <Row label="Terms of use" onPress={() => open(LEGAL.terms)} last />
         </Section>
 
         <Section title="About">
+          <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+            <Mark size={sizes.touch} />
+            <View style={{ gap: 2 }}>
+              <AppText variant="heading">Deems</AppText>
+              <AppText variant="small" muted>Reply and leave.</AppText>
+            </View>
+          </View>
           <Row label="Version" detail={Constants.expoConfig?.version ?? '1.0.0'} />
-          <Row label="Rules pack" detail={`${pack.displayName} v${pack.version}`} />
-          <AppText variant="small" muted style={{ paddingVertical: spacing.sm }}>
-            Hearth is not affiliated with Instagram or Meta.
+          <Row label="Rules pack" detail={`v${pack.version}`} />
+          <AppText variant="small" muted style={{ padding: spacing.md }}>
+            Not affiliated with Meta.
           </AppText>
         </Section>
       </View>

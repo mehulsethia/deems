@@ -1,15 +1,8 @@
 import { useWindowDimensions } from 'react-native';
-import { layout } from './tokens';
+import { layoutFor } from './breakpoints';
 
-/** Wide = iPad, Mac window, Android tablet. Re-evaluates on window resize. */
+/** Window-based layout; re-evaluates on rotation, iPad resizing and iPhone Duo fold/unfold. */
 export function useLayout() {
-  const { width, height } = useWindowDimensions();
-  const isWide = width >= layout.wideBreakpoint;
-  return {
-    width,
-    height,
-    isWide,
-    contentWidth: isWide ? layout.maxContentWidth : width,
-    webWidth: isWide ? layout.webMaxWidth : width,
-  };
+  const { width, height, fontScale } = useWindowDimensions();
+  return { ...layoutFor(width, height), fontScale };
 }
