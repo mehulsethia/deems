@@ -44,3 +44,8 @@ example
 
 # local env
 .env
+
+# marketing site (site/) build output
+.next/
+out/
+next-env.d.ts
