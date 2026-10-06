@@ -9,7 +9,9 @@ export default function Index() {
     signedIn: p.signedIn,
     onboardingComplete: p.onboardingComplete,
     step: p.step,
-    hasUsage: p.usageHours !== null && p.messagingMinutes !== null,
+    hasApps: p.picked.length > 0,
+    totalMinutes: p.totalMinutes,
+    talkingMinutes: p.talkingMinutes,
   });
   return <Redirect href={route as Href} />;
 }

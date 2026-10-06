@@ -1,2 +1,5 @@
-# hearth
-Social DMs only
+# Deems
+
+Reply and leave.
+
+The chat parts of Instagram, Threads and Facebook, and nothing else.

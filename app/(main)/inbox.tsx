@@ -8,18 +8,21 @@ import { PlatformWebView, type PlatformWebViewHandle } from '@/components/Platfo
 import { isAllowedPath, isLoginPath } from '@/rules/matching';
 import { getPack } from '@/rules/store';
 import type { PlatformId } from '@/rules/types';
+import { PICK_ORDER, platformLabel } from '@/state/platformMeta';
 import { connectedPlatforms, getActivePlatform, markSignedInTo, setActivePlatform } from '@/state/platforms';
+import { readProgress } from '@/state/progress';
 import { onWebEvent } from '@/state/webEvents';
-import { radius, spacing } from '@/theme/tokens';
-import { useTheme } from '@/theme/ThemeProvider';
+import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
 
-/** Instagram is always shown; Messenger and Threads appear once connected from Settings. */
+/** Connected platforms, in the order the user picked them. Falls back to the active one if none is connected. */
 function tabsFor(connected: PlatformId[]): PlatformId[] {
-  return ['instagram', ...connected.filter((p) => p !== 'instagram')];
+  const picked = readProgress().picked;
+  const order = [...picked, ...PICK_ORDER.filter((id) => !picked.includes(id))];
+  const tabs = order.filter((id) => connected.includes(id));
+  return tabs.length ? tabs : [getActivePlatform()];
 }
 
 export default function Inbox() {
-  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const refs = useRef<Partial<Record<PlatformId, PlatformWebViewHandle | null>>>({});
@@ -66,13 +69,10 @@ export default function Inbox() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }}>
-      <View style={{ height: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }} accessible accessibilityRole="header" accessibilityLabel="Hearth">
-          <Logo size={22} />
-          <AppText variant="bodyMedium">Hearth</AppText>
-        </View>
-        <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={10} onPress={() => router.push('/(main)/settings')} style={{ minHeight: 40, justifyContent: 'center' }}>
-          <AppText variant="bodyMedium" accent>Settings</AppText>
+      <View style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md }}>
+        <Logo size={22} />
+        <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={6} onPress={() => router.push('/(main)/settings')} style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.sm }}>
+          <AppText variant="bodyMedium" muted>Settings</AppText>
         </Pressable>
       </View>
 
@@ -85,11 +85,11 @@ export default function Inbox() {
                 key={id}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: on }}
-                accessibilityLabel={getPack(id).displayName}
+                accessibilityLabel={platformLabel(id)}
                 onPress={() => select(id)}
-                style={{ minHeight: 36, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.card, borderWidth: 1, borderColor: on ? colors.primary : colors.border }}
+                style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.keep : colors.surface, borderWidth: 1, borderColor: on ? colors.keep : colors.hairline }}
               >
-                <AppText variant="small" style={{ color: on ? colors.onPrimary : colors.text }}>{getPack(id).displayName}</AppText>
+                <AppText variant="small" tone={on ? 'ink' : 'paper'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
               </Pressable>
             );
           })}

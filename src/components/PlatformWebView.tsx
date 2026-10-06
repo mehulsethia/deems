@@ -10,8 +10,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { decideNavigation, lockPackToUrl } from '@/rules/matching';
 import { buildScript } from '@/rules/scriptBuilder';
 import type { PlatformRules, WebMessage } from '@/rules/types';
-import { spacing } from '@/theme/tokens';
-import { useTheme } from '@/theme/ThemeProvider';
+import { colors, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
 import { AppText } from './AppText';
 import { Button } from './Button';
@@ -57,7 +56,6 @@ function parseMessage(raw: string): WebMessage | null {
 }
 
 export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, ref }: Props) {
-  const { colors } = useTheme();
   const { isWide, webWidth } = useLayout();
   const webRef = useRef<WebView>(null);
   const canGoBack = useRef(false);
@@ -90,7 +88,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const handle = useCallback(
     (url: string): boolean => {
       const d = decideNavigation(effectivePack, url);
-      if (__DEV__) console.log(`[hearth:${effectivePack.id}] nav ${d.action}`, url);
+      if (__DEV__) console.log(`[deems:${effectivePack.id}] nav ${d.action}`, url);
       switch (d.action) {
         case 'allow':
           return true;
@@ -118,7 +116,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const onOpenWindow = useCallback(
     (e: WebViewOpenWindowEvent) => {
       const target = e.nativeEvent.targetUrl;
-      if (__DEV__) console.log(`[hearth:${effectivePack.id}] openWindow`, target);
+      if (__DEV__) console.log(`[deems:${effectivePack.id}] openWindow`, target);
       if (!target) return;
       const d = decideNavigation(effectivePack, target);
       if (d.action === 'allow') {
@@ -133,7 +131,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const onMessage = useCallback(
     (e: WebViewMessageEvent) => {
       const msg = parseMessage(e.nativeEvent.data);
-      if (__DEV__) console.log(`[hearth:${effectivePack.id}] message`, e.nativeEvent.data);
+      if (__DEV__) console.log(`[deems:${effectivePack.id}] message`, e.nativeEvent.data);
       if (!msg) return;
       if (msg.type === 'route') onRoute?.(msg.path);
       else onShared?.(msg.url);
@@ -156,7 +154,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <View style={[styles.column, { width: webWidth }, isWide && { borderColor: colors.border, borderLeftWidth: 1, borderRightWidth: 1 }]}>
+      <View style={[styles.column, { width: webWidth }, isWide && { borderColor: colors.hairline, borderLeftWidth: 1, borderRightWidth: 1 }]}>
         <WebView
           key={userAgent}
           ref={webRef}
@@ -171,9 +169,9 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
           setSupportMultipleWindows={false}
           onLoadProgress={(e) => setProgress(e.nativeEvent.progress)}
           onLoadStart={() => setError(null)}
-          onHttpError={(e) => __DEV__ && console.log(`[hearth:${effectivePack.id}] http`, e.nativeEvent.statusCode, e.nativeEvent.url)}
+          onHttpError={(e) => __DEV__ && console.log(`[deems:${effectivePack.id}] http`, e.nativeEvent.statusCode, e.nativeEvent.url)}
           onError={(e) => {
-            if (__DEV__) console.log(`[hearth:${effectivePack.id}] error`, e.nativeEvent.code, e.nativeEvent.description, e.nativeEvent.url);
+            if (__DEV__) console.log(`[deems:${effectivePack.id}] error`, e.nativeEvent.code, e.nativeEvent.description, e.nativeEvent.url);
             setError({ offline: looksOffline(e.nativeEvent.description ?? '', e.nativeEvent.code) });
           }}
           onContentProcessDidTerminate={() => webRef.current?.reload()}
@@ -197,19 +195,22 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 
         {showProgress && progress < 1 && !error && (
           <View pointerEvents="none" style={[styles.progressTrack]}>
-            <View style={[styles.progressBar, { width: `${Math.max(progress, 0.05) * 100}%`, backgroundColor: colors.accent }]} />
+            <View style={[styles.progressBar, { width: `${Math.max(progress, 0.05) * 100}%`, backgroundColor: colors.keep }]} />
           </View>
         )}
 
         {error && (
           <View style={[styles.error, { backgroundColor: colors.background }]}>
+            <AppText variant="label" tone={error.offline ? 'muted' : 'cut'} center>
+              {error.offline ? 'Offline' : 'Error'}
+            </AppText>
             <AppText variant="title" center>
-              {error.offline ? "You're offline" : "Couldn't load your messages"}
+              {error.offline ? "You're offline." : "Couldn't load your messages."}
             </AppText>
             <AppText muted center>
-              {error.offline ? 'Check your connection and try again.' : 'Something went wrong. Try again in a moment.'}
+              {error.offline ? 'Check your connection and try again.' : 'Try again in a moment.'}
             </AppText>
-            <Button label="Retry" onPress={retry} />
+            <Button label="Try again" onPress={retry} style={{ alignSelf: 'stretch' }} />
           </View>
         )}
       </View>
@@ -220,13 +221,13 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center' },
   column: { flex: 1, maxWidth: '100%' },
-  progressTrack: { position: 'absolute', top: 0, left: 0, right: 0, height: 2 },
-  progressBar: { height: 2 },
+  progressTrack: { position: 'absolute', top: 0, left: 0, right: 0, height: sizes.progress },
+  progressBar: { height: sizes.progress },
   error: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.md,
-    padding: spacing.xl,
+    padding: sizes.gutter,
   },
 });

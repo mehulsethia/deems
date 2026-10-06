@@ -1,4 +1,4 @@
-/** Platforms Hearth can show. Each has one bundled rules pack. */
+/** Platforms Deems can show. Each has one bundled rules pack. */
 export type PlatformId = 'instagram' | 'messenger' | 'threads';
 
 export interface UserAgents {
@@ -28,7 +28,7 @@ export interface PlatformRules {
   userAgent: UserAgents;
   /** CSS that hides navigation and banners. Attribute/aria selectors only. */
   css: string;
-  /** Injection template; `__HEARTH_CONFIG__` is replaced by scriptBuilder. Bundled only. */
+  /** Injection template; `__DEEMS_CONFIG__` is replaced by scriptBuilder. Bundled only. */
   js: string;
 }
 

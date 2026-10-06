@@ -1,14 +1,15 @@
 /** Ordered onboarding steps (files under app/(onboarding), then the paywall). Pure, no React. */
 export const ONBOARDING_STEPS = [
-  'welcome',
-  'usage',
-  'calculating',
-  'projection',
-  'comparison',
-  'what-stays',
-  'connect',
+  'cold-open',
+  'pick-apps',
+  'total-time',
+  'talking-time',
+  'receipt',
+  'year',
+  'refund',
+  'whats-left',
+  'trust',
   'login',
-  'setup',
   'reveal',
   'paywall',
 ] as const;
@@ -22,3 +23,9 @@ export const stepIndex = (s: OnboardingStep) => ONBOARDING_STEPS.indexOf(s);
 
 export const routeForStep = (s: OnboardingStep): string =>
   s === 'paywall' ? '/paywall' : `/(onboarding)/${s}`;
+
+/** Steps that show the progress line (the login sheet is a modal on top of trust). */
+const VISIBLE: readonly OnboardingStep[] = ONBOARDING_STEPS.filter((s) => s !== 'login');
+
+/** Progress 0..1 for the thin line at the top of each screen. */
+export const progressFor = (s: OnboardingStep): number => (VISIBLE.indexOf(s) + 1) / VISIBLE.length;

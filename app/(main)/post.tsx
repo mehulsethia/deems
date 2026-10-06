@@ -8,13 +8,11 @@ import { PlatformWebView } from '@/components/PlatformWebView';
 import { decideNavigation } from '@/rules/matching';
 import { getPack } from '@/rules/store';
 import type { PlatformId } from '@/rules/types';
-import { spacing } from '@/theme/tokens';
-import { useTheme } from '@/theme/ThemeProvider';
+import { colors, spacing } from '@/theme/tokens';
 
 /** A post or reel shared in a DM, locked to that single URL. */
 export default function SharedPost() {
   const { url, platform } = useLocalSearchParams<{ url?: string; platform?: PlatformId }>();
-  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pack = getPack(platform ?? 'instagram');
@@ -28,9 +26,9 @@ export default function SharedPost() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, paddingBottom: insets.bottom }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.md }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         <AppText variant="heading">Shared with you</AppText>
-        <Button label="Done" variant="ghost" onPress={() => router.back()} style={{ minHeight: 44, paddingVertical: 0 }} />
+        <Button label="Done" variant="ghost" onPress={() => router.back()} style={{ minHeight: 44, paddingVertical: 0, paddingHorizontal: spacing.md }} />
       </View>
       <PlatformWebView pack={pack} lockedUrl={url} showProgress />
     </View>
