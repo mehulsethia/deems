@@ -62,7 +62,7 @@ export default function Trust() {
           {ROWS.map(({ Icon, text }) => (
             <View key={text} accessible accessibilityLabel={text} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 44 }}>
               <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon color={colors.keep} />
+                <Icon color={colors.primaryOnDark} />
               </View>
               <AppText style={{ flex: 1 }}>{text}</AppText>
             </View>

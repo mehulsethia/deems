@@ -6,7 +6,7 @@ import { colors, radius, spacing } from '@/theme/tokens';
 import { AppText } from '../AppText';
 import { TickIcon } from '../Icons';
 
-/** Large toggle tile for one platform. Selected: lime outline and tick. */
+/** Large toggle tile for one platform. Selected: blue outline and tick. */
 export function AppTile({ id, selected, onToggle }: { id: PlatformId; selected: boolean; onToggle: () => void }) {
   const { label } = PLATFORM_META[id];
   const logo = metaLogos[id];
@@ -26,7 +26,7 @@ export function AppTile({ id, selected, onToggle }: { id: PlatformId; selected: 
         borderRadius: radius.card,
         backgroundColor: colors.surface,
         borderWidth: 2,
-        borderColor: selected ? colors.keep : colors.hairline,
+        borderColor: selected ? colors.primary : colors.hairline,
         opacity: pressed ? 0.85 : 1,
       })}
     >
@@ -40,11 +40,11 @@ export function AppTile({ id, selected, onToggle }: { id: PlatformId; selected: 
           alignItems: 'center',
           justifyContent: 'center',
           borderWidth: 2,
-          borderColor: selected ? colors.keep : colors.hairline,
-          backgroundColor: selected ? colors.keep : colors.transparent,
+          borderColor: selected ? colors.primary : colors.hairline,
+          backgroundColor: selected ? colors.primary : colors.transparent,
         }}
       >
-        {selected && <TickIcon color={colors.ink} />}
+        {selected && <TickIcon color={colors.onPrimary} />}
       </View>
     </Pressable>
   );

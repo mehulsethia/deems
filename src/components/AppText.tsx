@@ -4,7 +4,7 @@ import { useLayout } from '@/theme/useLayout';
 
 interface Props extends TextProps {
   variant?: TypeVariant;
-  /** Palette colour; defaults to paper (muted when `muted` is set). */
+  /** Semantic colour; defaults to text (textMuted when `muted` is set). */
   tone?: ColorName;
   muted?: boolean;
   center?: boolean;
@@ -26,7 +26,7 @@ function scaled(style: TextStyle, k: number): TextStyle {
 export function AppText({ variant = 'body', tone, muted, center, style, ...rest }: Props) {
   const { headlineScale } = useLayout();
   const heading = HEADINGS.includes(variant);
-  const color = colors[tone ?? (muted ? 'muted' : 'paper')];
+  const color = colors[tone ?? (muted ? 'textMuted' : 'text')];
   return (
     <Text
       accessibilityRole={heading ? 'header' : undefined}

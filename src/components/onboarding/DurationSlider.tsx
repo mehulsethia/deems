@@ -79,7 +79,7 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
           style={{ height: sizes.button, justifyContent: 'center' }}
         >
           <View style={{ height: TRACK, marginHorizontal: THUMB / 2, borderRadius: TRACK / 2, backgroundColor: colors.hairline }}>
-            <View style={{ width: `${ratio * 100}%`, height: TRACK, borderRadius: TRACK / 2, backgroundColor: colors.keep }} />
+            <View style={{ width: `${ratio * 100}%`, height: TRACK, borderRadius: TRACK / 2, backgroundColor: colors.primary }} />
           </View>
           <View
             pointerEvents="none"
@@ -89,7 +89,7 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
               width: THUMB,
               height: THUMB,
               borderRadius: THUMB / 2,
-              backgroundColor: colors.keep,
+              backgroundColor: colors.primary,
               borderWidth: 4,
               borderColor: colors.background,
             }}

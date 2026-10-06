@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, View } from 'react-native';
+import { Linking, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { DeemsMark } from '@/components/DeemsMark';
 import { CloseIcon } from '@/components/Icons';
+import { Loader } from '@/components/Loader';
 import { Screen } from '@/components/Screen';
 import { HOW_TO_CANCEL_URL } from '@/config/links';
 import { socialProof } from '@/config/socialProof';
@@ -39,8 +41,8 @@ function MiniReceipt({ days }: { days: string }) {
       accessibilityLabel={`Time refunded per year: ${days.toLowerCase()}.`}
       style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
     >
-      <AppText variant="receipt" tone="ink">TIME REFUNDED PER YEAR</AppText>
-      <AppText variant="receipt" tone="ink" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
+      <AppText variant="receipt" tone="onPaper">TIME REFUNDED PER YEAR</AppText>
+      <AppText variant="receipt" tone="onPaper" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
     </View>
   );
 }
@@ -50,7 +52,7 @@ function Step({ day, text, last }: { day: string; text: string; last?: boolean }
   return (
     <View style={{ flexDirection: 'row', gap: spacing.md }}>
       <View style={{ alignItems: 'center', width: 12 }}>
-        <View style={{ width: 12, height: 12, borderRadius: 6, marginTop: 6, backgroundColor: last ? colors.paper : colors.keep }} />
+        <View style={{ width: 12, height: 12, borderRadius: 6, marginTop: 6, backgroundColor: last ? colors.text : colors.primary }} />
         {!last && <View style={{ flex: 1, width: 2, backgroundColor: colors.hairline, marginTop: 2 }} />}
       </View>
       <AppText style={{ flex: 1, paddingBottom: last ? 0 : spacing.md }}>
@@ -69,13 +71,13 @@ function PlanCard({ p, on, stacked, savings, onPress }: { p: Plan; on: boolean; 
       accessibilityState={{ selected: on }}
       accessibilityLabel={`${name} plan, ${p.priceString} per ${periodWord(p.kind)}${perMonth ? `, ${perMonth} a month` : ''}${savings ? `, save ${savings}%` : ''}`}
       onPress={onPress}
-      style={{ flex: stacked ? undefined : 1, minHeight: stacked ? 88 : 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.keep : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
+      style={{ flex: stacked ? undefined : 1, minHeight: stacked ? 88 : 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.primary : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.sm }}>
         <AppText variant="bodyMedium">{name}</AppText>
         {savings ? (
-          <View style={{ backgroundColor: colors.keep, borderRadius: radius.pill, paddingHorizontal: spacing.sm }}>
-            <AppText variant="label" tone="ink">Save {savings}%</AppText>
+          <View style={{ backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: spacing.sm }}>
+            <AppText variant="label" tone="onPrimary">Save {savings}%</AppText>
           </View>
         ) : null}
       </View>
@@ -147,7 +149,7 @@ export default function Paywall() {
 
   const closeButton = (
     <Pressable accessibilityRole="button" accessibilityLabel="Close" onPress={close} hitSlop={6} style={{ width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center' }}>
-      <CloseIcon color={colors.paper} />
+      <CloseIcon color={colors.text} />
     </Pressable>
   );
 
@@ -156,6 +158,7 @@ export default function Paywall() {
       back={false}
       paneFirst={false}
       progress={progressFor('paywall')}
+      headerLeft={<DeemsMark size={28} label="Deems" />}
       headerRight={closeButton}
       footer={
         <>
@@ -206,7 +209,7 @@ export default function Paywall() {
             </AppText>
           )}
 
-          {plans.length === 0 && !plansError && <ActivityIndicator color={colors.keep} accessibilityLabel="Loading plans" />}
+          {plans.length === 0 && !plansError && <Loader size={32} label="Loading plans" />}
           {plansError && (
             <View style={{ gap: spacing.sm }}>
               <AppText>Couldn't load the plans.</AppText>
@@ -222,7 +225,7 @@ export default function Paywall() {
           </View>
 
           {error && (
-            <AppText variant="small" tone="cut" accessibilityLiveRegion="polite">
+            <AppText variant="small" tone="removedOnDark" accessibilityLiveRegion="polite">
               {error}
             </AppText>
           )}

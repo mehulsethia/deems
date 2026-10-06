@@ -22,6 +22,8 @@ interface Props {
   footer?: ReactNode;
   /** Small print under the primary action. Pinned on tall screens; scrolls with the content on short ones. */
   footerNote?: ReactNode;
+  /** Shown on the left of the header when there is no back button (for example the mark). */
+  headerLeft?: ReactNode;
   /** Extra control on the right of the header (for example a close button). */
   headerRight?: ReactNode;
   /** Vertically centre the content when it is shorter than the screen. */
@@ -33,7 +35,7 @@ interface Props {
  * 24px gutters, always scrollable so nothing clips on small screens or at 130% text.
  * One centred column on phones; two panes split on the centre line when there is width to spare.
  */
-export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerRight, centred = false }: Props) {
+export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false }: Props) {
   const { contentWidth, spread, short } = useLayout();
   const router = useRouter();
   const showBack = back && router.canGoBack();
@@ -63,10 +65,10 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
         <View style={styles.header}>
           {showBack ? (
             <Pressable accessibilityRole="button" accessibilityLabel="Go back" hitSlop={8} onPress={() => router.back()} style={styles.touch}>
-              <BackIcon color={colors.paper} />
+              <BackIcon color={colors.text} />
             </Pressable>
           ) : (
-            <View />
+            headerLeft ?? <View />
           )}
           {headerRight}
         </View>
