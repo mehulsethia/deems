@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { spacing } from '@/theme/tokens';
@@ -11,10 +11,14 @@ interface Props {
   children: ReactNode;
   /** Show a back affordance (hidden automatically when there is nothing to go back to). */
   back?: boolean;
+  /** Body scrolls, so large Dynamic Type sizes never clip content. */
+  scroll?: boolean;
+  /** Pinned below the body (primary button). */
+  footer?: ReactNode;
 }
 
 /** Cream page, safe-area aware, content centred at a max width on wide layouts. */
-export function Screen({ children, back = true }: Props) {
+export function Screen({ children, back = true, scroll = false, footer }: Props) {
   const { colors } = useTheme();
   const { contentWidth } = useLayout();
   const router = useRouter();
@@ -35,7 +39,14 @@ export function Screen({ children, back = true }: Props) {
             </Pressable>
           )}
         </View>
-        <View style={styles.body}>{children}</View>
+        {scroll ? (
+          <ScrollView style={styles.body} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={styles.body}>{children}</View>
+        )}
+        {footer ? <View style={styles.footer}>{footer}</View> : null}
       </View>
     </SafeAreaView>
   );
@@ -47,4 +58,6 @@ const styles = StyleSheet.create({
   header: { height: 48, justifyContent: 'center' },
   back: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center' },
   body: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
+  footer: { paddingTop: spacing.md, paddingBottom: spacing.lg, gap: spacing.sm },
 });

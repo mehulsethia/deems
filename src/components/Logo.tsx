@@ -1,7 +1,7 @@
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '@/theme/ThemeProvider';
 
-/** Hearth mark: a flame inside a speech bubble, single terracotta colour. */
+/** Hearth mark: a pink flame inside a violet speech bubble. */
 export function Logo({ size = 96 }: { size?: number }) {
   const { colors } = useTheme();
   return (
@@ -9,7 +9,7 @@ export function Logo({ size = 96 }: { size?: number }) {
       <Path
         d="M30 14 H70 A22 22 0 0 1 92 36 V52 A22 22 0 0 1 70 74 H46 L30 90 V74 A22 22 0 0 1 8 52 V36 A22 22 0 0 1 30 14 Z"
         fill="none"
-        stroke={colors.accent}
+        stroke={colors.primary}
         strokeWidth={6}
         strokeLinejoin="round"
       />

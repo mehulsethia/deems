@@ -9,6 +9,7 @@ import {
   InstrumentSans_500Medium,
   InstrumentSans_600SemiBold,
 } from '@expo-google-fonts/instrument-sans';
+import { PaymentsProvider } from '@/purchases/PaymentsProvider';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 SplashScreen.preventAutoHideAsync();
@@ -45,7 +46,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <Navigator />
+      <PaymentsProvider>
+        <Navigator />
+      </PaymentsProvider>
     </ThemeProvider>
   );
 }

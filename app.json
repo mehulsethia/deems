@@ -20,7 +20,7 @@
     "android": {
       "package": "app.senseibles.hearth",
       "adaptiveIcon": {
-        "backgroundColor": "#F6F1E7",
+        "backgroundColor": "#FAF7FD",
         "foregroundImage": "./assets/icon-foreground.png"
       },
       "permissions": [
@@ -36,12 +36,15 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F6F1E7",
-          "dark": { "backgroundColor": "#121512" },
+          "backgroundColor": "#FAF7FD",
+          "dark": {
+            "backgroundColor": "#130F1A"
+          },
           "image": "./assets/splash-icon.png",
           "imageWidth": 120
         }
-      ]
+      ],
+      "./plugins/withSceneLifecycle"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,5 +1,7 @@
+/** Logic-only tests (rules, maths, resume): plain Node, no React Native runtime. */
 module.exports = {
-  preset: 'jest-expo',
-  testPathIgnorePatterns: ['/node_modules/', '/ios/', '/android/'],
+  testEnvironment: 'node',
+  testMatch: ['<rootDir>/__tests__/**/*.test.ts'],
+  transform: { '^.+\\.(ts|tsx|js)$': ['babel-jest', { presets: ['babel-preset-expo'] }] },
   moduleNameMapper: { '^@/(.*)$': '<rootDir>/src/$1' },
 };

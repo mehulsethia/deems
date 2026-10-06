@@ -13,37 +13,41 @@ export interface Palette {
   overlay: string;
 }
 
+/** Flat violet and pink on white; no gradients. */
 const brand = {
-  primary: '#1F3A2E',
-  accent: '#D9622B',
+  primary: '#7B3FE4',
+  accent: '#DB3A82',
 } as const;
 
 export const palettes: Record<ColorScheme, Palette> = {
   light: {
-    background: '#F6F1E7',
+    background: '#FAF7FD',
     card: '#FFFFFF',
-    text: '#1B1A17',
-    muted: '#8A8578',
+    text: '#1A1523',
+    muted: '#7D7690',
     primary: brand.primary,
-    onPrimary: '#F6F1E7',
+    onPrimary: '#FFFFFF',
     accent: brand.accent,
     onAccent: '#FFFFFF',
-    border: '#E4DDCE',
-    overlay: 'rgba(27,26,23,0.4)',
+    border: '#E8E0F2',
+    overlay: 'rgba(26,21,35,0.4)',
   },
   dark: {
-    background: '#121512',
-    card: '#1C211D',
-    text: '#F1ECE2',
-    muted: '#8A8578',
+    background: '#130F1A',
+    card: '#1D1726',
+    text: '#F3EEFA',
+    muted: '#9A93AD',
     primary: brand.primary,
-    onPrimary: '#F1ECE2',
+    onPrimary: '#FFFFFF',
     accent: brand.accent,
     onAccent: '#FFFFFF',
-    border: '#2A312B',
+    border: '#2D2438',
     overlay: 'rgba(0,0,0,0.6)',
   },
 };
+
+/** Soft tints for the drawn avatars in the illustrated mock screens. */
+export const avatarTints = ['#F4B6D2', '#C9B6F2', '#B8C8F5', '#F7CDB8', '#D8B4F0'] as const;
 
 export const radius = {
   card: 14,
@@ -87,4 +91,6 @@ export const motion = {
 export const layout = {
   maxContentWidth: 560,
   wideBreakpoint: 700,
+  /** Web content (Instagram desktop layout) on iPad / Mac. */
+  webMaxWidth: 880,
 } as const;

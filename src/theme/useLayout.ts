@@ -5,5 +5,11 @@ import { layout } from './tokens';
 export function useLayout() {
   const { width, height } = useWindowDimensions();
   const isWide = width >= layout.wideBreakpoint;
-  return { width, height, isWide, contentWidth: isWide ? layout.maxContentWidth : width };
+  return {
+    width,
+    height,
+    isWide,
+    contentWidth: isWide ? layout.maxContentWidth : width,
+    webWidth: isWide ? layout.webMaxWidth : width,
+  };
 }
