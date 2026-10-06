@@ -55,7 +55,7 @@ export default function Login() {
   const touch = { minWidth: sizes.touch, minHeight: sizes.touch, alignItems: 'center' as const, justifyContent: 'center' as const };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         <Pressable accessibilityRole="button" accessibilityLabel="Close" hitSlop={6} onPress={() => router.back()} style={touch}>
           <CloseIcon color={colors.paper} />

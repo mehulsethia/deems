@@ -3,7 +3,8 @@ import { View, type LayoutChangeEvent } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { formatReadout, snap, spokenDuration } from '@/onboarding/maths';
 import { tick } from '@/motion/haptics';
-import { colors, MAX_FONT_SCALE, sizes, spacing, typeScale } from '@/theme/tokens';
+import { colors, sizes, spacing, typeScale } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
 import { AppText } from '../AppText';
 
 interface Props {
@@ -21,6 +22,10 @@ const TRACK = 4;
 /** Large mono readout over a wide slider. Light haptic on each step; adjustable for screen readers. */
 export function DurationSlider({ label, min, max, step, value, onChange }: Props) {
   const [width, setWidth] = useState(0);
+  const { contentWidth, spread } = useLayout();
+  // Fit the longest readout ("12 h 00 min", 11 mono characters) to the column.
+  const column = (spread ? (contentWidth - sizes.gutter * 2 - spacing.xxl) / 2 : contentWidth - sizes.gutter * 2);
+  const readoutSize = Math.max(28, Math.min(typeScale.readout.fontSize, Math.floor(column / (11 * 0.62))));
   const last = useRef(value);
   const span = Math.max(step, max - min);
   const ratio = Math.min(1, Math.max(0, (value - min) / span));
@@ -52,12 +57,13 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
       <AppText
         variant="readout"
         center
-        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        // Already display-sized and fitted to the width; screen readers get the value from the slider.
+        maxFontSizeMultiplier={1}
         adjustsFontSizeToFit
         numberOfLines={1}
         accessibilityElementsHidden
         importantForAccessibility="no"
-        style={{ fontSize: typeScale.readout.fontSize }}
+        style={{ fontSize: readoutSize, lineHeight: Math.round(readoutSize * 1.17) }}
       >
         {formatReadout(value)}
       </AppText>

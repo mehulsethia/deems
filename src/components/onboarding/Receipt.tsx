@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { View, type LayoutChangeEvent } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
@@ -11,6 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { formatDaysCaps, formatDuration, spokenDuration, type Breakdown } from '@/onboarding/maths';
+import { receiptFit, type ReceiptFit } from '@/onboarding/receiptFit';
 import { thud, tick } from '@/motion/haptics';
 import { colors, fonts, motion, spacing } from '@/theme/tokens';
 import { AppText } from '../AppText';
@@ -33,6 +34,10 @@ export interface ReceiptProps {
   onPrinted?: () => void;
   onStamped?: () => void;
 }
+
+/** Receipt type size, fitted to the paper width (see receiptFit). */
+const FitContext = createContext<ReceiptFit>(receiptFit(342));
+const fitStyle = (f: ReceiptFit) => ({ fontSize: f.fontSize, lineHeight: f.lineHeight, letterSpacing: f.letterSpacing });
 
 const TOOTH = 10;
 const EDGE = 6;
@@ -76,14 +81,42 @@ function Divider() {
   );
 }
 
-function Strike({ on, delay, instant }: { on: boolean; delay: number; instant: boolean }) {
+/** One orange line through a span of text; grows left to right. */
+function Strike({ on, delay, instant, box }: { on: boolean; delay: number; instant: boolean; box?: { x: number; y: number; width: number; height: number } }) {
   const w = useSharedValue(on && instant ? 1 : 0);
   useEffect(() => {
     if (!on) return;
     w.value = instant ? 1 : withDelay(delay, withTiming(1, { duration: STRIKE_MS, easing: Easing.out(Easing.cubic) }));
   }, [on, delay, instant, w]);
-  const style = useAnimatedStyle(() => ({ width: `${w.value * 100}%` }));
-  return <Animated.View pointerEvents="none" style={[{ position: 'absolute', left: -4, top: '50%', height: 2, marginTop: -1, backgroundColor: colors.cut }, style]} />;
+  const full = box ? box.width + 8 : 0;
+  const style = useAnimatedStyle(() => (box ? { width: w.value * full } : { width: `${w.value * 100}%` }));
+  const place = box ? { left: box.x - 4, top: box.y + box.height / 2 - 1 } : { left: -4, top: '50%' as const, marginTop: -1 };
+  return <Animated.View pointerEvents="none" style={[{ position: 'absolute', height: 2, backgroundColor: colors.cut }, place, style]} />;
+}
+
+type LineBox = { x: number; y: number; width: number; height: number };
+
+/** Receipt text that can be struck through, one stroke per printed line, so wrapped text is fully crossed out. */
+function StruckText({ text, struck, delay, instant, tabular }: { text: string; struck: boolean; delay: number; instant: boolean; tabular?: boolean }) {
+  const fit = useContext(FitContext);
+  const [lines, setLines] = useState<LineBox[] | null>(null);
+  return (
+    <View>
+      <AppText
+        variant="receipt"
+        tone="ink"
+        onTextLayout={(e) => setLines(e.nativeEvent.lines.map((l) => ({ x: l.x, y: l.y, width: l.width, height: l.height })))}
+        style={[fitStyle(fit), { opacity: struck ? 0.55 : 1 }, tabular && { fontVariant: ['tabular-nums'] }]}
+      >
+        {text}
+      </AppText>
+      {lines && lines.length > 0 ? (
+        lines.map((l, i) => <Strike key={i} on={struck} delay={delay + i * 120} instant={instant} box={l} />)
+      ) : (
+        <Strike on={struck} delay={delay} instant={instant} />
+      )}
+    </View>
+  );
 }
 
 function Line({ visible, instant, children }: { visible: boolean; instant: boolean; children: ReactNode }) {
@@ -99,13 +132,9 @@ function Row({ left, right, struck, strikeDelay, instant }: { left: string; righ
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: spacing.md, paddingVertical: 2 }}>
       <View style={{ flexShrink: 1 }}>
-        <AppText variant="receipt" tone="ink" style={{ opacity: struck ? 0.55 : 1 }}>{left}</AppText>
-        <Strike on={struck} delay={strikeDelay} instant={instant} />
+        <StruckText text={left} struck={struck} delay={strikeDelay} instant={instant} />
       </View>
-      <View>
-        <AppText variant="receipt" tone="ink" style={{ opacity: struck ? 0.55 : 1, fontVariant: ['tabular-nums'] }}>{right}</AppText>
-        <Strike on={struck} delay={strikeDelay} instant={instant} />
-      </View>
+      <StruckText text={right} struck={struck} delay={strikeDelay} instant={instant} tabular />
     </View>
   );
 }
@@ -211,49 +240,52 @@ export function Receipt({
   const struck = refunded || refundedAtStart;
   const days = yearText ?? formatDaysCaps(b.days) ?? '';
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width);
+  const fit = receiptFit(width || 342);
   const shown = (i: number) => i < printed;
 
   return (
-    <Animated.View
-      accessible
-      accessibilityRole="text"
-      accessibilityLabel={receiptSummary(b, date, showYear, struck)}
-      onLayout={onLayout}
-      style={[{ shadowColor: colors.shadow, shadowOpacity: 0.45, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } }, paperStyle]}
-    >
-      <Perforation width={width} />
-      <View style={{ backgroundColor: colors.paper, paddingHorizontal: spacing.lg, paddingVertical: spacing.md }}>
-        <Line visible={shown(0)} instant={reduce}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md }}>
-            <AppText variant="receipt" tone="ink" style={{ fontFamily: fonts.monoBold }}>DEEMS</AppText>
-            <AppText variant="receipt" tone="ink">{receiptDate(date)}</AppText>
-          </View>
-        </Line>
-        <Line visible={shown(1)} instant={reduce}>
-          <Divider />
-        </Line>
-        <Line visible={shown(2)} instant={reduce}>
-          <Row left="MESSAGES" right={formatDuration(b.talking)} struck={false} strikeDelay={0} instant={instant} />
-        </Line>
-        <Line visible={shown(3)} instant={reduce}>
-          <Row left="FEED, REELS, EXPLORE" right={formatDuration(b.other)} struck={struck} strikeDelay={200} instant={instant} />
-        </Line>
-        <Line visible={shown(4)} instant={reduce}>
-          <Divider />
-        </Line>
-        <Line visible={shown(5)} instant={reduce}>
-          <Row left="TOTAL PER DAY" right={formatDuration(b.total)} struck={false} strikeDelay={0} instant={instant} />
-        </Line>
-        {showYear && (
-          <Line visible={shown(6)} instant={reduce}>
-            <Row left="PER YEAR" right={days} struck={struck} strikeDelay={200 + STRIKE_MS + 120} instant={instant} />
+    <FitContext.Provider value={fit}>
+      <Animated.View
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={receiptSummary(b, date, showYear, struck)}
+        onLayout={onLayout}
+        style={[{ shadowColor: colors.shadow, shadowOpacity: 0.45, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } }, paperStyle]}
+      >
+        <Perforation width={width} />
+        <View style={{ backgroundColor: colors.paper, paddingHorizontal: fit.padX, paddingVertical: spacing.md }}>
+          <Line visible={shown(0)} instant={reduce}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md }}>
+              <AppText variant="receipt" tone="ink" style={[fitStyle(fit), { fontFamily: fonts.monoBold }]}>DEEMS</AppText>
+              <AppText variant="receipt" tone="ink" style={fitStyle(fit)}>{receiptDate(date)}</AppText>
+            </View>
           </Line>
-        )}
-        {/* Room for the stamp, kept on the year screen too so the paper does not change height. */}
-        {showYear && <View style={{ height: STAMP_SPACE }} />}
-        <Stamp mode={refundedAtStart ? 'static' : !refunded ? 'off' : reduce ? 'fade' : 'land'} delay={reduce ? 0 : 200 + STRIKE_MS * 2 + 360} onLanded={onStamped} />
-      </View>
-      <Perforation width={width} flip />
-    </Animated.View>
+          <Line visible={shown(1)} instant={reduce}>
+            <Divider />
+          </Line>
+          <Line visible={shown(2)} instant={reduce}>
+            <Row left="MESSAGES" right={formatDuration(b.talking)} struck={false} strikeDelay={0} instant={instant} />
+          </Line>
+          <Line visible={shown(3)} instant={reduce}>
+            <Row left="FEED, REELS, EXPLORE" right={formatDuration(b.other)} struck={struck} strikeDelay={200} instant={instant} />
+          </Line>
+          <Line visible={shown(4)} instant={reduce}>
+            <Divider />
+          </Line>
+          <Line visible={shown(5)} instant={reduce}>
+            <Row left="TOTAL PER DAY" right={formatDuration(b.total)} struck={false} strikeDelay={0} instant={instant} />
+          </Line>
+          {showYear && (
+            <Line visible={shown(6)} instant={reduce}>
+              <Row left="PER YEAR" right={days} struck={struck} strikeDelay={200 + STRIKE_MS + 120} instant={instant} />
+            </Line>
+          )}
+          {/* Room for the stamp, kept on the year screen too so the paper does not change height. */}
+          {showYear && <View style={{ height: STAMP_SPACE }} />}
+          <Stamp mode={refundedAtStart ? 'static' : !refunded ? 'off' : reduce ? 'fade' : 'land'} delay={reduce ? 0 : 200 + STRIKE_MS * 2 + 360} onLanded={onStamped} />
+        </View>
+        <Perforation width={width} flip />
+      </Animated.View>
+    </FitContext.Provider>
   );
 }

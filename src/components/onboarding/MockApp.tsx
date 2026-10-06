@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, Keyframe, LinearTransition, useReducedMotion } from 'react-native-reanimated';
 import { colors, fonts, motion, radius, spacing } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
 import { AppText } from '../AppText';
 import { Avatar } from '../Avatar';
 
@@ -38,7 +39,7 @@ function Feed() {
 
 function Reels() {
   return (
-    <View style={{ flex: 1, minHeight: 200, borderRadius: 10, backgroundColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
       <View style={{ width: 0, height: 0, borderLeftWidth: 22, borderTopWidth: 14, borderBottomWidth: 14, borderLeftColor: colors.muted, borderTopColor: colors.transparent, borderBottomColor: colors.transparent }} />
     </View>
   );
@@ -88,6 +89,9 @@ interface Props {
 
 export function MockApp({ peeled, onPeel }: Props) {
   const reduce = useReducedMotion();
+  const { height } = useLayout();
+  // Shorter on small or landscape screens so the headline and button still fit.
+  const panelHeight = Math.round(Math.max(200, Math.min(320, height * 0.36)));
   const tabs = MOCK_TABS.slice(peeled);
   const current = tabs[0];
   const Panel = PANELS[current];
@@ -109,7 +113,7 @@ export function MockApp({ peeled, onPeel }: Props) {
         <View style={{ paddingHorizontal: spacing.md, paddingTop: spacing.md }}>
           <AppText variant="heading" maxFontSizeMultiplier={1} style={{ fontSize: 18 }}>glimmer</AppText>
         </View>
-        <View style={{ height: 300, padding: spacing.md }}>
+        <View style={{ height: panelHeight, padding: spacing.md }}>
           <Animated.View
             key={current}
             entering={FadeIn.duration(motion.base)}

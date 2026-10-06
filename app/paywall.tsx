@@ -28,6 +28,7 @@ import {
 import { progressFor } from '@/state/onboardingSteps';
 import { markOnboardingComplete, saveStep } from '@/state/progress';
 import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
 
 const open = (url: string) => (url ? WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url)) : undefined);
 
@@ -36,7 +37,7 @@ function MiniReceipt({ days }: { days: string }) {
     <View
       accessible
       accessibilityLabel={`Time refunded per year: ${days.toLowerCase()}.`}
-      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', gap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
+      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
     >
       <AppText variant="receipt" tone="ink">TIME REFUNDED PER YEAR</AppText>
       <AppText variant="receipt" tone="ink" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
@@ -59,7 +60,7 @@ function Step({ day, text, last }: { day: string; text: string; last?: boolean }
   );
 }
 
-function PlanCard({ p, on, savings, onPress }: { p: Plan; on: boolean; savings: number | null; onPress: () => void }) {
+function PlanCard({ p, on, stacked, savings, onPress }: { p: Plan; on: boolean; stacked: boolean; savings: number | null; onPress: () => void }) {
   const name = p.kind === 'yearly' ? 'Yearly' : 'Monthly';
   const perMonth = p.kind === 'yearly' ? formatPrice(p.price / 12, p.currencyCode) : null;
   return (
@@ -68,7 +69,7 @@ function PlanCard({ p, on, savings, onPress }: { p: Plan; on: boolean; savings: 
       accessibilityState={{ selected: on }}
       accessibilityLabel={`${name} plan, ${p.priceString} per ${periodWord(p.kind)}${perMonth ? `, ${perMonth} a month` : ''}${savings ? `, save ${savings}%` : ''}`}
       onPress={onPress}
-      style={{ flex: 1, minHeight: 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.keep : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
+      style={{ flex: stacked ? undefined : 1, minHeight: stacked ? 88 : 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.keep : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.sm }}>
         <AppText variant="bodyMedium">{name}</AppText>
@@ -94,6 +95,8 @@ export default function Paywall() {
   const [selected, setSelected] = useState<string | null>(null);
   const now = useMemo(() => new Date(), []);
   const proof = socialProof();
+  const { narrow, fontScale } = useLayout();
+  const stackPlans = narrow || fontScale > 1.15;
 
   useEffect(() => saveStep('paywall'), []);
   useEffect(() => {
@@ -151,7 +154,7 @@ export default function Paywall() {
   return (
     <Screen
       back={false}
-      scroll
+      paneFirst={false}
       progress={progressFor('paywall')}
       headerRight={closeButton}
       footer={
@@ -164,11 +167,6 @@ export default function Paywall() {
           {firstCharge && (
             <AppText variant="small" center accessibilityLiveRegion="polite">
               {firstCharge}
-            </AppText>
-          )}
-          {plan && (
-            <AppText variant="caption" muted center>
-              {cancellationNote(plan, now, STORE)}
             </AppText>
           )}
           <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.md }}>
@@ -193,8 +191,53 @@ export default function Paywall() {
           </View>
         </>
       }
+      footerNote={
+        plan ? (
+          <AppText variant="caption" muted center>
+            {cancellationNote(plan, now, STORE)}
+          </AppText>
+        ) : null
+      }
+      pane={
+        <View style={{ gap: spacing.lg }}>
+          {mode === 'dev' && (
+            <AppText variant="caption" muted>
+              Dev mode: no store keys are set, so everything is unlocked. These prices are placeholders.
+            </AppText>
+          )}
+
+          {plans.length === 0 && !plansError && <ActivityIndicator color={colors.keep} accessibilityLabel="Loading plans" />}
+          {plansError && (
+            <View style={{ gap: spacing.sm }}>
+              <AppText>Couldn't load the plans.</AppText>
+              <Button label="Try again" variant="secondary" onPress={loadPlans} />
+            </View>
+          )}
+
+          {/* Side by side when they fit; stacked on narrow phones and at large text sizes. */}
+          <View style={{ flexDirection: stackPlans ? 'column' : 'row', gap: spacing.md }} accessibilityRole="radiogroup">
+            {plans.map((p) => (
+              <PlanCard key={p.id} p={p} on={p.id === selected} stacked={stackPlans} savings={p.kind === 'yearly' ? savings : null} onPress={() => setSelected(p.id)} />
+            ))}
+          </View>
+
+          {error && (
+            <AppText variant="small" tone="cut" accessibilityLiveRegion="polite">
+              {error}
+            </AppText>
+          )}
+
+          {/* Real social proof only; renders nothing while the hook is empty. */}
+          {proof.map((t) => (
+            <View key={t.attribution + t.quote} style={{ gap: spacing.xs }}>
+              <AppText>“{t.quote}”</AppText>
+              <AppText variant="caption" muted>{t.attribution}</AppText>
+            </View>
+          ))}
+        </View>
+      }
     >
-      <View style={{ gap: spacing.lg, paddingBottom: spacing.lg }}>
+      <View style={{ gap: spacing.lg }}>
         {days && <MiniReceipt days={days} />}
 
         <AppText variant="title">{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AppText>
@@ -206,40 +249,6 @@ export default function Paywall() {
             <Step day={`Day ${timeline.billingDay}`} text={`billing starts on ${billingDate} unless you cancel`} last />
           </View>
         )}
-
-        {mode === 'dev' && (
-          <AppText variant="caption" muted>
-            Dev mode: no store keys are set, so everything is unlocked. These prices are placeholders.
-          </AppText>
-        )}
-
-        {plans.length === 0 && !plansError && <ActivityIndicator color={colors.keep} accessibilityLabel="Loading plans" />}
-        {plansError && (
-          <View style={{ gap: spacing.sm }}>
-            <AppText>Couldn't load the plans.</AppText>
-            <Button label="Try again" variant="secondary" onPress={loadPlans} />
-          </View>
-        )}
-
-        <View style={{ flexDirection: 'row', gap: spacing.md }} accessibilityRole="radiogroup">
-          {plans.map((p) => (
-            <PlanCard key={p.id} p={p} on={p.id === selected} savings={p.kind === 'yearly' ? savings : null} onPress={() => setSelected(p.id)} />
-          ))}
-        </View>
-
-        {error && (
-          <AppText variant="small" tone="cut" accessibilityLiveRegion="polite">
-            {error}
-          </AppText>
-        )}
-
-        {/* Real social proof only; renders nothing while the hook is empty. */}
-        {proof.map((t) => (
-          <View key={t.attribution + t.quote} style={{ gap: spacing.xs }}>
-            <AppText>“{t.quote}”</AppText>
-            <AppText variant="caption" muted>{t.attribution}</AppText>
-          </View>
-        ))}
       </View>
     </Screen>
   );

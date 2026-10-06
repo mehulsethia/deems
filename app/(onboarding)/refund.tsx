@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { formatDuration } from '@/onboarding/maths';
 import { useBreakdown, useToday } from '@/onboarding/useAnswers';
 import { progressFor } from '@/state/onboardingSteps';
-import { motion, sizes, spacing } from '@/theme/tokens';
+import { motion, sizes } from '@/theme/tokens';
 
 export default function Refund() {
   const router = useRouter();
@@ -19,8 +19,8 @@ export default function Refund() {
 
   return (
     <Screen
-      scroll
       progress={progressFor('refund')}
+      pane={<Receipt b={b} date={today} showYear printedAtStart={7} refunded onStamped={() => setStamped(true)} />}
       footer={
         stamped ? (
           <Animated.View entering={FadeIn.duration(motion.base)}>
@@ -31,16 +31,13 @@ export default function Refund() {
         )
       }
     >
-      <View style={{ gap: spacing.xl, paddingBottom: spacing.lg }}>
-        <Receipt b={b} date={today} showYear printedAtStart={7} refunded onStamped={() => setStamped(true)} />
-        {stamped && (
+      {stamped && (
           <Animated.View entering={FadeIn.duration(motion.slow)}>
             <AppText variant="title" accessibilityLiveRegion="polite">
               Keep the {formatDuration(b.talking)}. Refund the rest.
             </AppText>
           </Animated.View>
         )}
-      </View>
     </Screen>
   );
 }

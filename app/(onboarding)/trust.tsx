@@ -55,8 +55,20 @@ export default function Trust() {
 
   return (
     <Screen
-      scroll
       progress={progressFor('trust')}
+      paneFirst={false}
+      pane={
+        <View style={{ gap: spacing.md }}>
+          {ROWS.map(({ Icon, text }) => (
+            <View key={text} accessible accessibilityLabel={text} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 44 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
+                <Icon color={colors.keep} />
+              </View>
+              <AppText style={{ flex: 1 }}>{text}</AppText>
+            </View>
+          ))}
+        </View>
+      }
       footer={
         !next ? (
           <Button label="Next" onPress={later} />
@@ -70,19 +82,9 @@ export default function Trust() {
         )
       }
     >
-      <View style={{ gap: spacing.lg, paddingBottom: spacing.lg }}>
+      <View style={{ gap: spacing.lg }}>
         <AppText variant="title">You sign in on {label}'s own page.</AppText>
         <AppText muted>Deems never sees your password or your messages.</AppText>
-        <View style={{ gap: spacing.md, paddingTop: spacing.md }}>
-          {ROWS.map(({ Icon, text }) => (
-            <View key={text} accessible accessibilityLabel={text} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 44 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
-                <Icon color={colors.keep} />
-              </View>
-              <AppText style={{ flex: 1 }}>{text}</AppText>
-            </View>
-          ))}
-        </View>
       </View>
     </Screen>
   );

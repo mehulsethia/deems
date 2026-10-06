@@ -9,7 +9,7 @@ import { Screen } from '@/components/Screen';
 import { skipsYear } from '@/onboarding/maths';
 import { useBreakdown, useToday } from '@/onboarding/useAnswers';
 import { progressFor } from '@/state/onboardingSteps';
-import { motion, sizes, spacing } from '@/theme/tokens';
+import { motion, sizes } from '@/theme/tokens';
 
 export default function ReceiptScreen() {
   const router = useRouter();
@@ -22,8 +22,8 @@ export default function ReceiptScreen() {
 
   return (
     <Screen
-      scroll
       progress={progressFor('receipt')}
+      pane={<Receipt b={b} date={today} slideIn onPrinted={() => setPrinted(true)} />}
       footer={
         printed ? (
           <Animated.View entering={FadeIn.duration(motion.base)}>
@@ -34,14 +34,11 @@ export default function ReceiptScreen() {
         )
       }
     >
-      <View style={{ gap: spacing.xl, paddingBottom: spacing.lg }}>
-        <Receipt b={b} date={today} slideIn onPrinted={() => setPrinted(true)} />
-        {printed && (
-          <Animated.View entering={FadeIn.duration(motion.slow)}>
-            <AppText variant="title" accessibilityLiveRegion="polite">{line}</AppText>
-          </Animated.View>
-        )}
-      </View>
+      {printed && (
+        <Animated.View entering={FadeIn.duration(motion.slow)}>
+          <AppText variant="title" accessibilityLiveRegion="polite">{line}</AppText>
+        </Animated.View>
+      )}
     </Screen>
   );
 }

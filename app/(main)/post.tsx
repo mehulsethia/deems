@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { PlatformWebView } from '@/components/PlatformWebView';
@@ -13,7 +13,6 @@ import { colors, spacing } from '@/theme/tokens';
 /** A post or reel shared in a DM, locked to that single URL. */
 export default function SharedPost() {
   const { url, platform } = useLocalSearchParams<{ url?: string; platform?: PlatformId }>();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const pack = getPack(platform ?? 'instagram');
   const valid = typeof url === 'string' && decideNavigation(pack, url).action === 'shared';
@@ -25,12 +24,12 @@ export default function SharedPost() {
   if (!valid || typeof url !== 'string') return null;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingBottom: insets.bottom }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         <AppText variant="heading">Shared with you</AppText>
         <Button label="Done" variant="ghost" onPress={() => router.back()} style={{ minHeight: 44, paddingVertical: 0, paddingHorizontal: spacing.md }} />
       </View>
       <PlatformWebView pack={pack} lockedUrl={url} showProgress />
-    </View>
+    </SafeAreaView>
   );
 }

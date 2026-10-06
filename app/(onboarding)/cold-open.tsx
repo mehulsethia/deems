@@ -10,11 +10,15 @@ import { Screen } from '@/components/Screen';
 import { tick } from '@/motion/haptics';
 import { progressFor } from '@/state/onboardingSteps';
 import { motion, sizes, spacing } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
 
 const MINUTES_LATER = 47;
 
 export default function ColdOpen() {
   const router = useRouter();
+  const { spread, contentWidth, height } = useLayout();
+  // The clock fits the room it has: smaller on short or narrow screens, never tiny.
+  const clock = Math.round(Math.max(120, Math.min(240, (spread ? contentWidth / 2 : contentWidth) * 0.55, height * 0.28)));
   const [spun, setSpun] = useState(false);
   const [settled, setSettled] = useState(false);
 
@@ -24,6 +28,11 @@ export default function ColdOpen() {
   };
 
   const headline = settled ? 'That was 47 minutes ago.' : 'You opened the app to answer this.';
+  const headlineView = (
+    <Animated.View key={headline} entering={FadeIn.duration(motion.base)} exiting={FadeOut.duration(motion.fast)}>
+      <AppText variant="display" accessibilityLiveRegion="polite">{headline}</AppText>
+    </Animated.View>
+  );
 
   return (
     <Screen
@@ -45,19 +54,20 @@ export default function ColdOpen() {
         accessibilityState={{ disabled: spun }}
         disabled={spun}
         onPress={() => setSpun(true)}
-        style={{ flex: 1, gap: spacing.xl }}
+        style={{ flexGrow: 1, flexDirection: spread ? 'row' : 'column', alignItems: spread ? 'center' : 'stretch', gap: spread ? spacing.xxl : spacing.xl }}
       >
-        <NotificationBanner sender="maya" text="you free sat?" />
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: spread ? 1 : undefined, gap: spacing.xl }}>
+          <NotificationBanner sender="maya" text="you free sat?" />
+          {spread && headlineView}
+        </View>
+        <View style={{ flex: 1, minHeight: clock, justifyContent: 'center', alignItems: 'center' }}>
           {spun && (
             <Animated.View entering={FadeIn.duration(motion.fast)}>
-              <ClockFace spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
+              <ClockFace size={clock} spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
             </Animated.View>
           )}
         </View>
-        <Animated.View key={headline} entering={FadeIn.duration(motion.base)} exiting={FadeOut.duration(motion.fast)}>
-          <AppText variant="display" accessibilityLiveRegion="polite">{headline}</AppText>
-        </Animated.View>
+        {!spread && headlineView}
       </Pressable>
     </Screen>
   );

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useReducedMotion } from 'react-native-reanimated';
 import { AppText } from '@/components/AppText';
@@ -8,7 +7,6 @@ import { MockApp, PEELABLE } from '@/components/onboarding/MockApp';
 import { Screen } from '@/components/Screen';
 import { tick } from '@/motion/haptics';
 import { progressFor } from '@/state/onboardingSteps';
-import { spacing } from '@/theme/tokens';
 
 export default function WhatsLeft() {
   const router = useRouter();
@@ -22,11 +20,13 @@ export default function WhatsLeft() {
   };
 
   return (
-    <Screen scroll progress={progressFor('whats-left')} footer={<Button label="Connect my accounts" onPress={() => router.push('/(onboarding)/trust')} />}>
-      <View style={{ gap: spacing.xl, paddingBottom: spacing.lg }}>
-        <AppText variant="title">Messages. Your friends' stories. That's the whole app.</AppText>
-        <MockApp peeled={peeled} onPeel={peel} />
-      </View>
+    <Screen
+      progress={progressFor('whats-left')}
+      paneFirst={false}
+      pane={<MockApp peeled={peeled} onPeel={peel} />}
+      footer={<Button label="Connect my accounts" onPress={() => router.push('/(onboarding)/trust')} />}
+    >
+      <AppText variant="title">Messages. Your friends' stories. That's the whole app.</AppText>
     </Screen>
   );
 }

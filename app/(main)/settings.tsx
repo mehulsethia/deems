@@ -104,7 +104,7 @@ export default function Settings() {
   const open = (url: string) => WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url));
 
   return (
-    <Screen scroll>
+    <Screen>
       <View style={{ gap: spacing.xl, paddingBottom: spacing.xl }}>
         <AppText variant="title">Settings</AppText>
 

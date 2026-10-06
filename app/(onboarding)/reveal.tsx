@@ -1,4 +1,4 @@
-import { Pressable, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { Easing, FadeIn, SlideInDown, useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,7 +20,9 @@ export default function Reveal() {
   const router = useRouter();
   const reduce = useReducedMotion();
   const insets = useSafeAreaInsets();
-  const { webWidth } = useLayout();
+  const { width, height, contentWidth } = useLayout();
+  // Full width on phones; a centred sheet on wide screens.
+  const sheetWidth = width < 700 ? width : contentWidth + sizes.gutter * 2;
   const pack = getPack(getActivePlatform());
 
   const keep = () => {
@@ -37,7 +39,7 @@ export default function Reveal() {
     : SlideInDown.delay(SHEET_DELAY).duration(motion.slow).easing(Easing.out(Easing.cubic));
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }}>
       <View style={{ flex: 1 }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         <PlatformWebView pack={pack} />
       </View>
@@ -48,7 +50,7 @@ export default function Reveal() {
           accessibilityLabel="Go back"
           onPress={() => router.back()}
           hitSlop={8}
-          style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.md, width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline }}
+          style={{ position: 'absolute', top: insets.top + spacing.sm, left: insets.left + spacing.md, width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline }}
         >
           <BackIcon color={colors.paper} />
         </Pressable>
@@ -57,11 +59,14 @@ export default function Reveal() {
       <Animated.View
         entering={entering}
         accessibilityViewIsModal
-        style={{ position: 'absolute', bottom: 0, alignSelf: 'center', width: webWidth, maxWidth: '100%', backgroundColor: colors.surface, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: sizes.gutter, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.md, gap: spacing.md }}
+        style={{ position: 'absolute', bottom: 0, alignSelf: 'center', width: sheetWidth, maxWidth: '100%', maxHeight: height * 0.85, backgroundColor: colors.surface, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, paddingLeft: sizes.gutter + insets.left, paddingRight: sizes.gutter + insets.right, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.md, gap: spacing.md }}
       >
         <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: colors.hairline }} />
-        <AppText variant="title">That's everything. Nothing else is coming.</AppText>
-        <AppText muted>Feed, Reels and Explore are hidden. Messages and stories work.</AppText>
+        {/* Scrolls if the sheet runs out of room (landscape phones, 130% text). */}
+        <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ gap: spacing.md }} showsVerticalScrollIndicator={false}>
+          <AppText variant="title">That's everything. Nothing else is coming.</AppText>
+          <AppText muted>Feed, Reels and Explore are hidden. Messages and stories work.</AppText>
+        </ScrollView>
         <Button label="Keep it this way" onPress={keep} />
       </Animated.View>
     </View>

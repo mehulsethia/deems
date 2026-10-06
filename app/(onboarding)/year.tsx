@@ -39,8 +39,9 @@ export default function Year() {
 
   return (
     <Screen
-      scroll
       progress={progressFor('year')}
+      /* "0 DAYS" is never displayed: the figure appears from 1 upwards. */
+      pane={<Receipt b={b} date={today} showYear printedAtStart={6} yearText={formatDaysCaps(shown) ?? ''} onPrinted={startCount} />}
       footer={
         done ? (
           <Animated.View entering={FadeIn.duration(motion.base)}>
@@ -51,10 +52,7 @@ export default function Year() {
         )
       }
     >
-      <View style={{ gap: spacing.xl, paddingBottom: spacing.lg }}>
-        {/* "0 DAYS" is never displayed: the figure appears from 1 upwards. */}
-        <Receipt b={b} date={today} showYear printedAtStart={6} yearText={formatDaysCaps(shown) ?? ''} onPrinted={startCount} />
-        {done && (
+      {done && (
           <Animated.View entering={FadeIn.duration(motion.slow)} style={{ gap: spacing.md }}>
             <AppText variant="title" accessibilityLiveRegion="polite">
               That's {b.days} full days a year. Not talking to a single person.
@@ -62,7 +60,6 @@ export default function Year() {
             <AppText variant="mono" muted>{formatDuration(b.other)} a day x 365 days</AppText>
           </Animated.View>
         )}
-      </View>
     </Screen>
   );
 }

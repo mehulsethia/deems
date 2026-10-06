@@ -27,15 +27,19 @@ export default function PickApps() {
   };
 
   return (
-    <Screen scroll progress={progressFor('pick-apps')} footer={<Button label="Next" disabled={picked.length === 0} onPress={next} />}>
-      <View style={{ gap: spacing.xl, paddingBottom: spacing.lg }}>
-        <AppText variant="title">Where do your people message you?</AppText>
+    <Screen
+      progress={progressFor('pick-apps')}
+      paneFirst={false}
+      pane={
         <View style={{ gap: spacing.md }}>
           {PICK_ORDER.map((id) => (
             <AppTile key={id} id={id} selected={picked.includes(id)} onToggle={() => toggle(id)} />
           ))}
         </View>
-      </View>
+      }
+      footer={<Button label="Next" disabled={picked.length === 0} onPress={next} />}
+    >
+      <AppText variant="title">Where do your people message you?</AppText>
     </Screen>
   );
 }
