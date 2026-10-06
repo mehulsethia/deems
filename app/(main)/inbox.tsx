@@ -93,9 +93,9 @@ export default function Inbox() {
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={platformLabel(id)}
                 onPress={() => select(id)}
-                style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.keep : colors.surface, borderWidth: 1, borderColor: on ? colors.keep : colors.hairline }}
+                style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.surface, borderWidth: 1, borderColor: on ? colors.primary : colors.hairline }}
               >
-                <AppText variant="small" tone={on ? 'ink' : 'paper'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
+                <AppText variant="small" tone={on ? 'onPrimary' : 'text'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
               </Pressable>
             );
           })}

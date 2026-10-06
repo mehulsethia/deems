@@ -15,12 +15,13 @@
         "NSMicrophoneUsageDescription": "Deems uses the microphone so you can record voice notes and video messages.",
         "NSPhotoLibraryUsageDescription": "Deems lets you choose photos and videos to send in a message.",
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "icon": "./assets/icon.png"
     },
     "android": {
       "package": "app.senseibles.hearth",
       "adaptiveIcon": {
-        "backgroundColor": "#0B0B0C",
+        "backgroundColor": "#0E0F12",
         "foregroundImage": "./assets/icon-foreground.png"
       },
       "permissions": [
@@ -37,18 +38,26 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0B0B0C",
+          "backgroundColor": "#0E0F12",
           "dark": {
-            "backgroundColor": "#0B0B0C"
+            "backgroundColor": "#0E0F12"
           },
           "image": "./assets/splash-icon.png",
-          "imageWidth": 120
+          "imageWidth": 120,
+          "resizeMode": "contain"
         }
       ],
       "./plugins/withSceneLifecycle"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "web": {
+      "favicon": "./public/favicon-48x48.png",
+      "name": "Deems",
+      "shortName": "Deems",
+      "backgroundColor": "#0E0F12",
+      "themeColor": "#0E0F12"
     }
   }
 }

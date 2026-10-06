@@ -58,21 +58,21 @@ export default function Login() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         <Pressable accessibilityRole="button" accessibilityLabel="Close" hitSlop={6} onPress={() => router.back()} style={touch}>
-          <CloseIcon color={colors.paper} />
+          <CloseIcon color={colors.text} />
         </Pressable>
         <View
           accessible
           accessibilityLabel={`Address: ${address.secure ? 'secure, ' : ''}${address.host}${address.path}`}
           style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 40, borderWidth: 1, borderColor: colors.hairline }}
         >
-          {address.secure && <LockIcon color={colors.keep} />}
+          {address.secure && <LockIcon color={colors.primaryOnDark} />}
           <AppText variant="mono" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
             {address.host}
             <AppText variant="mono" muted style={{ fontSize: 13 }}>{address.path}</AppText>
           </AppText>
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Reload page" hitSlop={6} onPress={() => webRef.current?.reload()} style={touch}>
-          <ReloadIcon color={colors.paper} />
+          <ReloadIcon color={colors.text} />
         </Pressable>
         <Pressable accessibilityRole="link" accessibilityLabel="Help" hitSlop={6} onPress={() => WebBrowser.openBrowserAsync(meta.helpUrl).catch(() => {})} style={touch}>
           <AppText variant="bodyMedium">Help</AppText>

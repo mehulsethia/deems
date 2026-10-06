@@ -40,7 +40,7 @@ function Feed() {
 function Reels() {
   return (
     <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={{ width: 0, height: 0, borderLeftWidth: 22, borderTopWidth: 14, borderBottomWidth: 14, borderLeftColor: colors.muted, borderTopColor: colors.transparent, borderBottomColor: colors.transparent }} />
+      <View style={{ width: 0, height: 0, borderLeftWidth: 22, borderTopWidth: 14, borderBottomWidth: 14, borderLeftColor: colors.textMuted, borderTopColor: colors.transparent, borderBottomColor: colors.transparent }} />
     </View>
   );
 }
@@ -136,13 +136,13 @@ export function MockApp({ peeled, onPeel }: Props) {
                 <View>
                   <AppText
                     variant="label"
-                    tone={next ? 'cut' : t === 'Messages' ? 'keep' : 'muted'}
+                    tone={next ? 'removedOnDark' : t === 'Messages' ? 'primaryOnDark' : 'textMuted'}
                     maxFontSizeMultiplier={1}
                     style={{ fontFamily: fonts.monoMedium }}
                   >
                     {t}
                   </AppText>
-                  {next && <View style={{ position: 'absolute', left: -2, right: -2, top: '50%', height: 2, backgroundColor: colors.cut }} />}
+                  {next && <View style={{ position: 'absolute', left: -2, right: -2, top: '50%', height: 2, backgroundColor: colors.removedOnDark }} />}
                 </View>
               </Animated.View>
             );

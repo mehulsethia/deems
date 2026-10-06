@@ -6,7 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { ChevronIcon } from '@/components/Icons';
-import { Mark } from '@/components/Logo';
+import { DeemsMark } from '@/components/DeemsMark';
 import { Screen } from '@/components/Screen';
 import { HOW_TO_CANCEL_URL } from '@/config/links';
 import { FEATURE_LOCK_INSTAGRAM_APP } from '@/lock/flag';
@@ -45,7 +45,7 @@ function Row({ label, detail, onPress, disabled, tone, last }: { label: string; 
         <AppText variant="bodyMedium" tone={tone}>{label}</AppText>
         {detail ? <AppText variant="small" muted>{detail}</AppText> : null}
       </View>
-      {actionable && <ChevronIcon color={colors.muted} />}
+      {actionable && <ChevronIcon color={colors.textMuted} />}
     </Pressable>
   );
 }
@@ -138,7 +138,7 @@ export default function Settings() {
 
         <Section title="Show">
           <Row label="Reload current page" onPress={() => { emitWebEvent('reload'); router.back(); }} />
-          <Row label="Sign out and clear data" tone="cut" onPress={signOut} last />
+          <Row label="Sign out and clear data" tone="removedOnDark" onPress={signOut} last />
         </Section>
 
         <Section title="Coming later">
@@ -156,7 +156,7 @@ export default function Settings() {
 
         <Section title="About">
           <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-            <Mark size={sizes.touch} />
+            <DeemsMark size={sizes.touch} />
             <View style={{ gap: 2 }}>
               <AppText variant="heading">Deems</AppText>
               <AppText variant="small" muted>Reply and leave.</AppText>

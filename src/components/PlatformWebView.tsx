@@ -195,13 +195,13 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 
         {showProgress && progress < 1 && !error && (
           <View pointerEvents="none" style={[styles.progressTrack]}>
-            <View style={[styles.progressBar, { width: `${Math.max(progress, 0.05) * 100}%`, backgroundColor: colors.keep }]} />
+            <View style={[styles.progressBar, { width: `${Math.max(progress, 0.05) * 100}%`, backgroundColor: colors.primaryOnDark }]} />
           </View>
         )}
 
         {error && (
           <View style={[styles.error, { backgroundColor: colors.background }]}>
-            <AppText variant="label" tone={error.offline ? 'muted' : 'cut'} center>
+            <AppText variant="label" tone={error.offline ? 'textMuted' : 'removedOnDark'} center>
               {error.offline ? 'Offline' : 'Error'}
             </AppText>
             <AppText variant="title" center>

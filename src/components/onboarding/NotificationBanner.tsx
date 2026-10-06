@@ -26,8 +26,8 @@ export function NotificationBanner({ sender, text, delay = 600 }: { sender: stri
         borderColor: colors.hairline,
       }}
     >
-      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.keep, alignItems: 'center', justifyContent: 'center' }}>
-        <AppText variant="bodyMedium" tone="ink">{sender.charAt(0)}</AppText>
+      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
+        <AppText variant="bodyMedium" tone="onPrimary">{sender.charAt(0)}</AppText>
       </View>
       <View style={{ flex: 1, gap: 2 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>

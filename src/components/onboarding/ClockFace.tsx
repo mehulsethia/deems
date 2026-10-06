@@ -71,16 +71,16 @@ export function ClockFace({ size = 200, spun, minutes, onSettled }: Props) {
               y1={c - Math.cos(a) * inner}
               x2={c + Math.sin(a) * outer}
               y2={c - Math.cos(a) * outer}
-              stroke={i % 3 === 0 ? colors.paper : colors.muted}
+              stroke={i % 3 === 0 ? colors.text : colors.textMuted}
               strokeWidth={i % 3 === 0 ? 3 : 2}
               strokeLinecap="round"
             />
           );
         })}
       </Svg>
-      <Animated.View style={[hand(size * 0.26, 6), { backgroundColor: colors.paper }, hourStyle]} />
-      <Animated.View style={[hand(size * 0.38, 4), { backgroundColor: colors.paper }, minuteStyle]} />
-      <View style={{ position: 'absolute', left: c - 6, top: c - 6, width: 12, height: 12, borderRadius: 6, backgroundColor: colors.cut }} />
+      <Animated.View style={[hand(size * 0.26, 6), { backgroundColor: colors.text }, hourStyle]} />
+      <Animated.View style={[hand(size * 0.38, 4), { backgroundColor: colors.text }, minuteStyle]} />
+      <View style={{ position: 'absolute', left: c - 6, top: c - 6, width: 12, height: 12, borderRadius: 6, backgroundColor: colors.removed }} />
     </View>
   );
 }

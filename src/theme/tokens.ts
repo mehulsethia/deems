@@ -1,23 +1,79 @@
 /**
  * Deems brand tokens. The single source of truth for colour, type, shape and motion.
- * Dark-first and dark-only for now. No gradients, glows or blue.
+ * Dark-first. No gradients, glows, or shadows tinted with brand colours.
+ * Blue and magenta never sit directly on each other as text and background.
  */
 
+/** Raw brand palette. Components use the semantic `colors` below, not these. */
+export const palette = {
+  // Brand
+  blue: '#1463FF',
+  blueOnDark: '#5B93FF',
+  magenta: '#E4257A',
+  magentaText: '#D81B72',
+  magentaOnDark: '#FF5C9F',
+  ink: '#0E0F12',
+  // Neutrals
+  surface: '#17191E',
+  hairline: '#2A2D34',
+  white: '#FFFFFF',
+  mist: '#F1F2F5',
+  slate: '#5C6370',
+  slateOnDark: '#B4B9C2',
+  // Tints (light surfaces only)
+  blueTint: '#E6EEFF',
+  blueTintText: '#0B3FB0',
+  magentaTint: '#FCE6F0',
+  magentaTintText: '#9C0F50',
+  // The MESSAGES value on the receipt (blue text on white paper).
+  receiptKept: '#0B4FD6',
+} as const;
+
 export const colors = {
-  background: '#0B0B0C',
-  surface: '#151517',
-  /** Primary text, and the receipt's paper colour. */
-  paper: '#F4F1EA',
-  muted: '#8C8A84',
-  /** Electric lime: primary buttons, things you keep. */
-  keep: '#C6FF3D',
-  /** Signal orange: struck-off items, warnings. */
-  cut: '#FF5A36',
-  hairline: '#26262A',
-  /** Text on lime, and text on the paper receipt. */
-  ink: '#0B0B0C',
+  // Dark surfaces
+  background: palette.ink,
+  surface: palette.surface,
+  hairline: palette.hairline,
+
+  // Text on dark
+  text: palette.white,
+  textMuted: palette.slateOnDark,
+
+  /** Primary action, selected state, things you keep: fills and outlines. */
+  primary: palette.blue,
+  onPrimary: palette.white,
+  /** Blue as text, links or thin lines on dark surfaces. */
+  primaryOnDark: palette.blueOnDark,
+
+  /** Struck-off and removed items, highlights: fills and strikes. */
+  removed: palette.magenta,
+  /** Magenta as text or thin lines on dark surfaces. */
+  removedOnDark: palette.magentaOnDark,
+  /** Magenta carrying text on white, or under white text (the REFUNDED stamp). */
+  removedText: palette.magentaText,
+  onRemoved: palette.white,
+
+  /** Secondary button on dark: white fill, ink label. */
+  inverse: palette.white,
+  onInverse: palette.ink,
+
+  // Receipt paper
+  paper: palette.white,
+  onPaper: palette.ink,
+  paperKept: palette.receiptKept,
+
+  // Light surfaces (not used by the dark app yet; kept for completeness)
+  lightSurface: palette.mist,
+  textOnLight: palette.ink,
+  textMutedOnLight: palette.slate,
+  blueTint: palette.blueTint,
+  onBlueTint: palette.blueTintText,
+  magentaTint: palette.magentaTint,
+  onMagentaTint: palette.magentaTintText,
+
   /** Dims content behind sheets. */
-  scrim: 'rgba(11,11,12,0.72)',
+  scrim: 'rgba(14,15,18,0.72)',
+  /** Neutral black shadow; never brand-tinted. */
   shadow: '#000000',
   transparent: 'transparent',
 } as const;
@@ -25,7 +81,7 @@ export const colors = {
 export type ColorName = keyof typeof colors;
 
 /** Fills for the drawn avatars in the illustration, taken from the palette only. */
-export const avatarTints = [colors.keep, colors.cut, colors.paper, colors.muted] as const;
+export const avatarTints = [colors.primary, colors.removed, colors.paper, colors.textMuted] as const;
 
 export const fonts = {
   headline: 'BricolageGrotesque_700Bold',

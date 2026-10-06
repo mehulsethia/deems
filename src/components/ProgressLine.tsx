@@ -19,7 +19,7 @@ export function ProgressLine({ value }: { value: number }) {
       accessibilityValue={{ min: 0, max: 100, now: Math.round(value * 100) }}
       style={{ height: sizes.progress, backgroundColor: colors.hairline, overflow: 'hidden' }}
     >
-      <Animated.View style={[{ height: sizes.progress, backgroundColor: colors.keep }, fill]} />
+      <Animated.View style={[{ height: sizes.progress, backgroundColor: colors.primaryOnDark }, fill]} />
     </View>
   );
 }

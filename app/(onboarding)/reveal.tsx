@@ -52,7 +52,7 @@ export default function Reveal() {
           hitSlop={8}
           style={{ position: 'absolute', top: insets.top + spacing.sm, left: insets.left + spacing.md, width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline }}
         >
-          <BackIcon color={colors.paper} />
+          <BackIcon color={colors.text} />
         </Pressable>
       )}
 
