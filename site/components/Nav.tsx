@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { contactHref, earlyAccessHref, site } from '@/lib/site';
 import { DeemsMark } from './DeemsMark';
+import { PrimaryButton } from './StoreButtons';
 import { Wordmark } from './Wordmark';
 
+/** Transparent over the hero, solid once the page scrolls. */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -17,18 +18,15 @@ export function Nav() {
   return (
     <header className={`nav${scrolled ? ' scrolled' : ''}`}>
       <div className="wrap nav-inner">
-        <Link href="/" className="brand" aria-label="Deems, home">
+        <Link href="/" className="brand" aria-label="DeeMs, home">
           <DeemsMark size={28} />
           <Wordmark />
         </Link>
         <nav className="nav-links" aria-label="Main">
           <Link href="/#how">How it works</Link>
           <Link href="/#privacy">Privacy</Link>
-          <Link href="/#faq">FAQ</Link>
-          <a href={contactHref}>Contact</a>
-          <a className="btn btn-primary btn-small" href={site.appStoreUrl || earlyAccessHref('iPhone')}>
-            {site.appStoreUrl ? 'Get the app' : 'Get early access'}
-          </a>
+          <Link href="/#faq">Questions</Link>
+          <PrimaryButton small />
         </nav>
       </div>
     </header>

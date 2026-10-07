@@ -1,7 +1,10 @@
-/** The DeeMs mark, from assets/deems-brand/svg (same path data). Dot colours are fixed. */
-export function DeemsMark({ size = 28, variant = 'onDark', title }: { size?: number; variant?: 'onDark' | 'onLight'; title?: string }) {
-  const bubble = variant === 'onDark' ? '#FFFFFF' : '#0E0F12';
-  const last = variant === 'onDark' ? '#0E0F12' : '#FFFFFF';
+/**
+ * The DeeMs mark, from assets/brand (same path data). Light variant (black bubble) on white,
+ * dark variant (white bubble) on black. The blue and magenta dots are the only brand colour on the site.
+ */
+export function DeemsMark({ size = 28, on = 'light', title }: { size?: number; on?: 'light' | 'dark'; title?: string }) {
+  const bubble = on === 'dark' ? '#FFFFFF' : '#0E0F12';
+  const last = on === 'dark' ? '#0E0F12' : '#FFFFFF';
   return (
     <svg width={(size * 108) / 100} height={size} viewBox="6 12 108 100" role={title ? 'img' : undefined} aria-hidden={title ? undefined : true}>
       {title ? <title>{title}</title> : null}

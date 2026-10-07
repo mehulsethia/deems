@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource/instrument-serif/400-italic.css';
 import './globals.css';
 import { Footer } from '@/components/Footer';
 import { Nav } from '@/components/Nav';
@@ -34,8 +35,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0E0F12',
-  colorScheme: 'dark',
+  themeColor: '#FFFFFF',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

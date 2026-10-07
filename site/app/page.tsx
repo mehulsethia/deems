@@ -1,16 +1,8 @@
-import Image from 'next/image';
-import { Calculator } from '@/components/Calculator';
-import { ColdOpen } from '@/components/ColdOpen';
-import { DeemsMark } from '@/components/DeemsMark';
 import { Faq } from '@/components/Faq';
-import { Pricing } from '@/components/Pricing';
 import { Hero } from '@/components/Hero';
-import { Exit, Eye, LockSmall, NoServer, Page } from '@/components/Icons';
-import { Refunded } from '@/components/Refunded';
+import { Pricing } from '@/components/Pricing';
 import { Reveal } from '@/components/Reveal';
-import { StoreButtons, TrialNote } from '@/components/StoreButtons';
-import { Tour } from '@/components/Tour';
-import { PLATFORMS } from '@/lib/platforms';
+import { Closing, Founder, HowItWorks, Privacy, Proof, SoundFamiliar, TriedQuitting, WhatStays } from '@/components/Sections';
 import { contactHref, site } from '@/lib/site';
 
 const FAQ = [
@@ -44,126 +36,33 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <SoundFamiliar />
+      <TriedQuitting />
+      <WhatStays />
+      <HowItWorks />
+      <Privacy />
 
-      {/* Works with */}
-      <section className="platforms">
-        <Reveal className="wrap platforms-inner">
-          <span className="label">Works with</span>
-          {PLATFORMS.map((p) => (
-            <span className="platform" key={p.name}>
-              <Image src={p.src} alt="" width={32} height={32} />
-              {p.name}
-            </span>
-          ))}
-        </Reveal>
-      </section>
-
-      {/* Cold open */}
-      <section className="section">
-        <ColdOpen />
-      </section>
-
-      {/* Receipt */}
-      <section className="section" id="receipt">
-        <div className="wrap">
-          <Reveal className="section-head center">
-            <span className="eyebrow">Add it up</span>
-            <h2 className="title">Here’s your receipt.</h2>
-            <p className="lede">Two answers, both yours. Nothing projected, nothing multiplied.</p>
-          </Reveal>
-          <Reveal>
-            <Calculator />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* Tour */}
-      <section className="section" id="how">
-        <div className="wrap">
-          <Reveal className="section-head">
-            <span className="eyebrow">How it works</span>
-            <h2 className="title">Set up in under a minute.</h2>
-          </Reveal>
-          <Tour />
-        </div>
-      </section>
-
-      {/* Kept vs refunded */}
-      <section className="section">
-        <div className="wrap">
-          <Reveal className="section-head center">
-            <span className="eyebrow">What’s left</span>
-            <h2 className="title">Messages. Your friends’ stories. That’s the whole app.</h2>
-          </Reveal>
-          <Refunded />
-        </div>
-      </section>
-
-      {/* Privacy */}
-      <section className="section" id="privacy">
-        <div className="wrap">
-          <Reveal className="section-head">
-            <span className="eyebrow">Privacy</span>
-            <h2 className="title">You sign in on their own page.</h2>
-            <p className="lede">DeeMs never sees your password or your messages.</p>
-          </Reveal>
-          <div className="bento">
-            <Reveal className="card span-4">
-              <span className="icon">
-                <Page />
-              </span>
-              <h3>Their sign-in page, not ours</h3>
-              <p className="muted">You sign in on Instagram’s, Threads’ or Facebook’s own page, inside DeeMs.</p>
-              <div className="address" aria-hidden>
-                <span className="lock">
-                  <LockSmall />
-                </span>
-                instagram.com<span className="dim">/accounts/login</span>
-              </div>
-            </Reveal>
-            <Reveal className="card span-2" delay={0.08}>
-              <span className="icon">
-                <NoServer />
-              </span>
-              <h3>Nothing on our servers</h3>
-              <p className="muted">Your messages and session stay on your phone.</p>
-            </Reveal>
-            <Reveal className="card span-3" delay={0.12}>
-              <span className="icon">
-                <Eye />
-              </span>
-              <h3>No analytics. No ads.</h3>
-              <p className="muted">DeeMs doesn’t track what you do. There’s nothing to sell, so nothing is collected.</p>
-            </Reveal>
-            <Reveal className="card span-3" delay={0.16}>
-              <span className="icon">
-                <Exit />
-              </span>
-              <h3>Sign out any time</h3>
-              <p className="muted">One tap in Settings signs you out and clears everything DeeMs kept on your phone.</p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section className="section" id="pricing">
+      <section className="section s-white" id="pricing">
         <Reveal className="wrap">
           <Pricing />
         </Reveal>
       </section>
 
-      {/* FAQ */}
-      <section className="section" id="faq">
+      <Proof />
+      <Founder />
+
+      <section className="section s-paper" id="faq">
         <div className="wrap">
-          <Reveal className="section-head center">
-            <span className="eyebrow">FAQ</span>
-            <h2 className="title">Fair questions.</h2>
+          <Reveal className="section-head">
+            <span className="label">Questions</span>
+            <h2 className="title">
+              Fair <em>questions.</em>
+            </h2>
           </Reveal>
           <Reveal>
             <Faq items={FAQ} />
           </Reveal>
-          <p className="muted center" style={{ marginTop: 32, textAlign: 'center' }}>
+          <p className="muted" style={{ marginTop: 32 }}>
             Something else? Email{' '}
             <a className="text-link" href={contactHref}>
               {site.contactEmail}
@@ -173,23 +72,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="section" style={{ paddingBottom: 0 }}>
-        <div className="wrap">
-          <Reveal className="final">
-            <span className="final-mark">
-              <DeemsMark size={48} />
-            </span>
-            <h2 className="display" style={{ fontSize: 'clamp(44px, 7.5vw, 96px)' }}>
-              Keep the messages.
-              <br />
-              <span className="accent">Refund the rest.</span>
-            </h2>
-            <StoreButtons align="center" />
-            <TrialNote />
-          </Reveal>
-        </div>
-      </section>
+      <Closing />
     </>
   );
 }

@@ -6,7 +6,7 @@ import { detectRegion, planSummary, TRIAL_DAYS, type Region } from '@/lib/pricin
 import { site } from '@/lib/site';
 import { Tick } from './Icons';
 import { EASE } from './Reveal';
-import { StoreButtons } from './StoreButtons';
+import { androidCta, PrimaryButton } from './StoreButtons';
 
 /** Plans with the launch prices (₹ in India), the yearly saving, and the trial timeline. */
 export function Pricing() {
@@ -20,23 +20,22 @@ export function Pricing() {
   return (
     <div className="pricing">
       <div className="pricing-copy">
-        <span className="eyebrow">Pricing</span>
-        <h2 className="title">Try it free for {TRIAL_DAYS} days.</h2>
+        <span className="label">Pricing</span>
+        <h2 className="title">
+          Try it for <em>{TRIAL_DAYS} days.</em>
+        </h2>
         <ol className="timeline">
           <li>
-            <span>
-              <b>Today</b> - your messages, nothing else
-            </span>
+            <b>Today</b>
+            <span>Your messages, nothing else</span>
           </li>
           <li>
-            <span>
-              <b>Day {TRIAL_DAYS - site.reminderDaysBefore}</b> - we remind you
-            </span>
+            <b>Day {TRIAL_DAYS - site.reminderDaysBefore}</b>
+            <span>We remind you</span>
           </li>
           <li>
-            <span>
-              <b>Day {TRIAL_DAYS}</b> - billing starts unless you cancel
-            </span>
+            <b>Day {TRIAL_DAYS}</b>
+            <span>Billing starts unless you cancel</span>
           </li>
         </ol>
       </div>
@@ -49,7 +48,7 @@ export function Pricing() {
             aria-checked={plan === 'yearly'}
             className={`plan${plan === 'yearly' ? ' on' : ''}`}
             onClick={() => setPlan('yearly')}
-            whileHover={{ y: -3 }}
+            whileHover={{ y: -2 }}
             transition={{ duration: 0.25, ease: EASE }}
           >
             <span className="plan-pill">{TRIAL_DAYS} days free</span>
@@ -67,7 +66,7 @@ export function Pricing() {
             aria-checked={plan === 'monthly'}
             className={`plan${plan === 'monthly' ? ' on' : ''}`}
             onClick={() => setPlan('monthly')}
-            whileHover={{ y: -3 }}
+            whileHover={{ y: -2 }}
             transition={{ duration: 0.25, ease: EASE }}
           >
             <span className="plan-name">Monthly</span>
@@ -86,8 +85,13 @@ export function Pricing() {
           Yearly saves you {s.saveAmount} a year
         </p>
 
-        <StoreButtons align="center" />
-        <p className="fine center" style={{ textAlign: 'center' }}>
+        <div className="cta-row">
+          <PrimaryButton />
+          <a className="text-link" href={androidCta.href}>
+            {androidCta.label}
+          </a>
+        </div>
+        <p className="fine">
           {plan === 'yearly'
             ? `No payment due now. Then ${s.yearly} a year, unless you cancel before day ${TRIAL_DAYS}.`
             : `${s.monthly} a month. Cancel any time.`}{' '}
