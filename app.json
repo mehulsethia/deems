@@ -8,7 +8,7 @@
     "scheme": "deems",
     "userInterfaceStyle": "dark",
     "ios": {
-      "bundleIdentifier": "app.senseibles.hearth",
+      "bundleIdentifier": "com.deems.app",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "DeeMs uses the camera so you can take a photo to send in a message.",
@@ -19,7 +19,7 @@
       "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "app.senseibles.hearth",
+      "package": "com.deems.app",
       "adaptiveIcon": {
         "backgroundColor": "#0E0F12",
         "foregroundImage": "./assets/icon-foreground.png"
