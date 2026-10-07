@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { contactHref, site } from '@/lib/site';
 import { DeemsMark } from './DeemsMark';
+import { Wordmark } from './Wordmark';
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
           <div style={{ display: 'grid', gap: 8 }}>
             <span className="brand">
               <DeemsMark size={24} />
-              Deems
+              <Wordmark />
             </span>
             <span className="muted">{site.tagline}</span>
           </div>

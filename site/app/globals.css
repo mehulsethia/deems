@@ -237,9 +237,9 @@ a {
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(14, 15, 18, 0.78);
-  backdrop-filter: saturate(160%) blur(16px);
-  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  background: rgba(14, 15, 18, 0.96);
+  backdrop-filter: saturate(160%) blur(20px);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
   border-bottom-color: var(--hairline);
 }
 .nav-inner {
@@ -258,6 +258,9 @@ a {
   font-weight: 800;
   font-size: 22px;
   letter-spacing: -0.03em;
+}
+.wordmark-ee {
+  font-size: 0.7em;
 }
 .nav-links {
   display: flex;

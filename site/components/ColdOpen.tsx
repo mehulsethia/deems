@@ -24,10 +24,10 @@ function Clock({ spun }: { spun: boolean }) {
         return (
           <line
             key={i}
-            x1={100 + Math.sin(a) * r1}
-            y1={100 - Math.cos(a) * r1}
-            x2={100 + Math.sin(a) * 88}
-            y2={100 - Math.cos(a) * 88}
+            x1={(100 + Math.sin(a) * r1).toFixed(3)}
+            y1={(100 - Math.cos(a) * r1).toFixed(3)}
+            x2={(100 + Math.sin(a) * 88).toFixed(3)}
+            y2={(100 - Math.cos(a) * 88).toFixed(3)}
             stroke={major ? '#FFFFFF' : '#B4B9C2'}
             strokeWidth={major ? 3 : 2}
             strokeLinecap="round"
