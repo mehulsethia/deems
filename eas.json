@@ -18,6 +18,20 @@
       "ios": {
         "image": "latest"
       }
+    },
+    "production": {
+      "distribution": "store",
+      "autoIncrement": true,
+      "ios": {
+        "image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6819970798"
+      }
     }
   }
 }
