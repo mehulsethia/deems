@@ -2,7 +2,7 @@ import { Text, type TextStyle } from 'react-native';
 import { colors, MAX_FONT_SCALE, typeScale, type TypeVariant } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
 
-/** The product name as written everywhere: D, M and s carry the name, the two e's step back. */
+/** The product name as written everywhere: D, M and s carry the name; the two e's step back (grey, 70% size). */
 export const BRAND_NAME = 'DeeMs';
 
 interface Props {
@@ -20,7 +20,8 @@ export function Wordmark({ variant = 'heading', on = 'dark', style }: Props) {
   const { headlineScale } = useLayout();
   const base = typeScale[variant];
   const heading = variant === 'display' || variant === 'title' || variant === 'heading';
-  const size = heading ? { fontSize: Math.round((base.fontSize ?? 17) * headlineScale) } : null;
+  const fontSize = heading ? Math.round((base.fontSize ?? 17) * headlineScale) : (base.fontSize ?? 17);
+  const size = heading ? { fontSize } : null;
   const strong = on === 'dark' ? colors.text : colors.onPaper;
   const dim = on === 'dark' ? colors.textMuted : colors.textMutedOnLight;
   return (
@@ -29,7 +30,7 @@ export function Wordmark({ variant = 'heading', on = 'dark', style }: Props) {
       maxFontSizeMultiplier={MAX_FONT_SCALE}
       style={[base, size, { color: strong }, style]}
     >
-      D<Text style={{ color: dim }}>ee</Text>Ms
+      D<Text style={{ color: dim, fontSize: Math.round(fontSize * 0.7) }}>ee</Text>Ms
     </Text>
   );
 }
