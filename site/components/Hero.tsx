@@ -4,13 +4,13 @@ import { Reveal } from './Reveal';
 import { androidCta, PrimaryButton } from './StoreButtons';
 import { site } from '@/lib/site';
 
-/** The main benefits, as chat bubbles floating around the phone. */
-const BENEFITS: { text: string; pos: string }[] = [
-  { text: 'Opens on your messages', pos: 'b1' },
-  { text: 'No feed, Reels or Explore', pos: 'b2' },
-  { text: 'All three apps in one place', pos: 'b3' },
-  { text: 'Sign in on their own page', pos: 'b4' },
-  { text: 'Nothing stored on our servers', pos: 'b5' },
+/** The main benefits, as chat bubbles under the phone: a row of three, then two. */
+const BENEFITS = [
+  'Opens on your messages',
+  'No feed, Reels or Explore',
+  'All three apps in one place',
+  'Sign in on their own page',
+  'Nothing stored on our servers',
 ];
 
 export function Hero() {
@@ -69,13 +69,17 @@ export function Hero() {
             <span />
           </div>
           <HeroCompare />
-          <ul className="badges" aria-label="What you get">
-            {BENEFITS.map((b) => (
-              <li key={b.text} className={`bubble badge ${b.pos}`}>
-                {b.text}
-              </li>
+          <div className="badges" role="list" aria-label="What you get">
+            {[BENEFITS.slice(0, 3), BENEFITS.slice(3)].map((row) => (
+              <div className="badges-row" key={row[0]}>
+                {row.map((b) => (
+                  <span role="listitem" className="bubble badge" key={b}>
+                    {b}
+                  </span>
+                ))}
+              </div>
             ))}
-          </ul>
+          </div>
         </Reveal>
       </div>
     </section>

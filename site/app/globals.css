@@ -556,9 +556,9 @@ button {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   align-items: center;
-  gap: 48px;
+  gap: 40px;
   width: 100%;
 }
 .hero-copy {
@@ -674,57 +674,23 @@ button {
 }
 .badges {
   list-style: none;
-  margin: 0;
+  margin: 14px 0 0;
   padding: 0;
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 7;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
 }
-.badge {
-  position: absolute;
-  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.3);
+.badges-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.bubble.badge {
   background: var(--white);
-  animation: float 6s ease-in-out infinite;
-}
-.hero-visual {
-  /* Same size as the phone (see .compare-wrap) so badges can sit just over its edges. */
-  --pw: calc(min(calc(100svh - 170px), 660px) * 9 / 18.4);
-  --tuck: 34px;
-}
-/* Left-side badges sit above and below the sub-copy's height so they never cover it. */
-.badge.b1,
-.badge.b5 {
-  right: calc(50% + var(--pw) / 2 - var(--tuck));
-}
-.badge.b2,
-.badge.b3,
-.badge.b4 {
-  left: calc(50% + var(--pw) / 2 - var(--tuck));
-}
-.badge.b1 {
-  top: 18%;
-}
-.badge.b2 {
-  top: 31%;
-  animation-delay: -1.2s;
-}
-.badge.b3 {
-  top: 48%;
-  animation-delay: -2.4s;
-}
-.badge.b4 {
-  top: 66%;
-  animation-delay: -3.6s;
-}
-.badge.b5 {
-  top: 76%;
-  animation-delay: -4.8s;
-}
-@keyframes float {
-  50% {
-    transform: translateY(-6px);
-  }
+  box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.35);
+  font-size: 13px;
+  padding: 7px 11px;
+  letter-spacing: 0;
 }
 
 /* Benefits as chat bubbles */
@@ -759,7 +725,8 @@ button {
 /* ---------- Phone ---------- */
 
 .compare-wrap {
-  --phone-h: min(calc(100svh - 170px), 660px);
+  /* Leaves room under the phone for two rows of badges. */
+  --phone-h: min(calc(100svh - 262px), 560px);
   width: calc(var(--phone-h) * 9 / 18.4);
   max-width: 100%;
   margin: 0 auto;
@@ -767,6 +734,7 @@ button {
   gap: 12px;
 }
 .compare-labels {
+  white-space: nowrap;
   display: flex;
   justify-content: space-between;
   font-size: 11px;
@@ -1906,6 +1874,13 @@ button {
 
 /* ---------- Responsive ---------- */
 
+/* Narrow two-column widths: let the three-badge row wrap rather than overflow. */
+@media (max-width: 1120px) {
+  .badges-row {
+    flex-wrap: wrap;
+  }
+}
+
 @media (max-width: 960px) {
   .hero-grid,
   .getapp,
@@ -1925,20 +1900,10 @@ button {
     width: min(100%, 340px);
   }
   .badges {
-    position: static;
-    display: flex;
+    margin-top: 24px;
+  }
+  .badges-row {
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 28px;
-  }
-  .badge {
-    position: static;
-    animation: none;
-    box-shadow: none;
-  }
-  .badge {
-    background: var(--white);
   }
   .calc-inputs {
     gap: 32px;
