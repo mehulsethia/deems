@@ -23,7 +23,7 @@ export async function scheduleTrialReminder(start: Date, trialDays: number, bill
     await Notifications.cancelScheduledNotificationAsync(REMINDER_ID).catch(() => {});
     await Notifications.scheduleNotificationAsync({
       identifier: REMINDER_ID,
-      content: { title: 'DeeMs', body: `Your free trial ends on ${billingDate}. Billing starts then unless you cancel.` },
+      content: { title: 'OnlyDM', body: `Your free trial ends on ${billingDate}. Billing starts then unless you cancel.` },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: addDays(start, reminderDay), channelId: CHANNEL_ID },
     });
     return true;

@@ -84,7 +84,7 @@ export default function Trust() {
     >
       <View style={{ gap: spacing.lg }}>
         <AppText variant="title">You sign in on {label}'s own page.</AppText>
-        <AppText muted>DeeMs never sees your password or your messages.</AppText>
+        <AppText muted>OnlyDM never sees your password or your messages.</AppText>
       </View>
     </Screen>
   );

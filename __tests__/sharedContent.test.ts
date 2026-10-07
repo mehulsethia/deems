@@ -51,6 +51,6 @@ describe('withReelLock', () => {
   it('keeps the lock running even if the rules script throws', () => {
     const js = withReelLock('throw new Error("rules");\ntrue;', 'https://www.instagram.com/reel/Cabc/');
     expect(() => new Function(js)).not.toThrow();
-    expect(js.indexOf('window.__deemsReelLock')).toBeGreaterThan(js.indexOf('catch (e) {}'));
+    expect(js.indexOf('window.__onlydmReelLock')).toBeGreaterThan(js.indexOf('catch (e) {}'));
   });
 });

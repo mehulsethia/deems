@@ -8,7 +8,7 @@ export interface ScriptConfig {
   css: string;
 }
 
-export const CONFIG_PLACEHOLDER = '__DEEMS_CONFIG__';
+export const CONFIG_PLACEHOLDER = '__ONLYDM_CONFIG__';
 
 const LINE_SEPARATOR = new RegExp(String.fromCharCode(0x2028), 'g');
 const PARAGRAPH_SEPARATOR = new RegExp(String.fromCharCode(0x2029), 'g');

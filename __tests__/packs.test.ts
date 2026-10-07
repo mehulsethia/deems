@@ -38,7 +38,7 @@ describe.each(PLATFORM_IDS)('bundled pack: %s', (id) => {
 
   it('shares one injection template', () => {
     expect(pack.js).toBe(bundledPacks.instagram.js);
-    expect(pack.js).toContain('__DEEMS_CONFIG__');
+    expect(pack.js).toContain('__ONLYDM_CONFIG__');
   });
 });
 

@@ -12,7 +12,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { colors } from '@/theme/tokens';
-import { DeemsMark, MARK_ASPECT, MARK_BUBBLE, MARK_DOT, MARK_DOTS, MARK_VIEWBOX, markColors, type MarkVariant } from './DeemsMark';
+import { OnlyDMMark, MARK_ASPECT, MARK_BUBBLE, MARK_DOT, MARK_DOTS, MARK_VIEWBOX, markColors, type MarkVariant } from './OnlyDMMark';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -47,7 +47,7 @@ export function Loader({ size = 48, variant = 'onDark', label = 'Loading' }: Pro
     return () => cancelAnimation(phase);
   }, [reduce, phase]);
 
-  if (reduce) return <DeemsMark size={size} variant={variant} label={label} />;
+  if (reduce) return <OnlyDMMark size={size} variant={variant} label={label} />;
 
   const c = markColors(variant);
   return (

@@ -2,7 +2,7 @@
 
 import { useReducedMotion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
-import { DeemsMark } from './DeemsMark';
+import { OnlyDMMark } from './OnlyDMMark';
 import { PLATFORM_ORDER, PlatformLogo, platformName, type Platform } from './PlatformLogo';
 import { Wordmark } from './Wordmark';
 
@@ -117,7 +117,7 @@ function Feed() {
   );
 }
 
-/* ---------- DeeMs: calm inbox, invented people, drawn initials ---------- */
+/* ---------- OnlyDM: calm inbox, invented people, drawn initials ---------- */
 
 const GREYS = ['#3d3d3d', '#262626', '#6b6b6b', '#3d3d3d', '#262626'];
 
@@ -138,13 +138,13 @@ const CHATS: { name: string; msg: string; time: string; platform: Platform; unre
   { name: 'Jo', msg: 'see you there', time: '2d', platform: 'instagram' },
 ];
 
-/** The DeeMs app, as it looks: dark chrome, platform tabs, chats. Nothing else. */
+/** The OnlyDM app, as it looks: dark chrome, platform tabs, chats. Nothing else. */
 function App() {
   return (
     <div className="app">
       <div className="app-bar">
         <span className="brand">
-          <DeemsMark size={20} on="dark" />
+          <OnlyDMMark size={20} on="dark" />
           <Wordmark />
         </span>
         <span className="settings">Settings</span>
@@ -273,7 +273,7 @@ export function HeroCompare() {
     <div className="compare-wrap">
       <div className="compare-labels" aria-hidden>
         <span>← The usual way</span>
-        <span>DeeMs →</span>
+        <span>OnlyDM →</span>
       </div>
       <div className="phone">
         <div className="phone-screen">
@@ -288,7 +288,7 @@ export function HeroCompare() {
             onPointerUp={stop}
             onPointerCancel={stop}
           >
-            <div className="compare-layer deems" aria-hidden>
+            <div className="compare-layer onlydm" aria-hidden>
               <App />
             </div>
             <div className="compare-layer" style={{ clipPath: 'inset(0 calc(100% - var(--pos)) 0 0)' }} aria-hidden>
@@ -300,11 +300,11 @@ export function HeroCompare() {
                 type="button"
                 className="compare-handle"
                 role="slider"
-                aria-label="Compare the usual feed with the DeeMs inbox"
+                aria-label="Compare the usual feed with the OnlyDM inbox"
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={50}
-                aria-valuetext="Left: the usual way. Right: DeeMs."
+                aria-valuetext="Left: the usual way. Right: OnlyDM."
                 onKeyDown={onKeyDown}
               >
                 <svg

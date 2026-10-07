@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { contactHref, site } from '@/lib/site';
 
-export const metadata: Metadata = { title: 'Terms of Use', description: 'The terms for using DeeMs.' };
+export const metadata: Metadata = { title: 'Terms of Use', description: 'The terms for using OnlyDM.' };
 
 const ext = { rel: 'noopener noreferrer', className: 'text-link' } as const;
 
@@ -16,16 +16,16 @@ export default function Terms() {
 
       <h2>The agreement</h2>
       <p>
-        DeeMs is provided by {operator} (“DeeMs”, “we”, “us”). On iPhone, DeeMs is licensed to you under Apple’s{' '}
+        OnlyDM is provided by {operator} (“OnlyDM”, “we”, “us”). On iPhone, OnlyDM is licensed to you under Apple’s{' '}
         <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" {...ext}>
           Standard End User License Agreement
         </a>
-        , which these terms supplement. On Android, Google Play’s terms apply alongside these. By using DeeMs you agree to
+        , which these terms supplement. On Android, Google Play’s terms apply alongside these. By using OnlyDM you agree to
         both.
       </p>
 
       <h2>Subscriptions</h2>
-      <p>DeeMs is a paid app with auto-renewable subscriptions, billed and managed by Apple or Google through your store account:</p>
+      <p>OnlyDM is a paid app with auto-renewable subscriptions, billed and managed by Apple or Google through your store account:</p>
       <ul>
         <li>Monthly: $3.99 a month (₹299 in India).</li>
         <li>Yearly: $14.99 a year (₹999 in India), with a {site.trialDays}-day free trial for new subscribers.</li>
@@ -39,7 +39,7 @@ export default function Terms() {
           Deleting the app does not cancel a subscription.
         </li>
         <li>
-          A subscription unlocks DeeMs on any device signed in to the same Apple ID or Google account. Use Restore
+          A subscription unlocks OnlyDM on any device signed in to the same Apple ID or Google account. Use Restore
           Purchases in the app after a reinstall.
         </li>
         <li>
@@ -57,23 +57,23 @@ export default function Terms() {
 
       <h2>Instagram, Threads and Facebook</h2>
       <p>
-        DeeMs is not affiliated with, endorsed by, or sponsored by Instagram, Threads, Facebook or Meta Platforms, Inc. You
-        need your own accounts, and your use of them inside DeeMs remains governed by their own terms. DeeMs shows their
-        websites with the feed, Reels and Explore hidden; they may change their sites in ways that affect DeeMs at any time.
+        OnlyDM is not affiliated with, endorsed by, or sponsored by Instagram, Threads, Facebook or Meta Platforms, Inc. You
+        need your own accounts, and your use of them inside OnlyDM remains governed by their own terms. OnlyDM shows their
+        websites with the feed, Reels and Explore hidden; they may change their sites in ways that affect OnlyDM at any time.
       </p>
 
-      <h2>Using DeeMs</h2>
+      <h2>Using OnlyDM</h2>
       <p>
-        You must be at least 13, and old enough to use these platforms where you live. Don’t use DeeMs to break the law or
-        another service’s rules, or to copy, resell, reverse engineer or disrupt the app. The DeeMs name, logo and app
+        You must be at least 13, and old enough to use these platforms where you live. Don’t use OnlyDM to break the law or
+        another service’s rules, or to copy, resell, reverse engineer or disrupt the app. The OnlyDM name, logo and app
         belong to us; content on the platforms belongs to its owners.
       </p>
 
       <h2>No warranty</h2>
       <p>
-        DeeMs is provided as is, without warranty of any kind. We are not liable for anything Instagram, Threads or Facebook
+        OnlyDM is provided as is, without warranty of any kind. We are not liable for anything Instagram, Threads or Facebook
         do to your account, for messages you send or receive, or for interruptions caused by changes to their websites. As
-        far as the law allows, our total liability to you is limited to what you paid for DeeMs in the 12 months before a
+        far as the law allows, our total liability to you is limited to what you paid for OnlyDM in the 12 months before a
         claim. Nothing here limits rights you have under consumer law that can’t be excluded.
       </p>
 

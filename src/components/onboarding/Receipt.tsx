@@ -256,8 +256,8 @@ export function Receipt({
         <View style={{ backgroundColor: colors.paper, paddingHorizontal: fit.padX, paddingVertical: spacing.md }}>
           <Line visible={shown(0)} instant={reduce}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md }}>
-              <AppText variant="receipt" tone="onPaper" accessibilityLabel="Deems" style={[fitStyle(fit), { fontFamily: fonts.monoBold }]}>
-                D<Text style={{ color: colors.textMutedOnLight, fontSize: Math.round(fit.fontSize * 0.7) }}>EE</Text>MS
+              <AppText variant="receipt" tone="onPaper" accessibilityLabel="OnlyDM" style={[fitStyle(fit), { fontFamily: fonts.monoBold }]}>
+                <Text style={{ fontFamily: fonts.mono }}>ONLY</Text>DM
               </AppText>
               <AppText variant="receipt" tone="onPaper" style={fitStyle(fit)}>{receiptDate(date)}</AppText>
             </View>

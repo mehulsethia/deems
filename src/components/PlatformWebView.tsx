@@ -98,7 +98,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const handle = useCallback(
     (url: string): boolean => {
       const d = decideNavigation(effectivePack, url);
-      if (__DEV__) console.log(`[deems:${effectivePack.id}] nav ${d.action}`, url);
+      if (__DEV__) console.log(`[onlydm:${effectivePack.id}] nav ${d.action}`, url);
       switch (d.action) {
         case 'allow':
           return true;
@@ -130,7 +130,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const onOpenWindow = useCallback(
     (e: WebViewOpenWindowEvent) => {
       const target = e.nativeEvent.targetUrl;
-      if (__DEV__) console.log(`[deems:${effectivePack.id}] openWindow`, target);
+      if (__DEV__) console.log(`[onlydm:${effectivePack.id}] openWindow`, target);
       if (!target) return;
       const d = decideNavigation(effectivePack, target);
       if (d.action === 'allow') {
@@ -145,7 +145,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
   const onMessage = useCallback(
     (e: WebViewMessageEvent) => {
       const msg = parseMessage(e.nativeEvent.data);
-      if (__DEV__) console.log(`[deems:${effectivePack.id}] message`, e.nativeEvent.data);
+      if (__DEV__) console.log(`[onlydm:${effectivePack.id}] message`, e.nativeEvent.data);
       if (!msg) return;
       if (msg.type === 'route') onRoute?.(msg.path);
       else onShared?.(msg.url);
@@ -183,9 +183,9 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
           setSupportMultipleWindows={false}
           onLoadProgress={(e) => setProgress(e.nativeEvent.progress)}
           onLoadStart={() => setError(null)}
-          onHttpError={(e) => __DEV__ && console.log(`[deems:${effectivePack.id}] http`, e.nativeEvent.statusCode, e.nativeEvent.url)}
+          onHttpError={(e) => __DEV__ && console.log(`[onlydm:${effectivePack.id}] http`, e.nativeEvent.statusCode, e.nativeEvent.url)}
           onError={(e) => {
-            if (__DEV__) console.log(`[deems:${effectivePack.id}] error`, e.nativeEvent.code, e.nativeEvent.description, e.nativeEvent.url);
+            if (__DEV__) console.log(`[onlydm:${effectivePack.id}] error`, e.nativeEvent.code, e.nativeEvent.description, e.nativeEvent.url);
             setError({ offline: looksOffline(e.nativeEvent.description ?? '', e.nativeEvent.code) });
           }}
           onContentProcessDidTerminate={() => webRef.current?.reload()}

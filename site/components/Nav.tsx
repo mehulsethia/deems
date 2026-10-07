@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { DeemsMark } from './DeemsMark';
+import { OnlyDMMark } from './OnlyDMMark';
 import { PrimaryButton } from './StoreButtons';
 import { Wordmark } from './Wordmark';
 
@@ -18,8 +18,8 @@ export function Nav() {
   return (
     <header className={`nav${scrolled ? ' scrolled' : ''}`}>
       <div className="wrap nav-inner">
-        <Link href="/" className="brand" aria-label="DeeMs, home">
-          <DeemsMark size={28} />
+        <Link href="/" className="brand" aria-label="OnlyDM, home">
+          <OnlyDMMark size={28} />
           <Wordmark />
         </Link>
         <nav className="nav-links" aria-label="Main">

@@ -2,8 +2,8 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { palette } from '@/theme/tokens';
 
 /**
- * The Deems mark: a speech bubble with three dots. Same path data as
- * assets/brand/deems-mark-dark.svg and deems-mark-light.svg; do not redraw.
+ * The OnlyDM mark: a speech bubble with three dots. Same path data as
+ * assets/brand/onlydm-mark-dark.svg and onlydm-mark-light.svg; do not redraw.
  * Dot colours are fixed (blue, magenta, then the background colour).
  */
 export const MARK_VIEWBOX = '6 12 108 100';
@@ -26,11 +26,11 @@ interface Props {
   /** Height in points; width follows the mark's aspect ratio. */
   size?: number;
   variant?: MarkVariant;
-  /** Accessible name. Omit when the mark sits next to the word "Deems". */
+  /** Accessible name. Omit when the mark sits next to the word "OnlyDM". */
   label?: string;
 }
 
-export function DeemsMark({ size = 32, variant = 'onDark', label }: Props) {
+export function OnlyDMMark({ size = 32, variant = 'onDark', label }: Props) {
   const c = markColors(variant);
   return (
     <Svg

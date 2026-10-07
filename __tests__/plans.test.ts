@@ -18,7 +18,7 @@ const pkg = (over: Partial<PackageLike> & { intro?: PackageLike['product']['intr
   identifier: '$rc_monthly',
   packageType: 'MONTHLY',
   product: {
-    identifier: 'deems_monthly',
+    identifier: 'onlydm_monthly',
     price: 4.99,
     priceString: '$4.99',
     currencyCode: 'USD',

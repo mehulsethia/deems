@@ -22,7 +22,7 @@ export const STORY_RINGS_SCRIPT = `(function () {
     return m ? m[1] : '';
   }
   function storyFor(img) {
-    var s = W.__deemsStories;
+    var s = W.__onlydmStories;
     if (!s) return null;
     var hit = s.byFile[fileOf(img.currentSrc || img.src)];
     if (hit) return hit;
@@ -36,9 +36,9 @@ export const STORY_RINGS_SCRIPT = `(function () {
   }
   function ring(img, story) {
     var key = story.u + (story.n ? ':new' : ':seen');
-    if (img.getAttribute('data-deems-story') === key) return;
-    img.setAttribute('data-deems-story', key);
-    img.setAttribute('data-deems-user', story.u);
+    if (img.getAttribute('data-onlydm-story') === key) return;
+    img.setAttribute('data-onlydm-story', key);
+    img.setAttribute('data-onlydm-user', story.u);
     var st = img.style;
     st.setProperty('box-sizing', 'border-box', 'important');
     st.setProperty('padding', '2px', 'important');
@@ -47,9 +47,9 @@ export const STORY_RINGS_SCRIPT = `(function () {
     st.setProperty('background', 'linear-gradient(' + gap() + ',' + gap() + ') padding-box,' + (story.n ? RING : SEEN) + ' border-box', 'important');
   }
   function unring(img) {
-    if (!img.hasAttribute('data-deems-story')) return;
-    img.removeAttribute('data-deems-story');
-    img.removeAttribute('data-deems-user');
+    if (!img.hasAttribute('data-onlydm-story')) return;
+    img.removeAttribute('data-onlydm-story');
+    img.removeAttribute('data-onlydm-user');
     ['box-sizing', 'padding', 'border', 'border-radius', 'background'].forEach(function (p) { img.style.removeProperty(p); });
   }
   function inMessages() { return location.pathname.indexOf('/direct') === 0; }
@@ -63,7 +63,7 @@ export const STORY_RINGS_SCRIPT = `(function () {
     }
   }
   function load() {
-    W.__deemsStoriesAt = Date.now();
+    W.__onlydmStoriesAt = Date.now();
     var headers = { 'X-IG-App-ID': '936619743392459', 'X-Requested-With': 'XMLHttpRequest' };
     try { var claim = sessionStorage.getItem('www-claim-v2'); if (claim) headers['X-IG-WWW-Claim'] = claim; } catch (e) {}
     fetch('/api/v1/feed/reels_tray/', { credentials: 'include', headers: headers })
@@ -79,20 +79,20 @@ export const STORY_RINGS_SCRIPT = `(function () {
           if (f) out.byFile[f] = story;
           out.byUser[u.username] = story;
         });
-        W.__deemsStories = out;
+        W.__onlydmStories = out;
         decorate();
       })
       .catch(function () {});
   }
 
-  if (!W.__deemsStoriesInstalled) {
-    W.__deemsStoriesInstalled = true;
+  if (!W.__onlydmStoriesInstalled) {
+    W.__onlydmStoriesInstalled = true;
     // Capture phase, and by position: Instagram often lays a tappable row over the picture.
     document.addEventListener('click', function (e) {
       if (!inMessages()) return;
       var els = document.elementsFromPoint ? document.elementsFromPoint(e.clientX, e.clientY) : [e.target];
       for (var i = 0; i < els.length; i++) {
-        var user = els[i].getAttribute && els[i].getAttribute('data-deems-user');
+        var user = els[i].getAttribute && els[i].getAttribute('data-onlydm-user');
         if (user && USER.test(user)) {
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -107,7 +107,7 @@ export const STORY_RINGS_SCRIPT = `(function () {
       timer = setTimeout(decorate, 200);
     }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
   }
-  if (!W.__deemsStories || Date.now() - (W.__deemsStoriesAt || 0) > 30000) load(); else decorate();
+  if (!W.__onlydmStories || Date.now() - (W.__onlydmStoriesAt || 0) > 30000) load(); else decorate();
 })();
 true;
 `;

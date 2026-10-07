@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { DeemsMark } from '@/components/DeemsMark';
+import { OnlyDMMark } from '@/components/OnlyDMMark';
 import { CloseIcon, TickIcon } from '@/components/Icons';
 import { Loader } from '@/components/Loader';
 import { Screen } from '@/components/Screen';
@@ -202,7 +202,7 @@ export default function Paywall() {
       back={false}
       paneFirst={false}
       progress={progressFor('paywall')}
-      headerLeft={<DeemsMark size={28} label="Deems" />}
+      headerLeft={<OnlyDMMark size={28} label="OnlyDM" />}
       headerRight={closeButton}
       footer={
         <>

@@ -51,10 +51,10 @@ export function withReelLock(rulesScript: string, url: string): string {
 export function reelLockScript(url: string): string {
   const path = normalizePath(parseUrl(url)?.path ?? '/').toLowerCase().replace(/\/$/, '');
   return `(function () {
-  if (window.__deemsReelLock) return;
-  window.__deemsReelLock = true;
+  if (window.__onlydmReelLock) return;
+  window.__onlydmReelLock = true;
   var LOCKED = ${JSON.stringify(path)};
-  var STYLE_ID = 'deems-reel-lock';
+  var STYLE_ID = 'onlydm-reel-lock';
   var CSS = 'html,body{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}' +
     '*{scroll-snap-type:none!important;overscroll-behavior:none!important}';
   function same(url) {

@@ -1,5 +1,6 @@
 import { founder } from '@/content/founder';
 import { proof, rating } from '@/content/proof';
+import { PlatformIcons } from './PlatformIcons';
 import { PLATFORM_ORDER, PlatformLogo, platformName } from './PlatformLogo';
 import { Reveal } from './Reveal';
 import { AndroidButton, PrimaryButton, TrialNote } from './StoreButtons';
@@ -37,7 +38,7 @@ export function SoundFamiliar() {
             <p>The inbox sits behind the feed. Every reply starts with a detour.</p>
           </div>
           <div className="duo-card bright">
-            <span className="label">The DeeMs way</span>
+            <span className="label">The OnlyDM way</span>
             <p className="big">Open. Reply. Get on with your day.</p>
             <p>It opens on your messages. There is nothing else to open.</p>
           </div>
@@ -75,7 +76,7 @@ export function TriedQuitting() {
         </Reveal>
         <Reveal>
           <p className="closer">
-            Blockers shut out everything, including the people you care about. DeeMs only removes the part that wastes your
+            Blockers shut out everything, including the people you care about. OnlyDM only removes the part that wastes your
             time.
           </p>
         </Reveal>
@@ -183,7 +184,7 @@ export function HowItWorks() {
             </MiniPhone>
             <span className="step-num">02</span>
             <h3>Sign in on their page</h3>
-            <p>You sign in on Instagram’s, Threads’ or Facebook’s own page, inside DeeMs.</p>
+            <p>You sign in on Instagram’s, Threads’ or Facebook’s own page, inside OnlyDM.</p>
           </Reveal>
           <Reveal className="step" delay={0.16}>
             <MiniPhone dark>
@@ -221,10 +222,10 @@ export function HowItWorks() {
 /* ---------- Privacy (black) ---------- */
 
 const POINTS = [
-  { t: 'Their sign-in page, not ours', b: 'You sign in on Instagram’s, Threads’ or Facebook’s own page, inside DeeMs.' },
+  { t: 'Their sign-in page, not ours', b: 'You sign in on Instagram’s, Threads’ or Facebook’s own page, inside OnlyDM.' },
   { t: 'Nothing stored on our servers', b: 'Your messages and session stay on your phone.' },
-  { t: 'No analytics, no ads', b: 'DeeMs doesn’t track what you do. There’s nothing to sell, so nothing is collected.' },
-  { t: 'Sign out any time in Settings', b: 'One tap in Settings signs you out and clears everything DeeMs kept on your phone.' },
+  { t: 'No analytics, no ads', b: 'OnlyDM doesn’t track what you do. There’s nothing to sell, so nothing is collected.' },
+  { t: 'Sign out any time in Settings', b: 'One tap in Settings signs you out and clears everything OnlyDM kept on your phone.' },
 ];
 
 export function Privacy() {
@@ -322,6 +323,10 @@ export function Closing() {
             <AndroidButton />
           </div>
           <TrialNote />
+          <div className="platforms-row">
+            <PlatformIcons on="dark" />
+            <span className="label">Works with Instagram, Threads and Facebook</span>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -1,8 +1,8 @@
 /**
- * The DeeMs mark, from assets/brand (same path data). Light variant (black bubble) on white,
+ * The OnlyDM mark, from assets/brand (same path data). Light variant (black bubble) on white,
  * dark variant (white bubble) on black. The blue and magenta dots are the only brand colour on the site.
  */
-export function DeemsMark({ size = 28, on = 'light', title }: { size?: number; on?: 'light' | 'dark'; title?: string }) {
+export function OnlyDMMark({ size = 28, on = 'light', title }: { size?: number; on?: 'light' | 'dark'; title?: string }) {
   const bubble = on === 'dark' ? '#FFFFFF' : '#0E0F12';
   const last = on === 'dark' ? '#0E0F12' : '#FFFFFF';
   return (

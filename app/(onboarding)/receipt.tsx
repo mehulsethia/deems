@@ -18,7 +18,7 @@ export default function ReceiptScreen() {
   const skip = skipsYear(b);
   const [printed, setPrinted] = useState(false);
 
-  const line = skip ? "You're already mostly here to talk. DeeMs keeps it that way." : `${b.percent}% of your time here isn't with anyone.`;
+  const line = skip ? "You're already mostly here to talk. OnlyDM keeps it that way." : `${b.percent}% of your time here isn't with anyone.`;
 
   return (
     <Screen

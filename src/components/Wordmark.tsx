@@ -2,19 +2,19 @@ import { Text, type TextStyle } from 'react-native';
 import { colors, fonts, MAX_FONT_SCALE, typeScale, type TypeVariant } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
 
-/** The product name as written everywhere: D, M and s carry the name; the two e's step back (grey, 70% size). */
-export const BRAND_NAME = 'DeeMs';
+/** The product name as written everywhere. */
+export const BRAND_NAME = 'OnlyDM';
 
 interface Props {
   variant?: TypeVariant;
-  /** onDark: white with grey e's. onLight: ink with slate e's (for the white receipt paper). */
+  /** onDark: white. onLight: ink (for the white receipt paper). */
   on?: 'dark' | 'light';
   style?: TextStyle;
 }
 
 /**
- * The wordmark "DeeMs". The eye reads "DMs" first and "Deems" second.
- * Screen readers hear "Deems".
+ * The wordmark "OnlyDM": a regular-weight "Only" and a heavy "DM", so the eye lands on "DM".
+ * Screen readers hear "OnlyDM".
  */
 export function Wordmark({ variant = 'heading', on = 'dark', style }: Props) {
   const { headlineScale } = useLayout();
@@ -22,15 +22,14 @@ export function Wordmark({ variant = 'heading', on = 'dark', style }: Props) {
   const heading = variant === 'display' || variant === 'title' || variant === 'heading';
   const fontSize = heading ? Math.round((base.fontSize ?? 17) * headlineScale) : (base.fontSize ?? 17);
   const size = heading ? { fontSize } : null;
-  const strong = on === 'dark' ? colors.text : colors.onPaper;
-  const dim = on === 'dark' ? colors.textMuted : colors.textMutedOnLight;
+  const color = on === 'dark' ? colors.text : colors.onPaper;
   return (
     <Text
-      accessibilityLabel="Deems"
+      accessibilityLabel={BRAND_NAME}
       maxFontSizeMultiplier={MAX_FONT_SCALE}
-      style={[base, size, { color: strong, fontFamily: fonts.headlineHeavy }, style]}
+      style={[base, size, { color, fontFamily: fonts.headlineHeavy }, style]}
     >
-      D<Text style={{ color: dim, fontSize: Math.round(fontSize * 0.7) }}>ee</Text>Ms
+      <Text style={{ fontFamily: fonts.headlineRegular }}>Only</Text>DM
     </Text>
   );
 }

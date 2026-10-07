@@ -1,17 +1,17 @@
 import { earlyAccessHref, site } from '@/lib/site';
 
 /**
- * Call-to-action destinations, unchanged: the App Store / Google Play listing once set,
- * the early-access email until then.
+ * Call-to-action destinations: the App Store / Google Play listing once live (see lib/site.ts),
+ * the early-access email until then. The label is "Get OnlyDM" either way.
  */
 export const primaryCta = {
   href: site.appStoreUrl || earlyAccessHref('iPhone'),
-  label: site.appStoreUrl ? 'Get DeeMs for iPhone' : 'Get early access',
+  label: 'Get OnlyDM',
 };
 
 export const androidCta = {
   href: site.playStoreUrl || earlyAccessHref('Android'),
-  label: site.playStoreUrl ? 'Also on Android' : 'On Android? Join the list',
+  label: site.playStoreUrl ? 'Get OnlyDM on Google Play' : 'On Android? Join the list',
 };
 
 export function PrimaryButton({ small }: { small?: boolean }) {

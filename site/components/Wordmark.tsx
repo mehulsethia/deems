@@ -1,14 +1,15 @@
 /**
- * "DeeMs": D, M and s carry the name; the two e's step back (smaller, in grey) so the eye
- * lands on "DMs" first and "Deems" second. Reads "Deems" to screen readers.
+ * The OnlyDM wordmark: a regular-weight "Only" and a heavy "DM", so the eye lands on "DM".
+ * Reads "OnlyDM" to screen readers.
  */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={className ? `wordmark ${className}` : 'wordmark'}>
       <span aria-hidden>
-        D<span className="wordmark-ee">ee</span>Ms
+        <span className="only">Only</span>
+        <span className="dm">DM</span>
       </span>
-      <span className="sr-only">Deems</span>
+      <span className="sr-only">OnlyDM</span>
     </span>
   );
 }

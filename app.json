@@ -1,25 +1,25 @@
 {
   "expo": {
-    "name": "DeeMs",
+    "name": "OnlyDM",
     "slug": "deems",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
-    "scheme": "deems",
+    "scheme": "onlydm",
     "userInterfaceStyle": "dark",
     "ios": {
-      "bundleIdentifier": "com.deems.app",
+      "bundleIdentifier": "com.onlydm.app",
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "DeeMs uses the camera so you can take a photo to send in a message.",
-        "NSMicrophoneUsageDescription": "DeeMs uses the microphone so you can record voice notes and video messages.",
-        "NSPhotoLibraryUsageDescription": "DeeMs lets you choose photos and videos to send in a message.",
+        "NSCameraUsageDescription": "OnlyDM uses the camera so you can take a photo to send in a message.",
+        "NSMicrophoneUsageDescription": "OnlyDM uses the microphone so you can record voice notes and video messages.",
+        "NSPhotoLibraryUsageDescription": "OnlyDM lets you choose photos and videos to send in a message.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "com.deems.app",
+      "package": "com.onlydm.app",
       "adaptiveIcon": {
         "backgroundColor": "#0E0F12",
         "foregroundImage": "./assets/icon-foreground.png"
@@ -54,8 +54,8 @@
     },
     "web": {
       "favicon": "./public/favicon-48x48.png",
-      "name": "DeeMs",
-      "shortName": "DeeMs",
+      "name": "OnlyDM",
+      "shortName": "OnlyDM",
       "backgroundColor": "#0E0F12",
       "themeColor": "#0E0F12"
     },

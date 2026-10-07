@@ -1,5 +1,5 @@
 import { HeroCompare } from './HeroCompare';
-import { PLATFORM_ORDER, PlatformLogo, platformName } from './PlatformLogo';
+import { PlatformIcons } from './PlatformIcons';
 import { Reveal } from './Reveal';
 import { androidCta, PrimaryButton } from './StoreButtons';
 import { site } from '@/lib/site';
@@ -12,14 +12,10 @@ export function Hero() {
     <section className="section s-white hero">
       <div className="wrap hero-grid">
         <Reveal className="hero-copy">
-          <span className="hero-eyebrow">
-            FOR
-            <span className="logos">
-              {PLATFORM_ORDER.map((p) => (
-                <PlatformLogo key={p} platform={p} size={20} alt={platformName(p)} />
-              ))}
-            </span>
-          </span>
+          <div className="hero-eyebrow">
+            <span aria-hidden>FOR</span>
+            <PlatformIcons label="For" size={20} />
+          </div>
           <h1 className="display">
             <span>
               Quit the <em>scroll.</em>
@@ -29,8 +25,8 @@ export function Hero() {
             </span>
           </h1>
           <p className="lede">
-            DeeMs opens Instagram, Threads and Facebook straight to your messages and your friends’ stories. No feed. No
-            Reels. No Explore.
+            <strong className="lede-lead">Only DMs, zero distractions.</strong> OnlyDM opens Instagram, Threads and Facebook
+            straight to your messages. No feed. No Reels. No Explore.
           </p>
           <ul className="bubbles" aria-label="What you get">
             {BENEFITS.map((b, i) => (

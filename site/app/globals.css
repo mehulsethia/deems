@@ -1,4 +1,4 @@
-/* DeeMs site. Black and white. The only colour on the page is the official Meta logos and the two dots in the DeeMs mark. */
+/* OnlyDM site (getonlydm.com). Black and white. Colour comes only from the official Meta logos, their hover states, and the two dots in the OnlyDM mark. */
 
 :root {
   --black: #0a0a0a;
@@ -17,7 +17,7 @@
   --font-mono: 'Inter Variable', Inter, system-ui, sans-serif;
   /* Softer rounded face for chat: SF Pro Rounded on Apple devices, Nunito elsewhere. */
   --font-chat: ui-rounded, 'SF Pro Rounded', 'Nunito Variable', Nunito, system-ui, sans-serif;
-  /* The DeeMs wordmark keeps the app's brand face. */
+  /* The OnlyDM wordmark keeps the app's brand face. */
   --font-brand: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
 
   --wrap: 1120px;
@@ -319,9 +319,11 @@ button {
   letter-spacing: -0.03em;
   color: var(--fg);
 }
-.wordmark-ee {
-  font-size: 0.7em;
-  color: var(--muted);
+.wordmark .only {
+  font-weight: 400;
+}
+.wordmark .dm {
+  font-weight: 800;
 }
 
 /* Official logos, never recoloured. Inline at cap height. */
@@ -330,6 +332,159 @@ button {
   height: 0.9em;
   width: auto;
   vertical-align: -0.08em;
+}
+
+/* ---------- Platform icons (interactive) ---------- */
+
+.social-icons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.social-icon {
+  --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  cursor: default;
+  outline-offset: 3px;
+  transition: all 0.3s var(--ease-ui);
+}
+.on-dark .social-icon {
+  background: var(--ink);
+  border-color: var(--line-dark);
+}
+.social-icon img {
+  grid-area: 1 / 1;
+  transition: all 0.3s var(--ease-ui);
+}
+.social-icon .si-hover {
+  opacity: 0;
+}
+/* Tooltip */
+.social-icon::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--black);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s var(--ease-ui);
+  z-index: 4;
+}
+.on-dark .social-icon::before {
+  background: var(--white);
+  color: var(--black);
+}
+.social-icon:hover::before,
+.social-icon:focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Instagram: signature gradient glow, lift and scale */
+.social-icon.instagram:hover,
+.social-icon.instagram:focus-visible {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-color: transparent;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 24px -6px rgba(220, 39, 67, 0.55);
+}
+.social-icon.instagram:hover .si-rest,
+.social-icon.instagram:focus-visible .si-rest {
+  opacity: 0;
+}
+.social-icon.instagram:hover .si-hover,
+.social-icon.instagram:focus-visible .si-hover {
+  opacity: 1;
+}
+
+/* Facebook: blue with an elevation bounce */
+.social-icon.facebook .si-hover {
+  display: none;
+}
+.social-icon.facebook:hover,
+.social-icon.facebook:focus-visible {
+  background: #1877f2;
+  border-color: #1877f2;
+  box-shadow: 0 10px 24px -6px rgba(24, 119, 242, 0.6);
+  animation: si-bounce 0.6s var(--ease-ui) both;
+}
+@keyframes si-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  70% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Threads: monochrome invert with a radar pulse */
+.social-icon.threads::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 2px solid var(--fg);
+  opacity: 0;
+  pointer-events: none;
+}
+.social-icon.threads:hover,
+.social-icon.threads:focus-visible {
+  background: var(--fg);
+  border-color: var(--fg);
+  transform: translateY(-2px);
+}
+.social-icon.threads:hover .si-rest,
+.social-icon.threads:focus-visible .si-rest {
+  opacity: 0;
+}
+.social-icon.threads:hover .si-hover,
+.social-icon.threads:focus-visible .si-hover {
+  opacity: 1;
+}
+.social-icon.threads:hover::after,
+.social-icon.threads:focus-visible::after {
+  animation: si-radar 1.4s var(--ease-ui) infinite;
+}
+@keyframes si-radar {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+.platforms-row {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
 }
 
 /* ---------- Nav ---------- */
@@ -416,9 +571,9 @@ button {
   align-items: center;
   gap: 10px;
 }
-.hero-eyebrow img {
-  height: 20px;
-  width: auto;
+.lede-lead {
+  color: var(--fg);
+  font-weight: 600;
 }
 .hero-note {
   font-size: 14px;
@@ -538,8 +693,8 @@ button {
   inset: 0;
   overflow: hidden;
 }
-/* The DeeMs side starts at the divider, so its avatars and names always show. */
-.compare-layer.deems {
+/* The OnlyDM side starts at the divider, so its avatars and names always show. */
+.compare-layer.onlydm {
   left: var(--pos);
   container-type: inline-size;
 }
@@ -690,7 +845,7 @@ button {
   color: var(--graphite);
 }
 
-/* DeeMs: the app's own dark chrome, chats only */
+/* OnlyDM: the app's own dark chrome, chats only */
 .app {
   position: absolute;
   inset: 0;
@@ -1732,8 +1887,13 @@ button {
     scroll-behavior: auto;
   }
   .feed-scroll,
-  .pulse {
-    animation: none;
+  .pulse,
+  .social-icon,
+  .social-icon::after {
+    animation: none !important;
+  }
+  .social-icon {
+    transform: none !important;
   }
   .calc-cards,
   .year-grid span,

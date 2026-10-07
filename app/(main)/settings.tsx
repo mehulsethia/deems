@@ -6,7 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { ChevronIcon } from '@/components/Icons';
-import { DeemsMark } from '@/components/DeemsMark';
+import { OnlyDMMark } from '@/components/OnlyDMMark';
 import { Wordmark } from '@/components/Wordmark';
 import { Screen } from '@/components/Screen';
 import { CONTACT_EMAIL, CONTACT_URL } from '@/config/links';
@@ -83,7 +83,7 @@ export default function Settings() {
   const signOut = () =>
     Alert.alert(
       'Sign out and clear data?',
-      'This signs you out of everything inside DeeMs and clears everything DeeMs stored on this device. Your subscription is not affected.',
+      'This signs you out of everything inside OnlyDM and clears everything OnlyDM stored on this device. Your subscription is not affected.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -151,7 +151,7 @@ export default function Settings() {
 
         <Section title="Privacy, terms and contact">
           <AppText variant="small" style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-            DeeMs shows each app's own website. You sign in on their page, and DeeMs never reads, stores or sends your password, cookies or
+            OnlyDM shows each app's own website. You sign in on their page, and OnlyDM never reads, stores or sends your password, cookies or
             messages. It has no analytics. The only things stored on this device are your onboarding answers and which accounts you're signed in to.
           </AppText>
           <Row label="Privacy Policy" onPress={() => openDoc('privacy')} />
@@ -161,7 +161,7 @@ export default function Settings() {
 
         <Section title="About">
           <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-            <DeemsMark size={sizes.touch} />
+            <OnlyDMMark size={sizes.touch} />
             <View style={{ gap: 2 }}>
               <Wordmark variant="heading" />
               <AppText variant="small" muted>Reply and leave.</AppText>

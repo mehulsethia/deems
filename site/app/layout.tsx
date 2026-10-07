@@ -10,9 +10,9 @@ import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `DeeMs: ${site.tagline}`, template: '%s · DeeMs' },
+  title: { default: `OnlyDM — ${site.headline}`, template: '%s · OnlyDM' },
   description: site.description,
-  applicationName: 'DeeMs',
+  applicationName: 'OnlyDM',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -23,14 +23,21 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
-    siteName: 'DeeMs',
-    title: `DeeMs: ${site.tagline}`,
+    url: site.url,
+    siteName: 'OnlyDM',
+    title: `OnlyDM — ${site.headline}`,
     description: site.description,
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'DeeMs. Reply and leave.' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: `OnlyDM. ${site.headline}` }],
   },
-  twitter: { card: 'summary_large_image', title: `DeeMs: ${site.tagline}`, description: site.description, images: ['/og.png'] },
+  twitter: {
+    card: 'summary_large_image',
+    title: `OnlyDM — ${site.headline}`,
+    description: site.description,
+    images: ['/og.png'],
+  },
 };
 
 export const viewport: Viewport = {

@@ -85,7 +85,7 @@ export default function Login() {
 
       <View style={{ borderTopWidth: 1, borderTopColor: colors.hairline, padding: spacing.md }}>
         <AppText variant="caption" muted center>
-          {meta.label}'s own page. DeeMs never reads your password.
+          {meta.label}'s own page. OnlyDM never reads your password.
         </AppText>
       </View>
     </SafeAreaView>

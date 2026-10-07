@@ -1,5 +1,5 @@
 /**
- * Deems brand tokens. The single source of truth for colour, type, shape and motion.
+ * OnlyDM brand tokens. The single source of truth for colour, type, shape and motion.
  * Dark-first. No gradients, glows, or shadows tinted with brand colours.
  * Blue and magenta never sit directly on each other as text and background.
  */
@@ -83,6 +83,7 @@ export type ColorName = keyof typeof colors;
 /** Fills for the drawn avatars in the illustration, taken from the palette only. */
 
 export const fonts = {
+  headlineRegular: 'BricolageGrotesque_400Regular',
   headline: 'BricolageGrotesque_700Bold',
   headlineHeavy: 'BricolageGrotesque_800ExtraBold',
   body: 'Geist_400Regular',

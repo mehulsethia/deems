@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { SITE_URL } from '@/config/links';
 
 /** Public SDK keys from env (EXPO_PUBLIC_*). Absent keys mean dev mode: everything unlocked. */
 const IOS_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
@@ -8,9 +9,7 @@ export const revenueCatKey: string | undefined = (Platform.OS === 'ios' ? IOS_KE
 
 const APPLE_STANDARD_EULA = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 
-/** The marketing site hosts the legal pages; explicit URLs override it. */
-const SITE_URL = (process.env.EXPO_PUBLIC_SITE_URL || '').replace(/\/+$/, '');
-
+/** The marketing site (getonlydm.com) hosts the legal pages; explicit URLs override it. */
 export const LEGAL = {
   /** Our terms (which supplement Apple's standard EULA), or the EULA itself until the site is live. */
   terms: process.env.EXPO_PUBLIC_TERMS_URL || (SITE_URL ? `${SITE_URL}/terms/` : APPLE_STANDARD_EULA),
