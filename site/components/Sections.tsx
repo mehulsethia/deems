@@ -21,7 +21,7 @@ const Dash = () => (
 
 export function SoundFamiliar() {
   return (
-    <section className="section s-black">
+    <section className="section s-black" id="problem">
       <div className="wrap">
         <Reveal className="section-head">
           <h2 className="title">
@@ -97,7 +97,7 @@ const GONE = ['Feed', 'Reels', 'Explore', 'Suggested posts'];
 
 export function WhatStays() {
   return (
-    <section className="section s-paper">
+    <section className="section s-paper" id="solution">
       <div className="wrap">
         <Reveal className="section-head">
           <h2 className="title">

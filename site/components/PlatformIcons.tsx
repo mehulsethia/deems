@@ -26,20 +26,32 @@ const ICONS = [
   },
 ] as const;
 
-export function PlatformIcons({ on = 'light', size = 22, label = 'Works with' }: { on?: 'light' | 'dark'; size?: number; label?: string }) {
+export function PlatformIcons({
+  on = 'light',
+  size = 22,
+  label = 'Works with',
+  inline = false,
+}: {
+  on?: 'light' | 'dark';
+  size?: number;
+  label?: string;
+  /** Sits inside a sentence: smaller chips, aligned to the text. */
+  inline?: boolean;
+}) {
   return (
-    <ul className={`social-icons on-${on}`} aria-label={`${label} Instagram, Threads and Facebook`}>
+    // Spans with list roles, so the row can also sit inside a sentence.
+    <span role="list" className={`social-icons on-${on}${inline ? ' inline' : ''}`} aria-label={`${label} Instagram, Threads and Facebook`.trim()}>
       {ICONS.map((icon) => {
         const w = (img: { w: number; h: number }) => Math.round((size * img.w) / img.h);
         return (
-          <li key={icon.id}>
+          <span role="listitem" key={icon.id}>
             <span className={`social-icon ${icon.id}`} tabIndex={0} role="img" aria-label={icon.name} data-tip={icon.name}>
               <Image className="si-rest" src={icon.rest[on]} alt="" width={w(icon.rest)} height={size} />
               <Image className="si-hover" src={icon.hover[on]} alt="" width={w(icon.hover)} height={size} />
             </span>
-          </li>
+          </span>
         );
       })}
-    </ul>
+    </span>
   );
 }

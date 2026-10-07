@@ -23,9 +23,10 @@ export function Nav() {
           <Wordmark />
         </Link>
         <nav className="nav-links" aria-label="Main">
-          <Link href="/#how">How it works</Link>
-          <Link href="/#privacy">Privacy</Link>
-          <Link href="/#faq">Questions</Link>
+          <Link href="/#problem">Problem</Link>
+          <Link href="/#solution">Solution</Link>
+          <Link href="/#how">How it Works</Link>
+          <Link href="/#faq">FAQ</Link>
           <PrimaryButton small />
         </nav>
       </div>

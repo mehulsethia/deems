@@ -539,7 +539,7 @@ button {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: 48px;
   width: 100%;
@@ -578,6 +578,139 @@ button {
 .hero-note {
   font-size: 14px;
   color: var(--muted);
+}
+
+/* Sub-copy with the platform icons inline */
+.hero-lede {
+  display: grid;
+  gap: 10px;
+}
+.nowrap {
+  white-space: nowrap;
+}
+.lede-no {
+  color: var(--fg);
+  font-weight: 600;
+}
+.social-icons.inline {
+  display: inline-flex;
+  vertical-align: middle;
+  gap: 6px;
+  margin: -6px 2px 0;
+}
+.social-icons.inline .social-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+/* Right column: phone, rippling rings, floating benefit badges */
+.hero-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.ripples {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: -1;
+  pointer-events: none;
+}
+.ripples::before {
+  content: '';
+  position: absolute;
+  width: 110%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
+}
+.ripples span {
+  grid-area: 1 / 1;
+  width: min(118%, 640px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #c8c8c8;
+  opacity: 0;
+  animation: ripple 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.ripples span:nth-child(2) {
+  animation-delay: 2.5s;
+}
+.ripples span:nth-child(3) {
+  animation-delay: 5s;
+}
+@keyframes ripple {
+  0% {
+    transform: scale(0.45);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+.badges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 7;
+}
+.badge {
+  position: absolute;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.3);
+  background: var(--white);
+  animation: float 6s ease-in-out infinite;
+}
+.badge.dark {
+  background: var(--black);
+}
+.hero-visual {
+  /* Same size as the phone (see .compare-wrap) so badges can sit just over its edges. */
+  --pw: calc(min(calc(100svh - 170px), 660px) * 9 / 18.4);
+  --tuck: 34px;
+}
+/* Left-side badges sit above and below the sub-copy's height so they never cover it. */
+.badge.b1,
+.badge.b5 {
+  right: calc(50% + var(--pw) / 2 - var(--tuck));
+}
+.badge.b2,
+.badge.b3,
+.badge.b4 {
+  left: calc(50% + var(--pw) / 2 - var(--tuck));
+}
+.badge.b1 {
+  top: 18%;
+}
+.badge.b2 {
+  top: 31%;
+  animation-delay: -1.2s;
+}
+.badge.b3 {
+  top: 48%;
+  animation-delay: -2.4s;
+}
+.badge.b4 {
+  top: 66%;
+  animation-delay: -3.6s;
+}
+.badge.b5 {
+  top: 76%;
+  animation-delay: -4.8s;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 /* Benefits as chat bubbles */
@@ -728,7 +861,8 @@ button {
 .compare-handle {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: clamp(22px, var(--pos), calc(100% - 22px));
+  z-index: 6;
   width: 44px;
   height: 44px;
   transform: translate(-50%, -50%);
@@ -1776,6 +1910,22 @@ button {
     --phone-h: 640px;
     width: min(100%, 340px);
   }
+  .badges {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+  }
+  .badge {
+    position: static;
+    animation: none;
+    box-shadow: none;
+  }
+  .badge:not(.dark) {
+    background: var(--paper);
+  }
   .calc-inputs {
     gap: 32px;
   }
@@ -1883,11 +2033,26 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Rings stay as still circles instead of rippling. */
+  .ripples span {
+    opacity: 0.8;
+  }
+  .ripples span:nth-child(1) {
+    transform: scale(0.6);
+  }
+  .ripples span:nth-child(2) {
+    transform: scale(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .feed-scroll,
   .pulse,
+  .ripples span,
+  .badge,
   .social-icon,
   .social-icon::after {
     animation: none !important;

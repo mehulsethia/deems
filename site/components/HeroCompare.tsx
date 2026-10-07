@@ -6,11 +6,11 @@ import { OnlyDMMark } from './OnlyDMMark';
 import { PLATFORM_ORDER, PlatformLogo, platformName, type Platform } from './PlatformLogo';
 import { Wordmark } from './Wordmark';
 
-/** Divider sweep: 20% to 80% and back, until the visitor takes over. */
-const SWEEP_MIN = 20;
-const SWEEP_MAX = 80;
+/** Divider sweep: 12% to 88% and back, until the visitor takes over. */
+const SWEEP_MIN = 12;
+const SWEEP_MAX = 88;
 const PERIOD_MS = 9000;
-const clamp = (v: number) => Math.min(96, Math.max(4, v));
+const clamp = (v: number) => Math.min(100, Math.max(0, v));
 
 /* ---------- The usual way: our own greyscale drawing of a generic feed ---------- */
 
@@ -294,34 +294,34 @@ export function HeroCompare() {
             <div className="compare-layer" style={{ clipPath: 'inset(0 calc(100% - var(--pos)) 0 0)' }} aria-hidden>
               <Feed />
             </div>
-            <div className="compare-divider" style={{ left: 'var(--pos)' }}>
-              <button
-                ref={handle}
-                type="button"
-                className="compare-handle"
-                role="slider"
-                aria-label="Compare the usual feed with the OnlyDM inbox"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={50}
-                aria-valuetext="Left: the usual way. Right: OnlyDM."
-                onKeyDown={onKeyDown}
+            <div className="compare-divider" style={{ left: 'var(--pos)' }} />
+            {/* The handle stays fully on screen at 0% and 100%; the line itself goes edge to edge. */}
+            <button
+              ref={handle}
+              type="button"
+              className="compare-handle"
+              role="slider"
+              aria-label="Compare the usual feed with the OnlyDM inbox"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={50}
+              aria-valuetext="Left: the usual way. Right: OnlyDM."
+              onKeyDown={onKeyDown}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="#0a0a0a"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
               >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="#0a0a0a"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <path d="M7 5L2 10l5 5M13 5l5 5-5 5" />
-                </svg>
-              </button>
-            </div>
+                <path d="M7 5L2 10l5 5M13 5l5 5-5 5" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
