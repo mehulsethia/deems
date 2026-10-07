@@ -1,113 +1,114 @@
+import type { FontVariant } from 'react-native';
+
 /**
  * OnlyDM brand tokens. The single source of truth for colour, type, shape and motion.
- * Dark-first. No gradients, glows, or shadows tinted with brand colours.
- * Blue and magenta never sit directly on each other as text and background.
+ * Same system as getonlydm.com: black and white, dark-first. The only colour in the app is the two dots in
+ * the OnlyDM mark and the official Meta logos. No coloured gradients, glows or tinted shadows.
  */
 
 /** Raw brand palette. Components use the semantic `colors` below, not these. */
 export const palette = {
-  // Brand
-  blue: '#1463FF',
-  blueOnDark: '#5B93FF',
-  magenta: '#E4257A',
-  magentaText: '#D81B72',
-  magentaOnDark: '#FF5C9F',
-  ink: '#0E0F12',
-  // Neutrals
-  surface: '#17191E',
-  hairline: '#2A2D34',
+  // Greyscale (matches the site)
+  black: '#0A0A0A',
+  ink: '#171717',
+  graphite: '#3D3D3D',
+  grey: '#6B6B6B',
+  silver: '#A3A3A3',
+  line: '#E5E5E5',
+  lineDark: '#262626',
+  paper: '#F5F5F5',
   white: '#FFFFFF',
-  mist: '#F1F2F5',
-  slate: '#5C6370',
-  slateOnDark: '#B4B9C2',
-  // Tints (light surfaces only)
-  blueTint: '#E6EEFF',
-  blueTintText: '#0B3FB0',
-  magentaTint: '#FCE6F0',
-  magentaTintText: '#9C0F50',
-  // The MESSAGES value on the receipt (blue text on white paper).
-  receiptKept: '#0B4FD6',
+  // The mark only: its two coloured dots and its bubble ink. Never used for UI.
+  markBlue: '#1463FF',
+  markMagenta: '#E4257A',
+  markInk: '#0E0F12',
 } as const;
 
 export const colors = {
   // Dark surfaces
-  background: palette.ink,
-  surface: palette.surface,
-  hairline: palette.hairline,
+  background: palette.black,
+  surface: palette.ink,
+  hairline: palette.lineDark,
 
   // Text on dark
   text: palette.white,
-  textMuted: palette.slateOnDark,
+  /** Secondary text on dark (silver, 8:1 on black). */
+  textMuted: palette.silver,
 
-  /** Primary action, selected state, things you keep: fills and outlines. */
-  primary: palette.blue,
-  onPrimary: palette.white,
-  /** Blue as text, links or thin lines on dark surfaces. */
-  primaryOnDark: palette.blueOnDark,
+  /** Primary action, selected state, progress, things you keep: white on black, like the site's inverted buttons. */
+  primary: palette.white,
+  onPrimary: palette.black,
+  /** White as text, links or thin lines on dark surfaces. */
+  primaryOnDark: palette.white,
 
-  /** Struck-off and removed items, highlights: fills and strikes. */
-  removed: palette.magenta,
-  /** Magenta as text or thin lines on dark surfaces. */
-  removedOnDark: palette.magentaOnDark,
-  /** Magenta carrying text on white, or under white text (the REFUNDED stamp). */
-  removedText: palette.magentaText,
+  /** Struck-off and removed items: grey strikes and fills, never coloured. */
+  removed: palette.grey,
+  /** Removed items as text or thin lines on dark surfaces. */
+  removedOnDark: palette.silver,
+  /** Solid fill carrying white text (the REFUNDED stamp), and removed text on white. */
+  removedText: palette.black,
   onRemoved: palette.white,
 
-  /** Secondary button on dark: white fill, ink label. */
+  /** Secondary button: outline only, white label. */
   inverse: palette.white,
-  onInverse: palette.ink,
+  onInverse: palette.black,
 
   // Receipt paper
   paper: palette.white,
-  onPaper: palette.ink,
-  paperKept: palette.receiptKept,
+  onPaper: palette.black,
+  paperKept: palette.black,
 
-  // Light surfaces (not used by the dark app yet; kept for completeness)
-  lightSurface: palette.mist,
-  textOnLight: palette.ink,
-  textMutedOnLight: palette.slate,
-  blueTint: palette.blueTint,
-  onBlueTint: palette.blueTintText,
-  magentaTint: palette.magentaTint,
-  onMagentaTint: palette.magentaTintText,
+  // Light surfaces (the receipt and light illustrations)
+  lightSurface: palette.paper,
+  textOnLight: palette.black,
+  textMutedOnLight: palette.grey,
 
   /** Dims content behind sheets. */
-  scrim: 'rgba(14,15,18,0.72)',
-  /** Neutral black shadow; never brand-tinted. */
+  scrim: 'rgba(10,10,10,0.72)',
+  /** Neutral black shadow. */
   shadow: '#000000',
   transparent: 'transparent',
 } as const;
 
 export type ColorName = keyof typeof colors;
 
-/** Fills for the drawn avatars in the illustration, taken from the palette only. */
-
+/**
+ * Inter for structure, with heavy weights for headlines and numbers. A rounded face (Nunito) for chat-like
+ * text. Bricolage stays only for the OnlyDM wordmark; Geist Mono only for the printed receipt.
+ */
 export const fonts = {
   headlineRegular: 'BricolageGrotesque_400Regular',
-  headline: 'BricolageGrotesque_700Bold',
-  headlineHeavy: 'BricolageGrotesque_800ExtraBold',
-  body: 'Geist_400Regular',
-  bodyMedium: 'Geist_500Medium',
-  bodySemi: 'Geist_600SemiBold',
+  /** Wordmark "DM". */
+  brandHeavy: 'BricolageGrotesque_800ExtraBold',
+  headline: 'Inter_800ExtraBold',
+  headlineHeavy: 'Inter_900Black',
+  body: 'Inter_400Regular',
+  bodyMedium: 'Inter_500Medium',
+  bodySemi: 'Inter_600SemiBold',
+  bodyBold: 'Inter_700Bold',
+  chat: 'Nunito_600SemiBold',
+  chatBold: 'Nunito_800ExtraBold',
   mono: 'GeistMono_400Regular',
   monoMedium: 'GeistMono_500Medium',
   monoBold: 'GeistMono_700Bold',
 } as const;
 
-/** Headlines: -2% tracking, line height 1.04. Mono labels: +6% tracking, caps. */
+/** Headlines: tight tracking (-4%), line height 1.05. Labels: Inter caps with +12% tracking. */
 const headline = (fontSize: number, fontFamily: string = fonts.headline) => ({
   fontFamily,
   fontSize,
-  lineHeight: Math.round(fontSize * 1.04),
-  letterSpacing: -0.02 * fontSize,
+  lineHeight: Math.round(fontSize * 1.05),
+  letterSpacing: -0.04 * fontSize,
 });
 const label = (fontSize: number) => ({
-  fontFamily: fonts.monoMedium,
+  fontFamily: fonts.bodySemi,
   fontSize,
   lineHeight: Math.round(fontSize * 1.35),
-  letterSpacing: 0.06 * fontSize,
+  letterSpacing: 0.12 * fontSize,
   textTransform: 'uppercase' as const,
 });
+
+const TABULAR: FontVariant[] = ['tabular-nums'];
 
 export const typeScale = {
   display: headline(40, fonts.headlineHeavy),
@@ -119,9 +120,12 @@ export const typeScale = {
   caption: { fontFamily: fonts.body, fontSize: 13, lineHeight: 18 },
   button: { fontFamily: fonts.bodySemi, fontSize: 17, lineHeight: 22 },
   mono: { fontFamily: fonts.mono, fontSize: 15, lineHeight: 21 },
+  /** Chat-like text: rounded, tracking left at 0 so long threads don't feel cramped. */
+  chat: { fontFamily: fonts.chat, fontSize: 16, lineHeight: 22, letterSpacing: 0 },
   receipt: { fontFamily: fonts.mono, fontSize: 13, lineHeight: 20, letterSpacing: 0.06 * 13 },
   label: label(12),
-  readout: { fontFamily: fonts.monoMedium, fontSize: 48, lineHeight: 56, letterSpacing: -0.5 },
+  /** Big numbers (time readouts): crisp, heavy, tabular. */
+  readout: { fontFamily: fonts.headlineHeavy, fontSize: 48, lineHeight: 54, letterSpacing: -1.5, fontVariant: TABULAR },
 } as const;
 
 export type TypeVariant = keyof typeof typeScale;

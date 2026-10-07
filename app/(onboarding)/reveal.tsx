@@ -64,8 +64,8 @@ export default function Reveal() {
         <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: colors.hairline }} />
         {/* Scrolls if the sheet runs out of room (landscape phones, 130% text). */}
         <ScrollView style={{ flexShrink: 1 }} contentContainerStyle={{ gap: spacing.md }} showsVerticalScrollIndicator={false}>
-          <AppText variant="title">That's everything. Nothing else is coming.</AppText>
-          <AppText muted>Feed, Reels and Explore are hidden. Messages and stories work.</AppText>
+          <AppText variant="title">Only DMs from here.</AppText>
+          <AppText muted>That's everything. Feed, Reels and Explore are hidden, and nothing else is coming. Your messages work as normal.</AppText>
         </ScrollView>
         <Button label="Keep it this way" onPress={keep} />
       </Animated.View>

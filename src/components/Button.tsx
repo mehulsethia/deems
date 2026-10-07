@@ -4,13 +4,13 @@ import { AppText } from './AppText';
 
 interface Props extends Omit<PressableProps, 'children'> {
   label: string;
-  /** primary: blue pill, white label. secondary: white pill, ink label. ghost: text only. */
+  /** primary: white pill, black label. secondary: 1px white outline, white label. ghost: text only. Same as the site. */
   variant?: 'primary' | 'secondary' | 'ghost';
 }
 
 const look = {
   primary: { bg: colors.primary, fg: 'onPrimary', border: colors.primary },
-  secondary: { bg: colors.inverse, fg: 'onInverse', border: colors.inverse },
+  secondary: { bg: colors.transparent, fg: 'text', border: colors.text },
   ghost: { bg: colors.transparent, fg: 'text', border: colors.transparent },
 } as const;
 

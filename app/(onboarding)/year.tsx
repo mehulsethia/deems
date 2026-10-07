@@ -57,7 +57,7 @@ export default function Year() {
             <AppText variant="title" accessibilityLiveRegion="polite">
               That's {b.days} full days a year. Not talking to a single person.
             </AppText>
-            <AppText variant="mono" muted>{formatDuration(b.other)} a day x 365 days</AppText>
+            <AppText variant="small" muted>{formatDuration(b.other)} a day x 365 days</AppText>
           </Animated.View>
         )}
     </Screen>

@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import Animated, { Easing, FadeIn, SlideInUp, useReducedMotion } from 'react-native-reanimated';
-import { colors, motion, radius, spacing } from '@/theme/tokens';
+import { colors, fonts, motion, radius, spacing } from '@/theme/tokens';
 import { AppText } from '../AppText';
 
 /** A generic message banner (not a copy of any OS or app). Drops in from the top after `delay`. */
@@ -31,10 +31,10 @@ export function NotificationBanner({ sender, text, delay = 600 }: { sender: stri
       </View>
       <View style={{ flex: 1, gap: 2 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <AppText variant="bodyMedium">{sender}</AppText>
+          <AppText variant="chat" style={{ fontFamily: fonts.chatBold }}>{sender}</AppText>
           <AppText variant="label" muted>now</AppText>
         </View>
-        <AppText muted>{text}</AppText>
+        <AppText variant="chat" muted>{text}</AppText>
       </View>
     </Animated.View>
   );

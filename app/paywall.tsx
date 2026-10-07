@@ -63,7 +63,7 @@ function Step({ day, text, last }: { day: string; text: string; last?: boolean }
         {!last && <View style={{ flex: 1, width: 2, backgroundColor: colors.hairline, marginTop: 2 }} />}
       </View>
       <AppText style={{ flex: 1, paddingBottom: last ? 0 : spacing.md }}>
-        <AppText variant="mono" style={{ fontFamily: fonts.monoMedium, fontSize: 17 }}>{day}</AppText> - {text}
+        <AppText variant="bodyMedium" style={{ fontFamily: fonts.bodyBold, fontVariant: ['tabular-nums'] }}>{day}</AppText> - {text}
       </AppText>
     </View>
   );
@@ -117,7 +117,7 @@ function PlanCard({
         </View>
       ) : null}
       <AppText variant="bodyMedium">{name}</AppText>
-      <AppText variant="mono" style={{ fontSize: 22, lineHeight: 28 }}>
+      <AppText variant="heading" style={{ fontVariant: ['tabular-nums'] }}>
         {yearly ? perMonth : p.priceString}
         <AppText variant="small" muted> / month</AppText>
       </AppText>

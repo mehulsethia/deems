@@ -12,7 +12,7 @@ import type { PlatformId } from '@/rules/types';
 import { PLATFORM_META } from '@/state/platformMeta';
 import { connectedPlatforms, markSignedInTo, setActivePlatform } from '@/state/platforms';
 import { readProgress } from '@/state/progress';
-import { colors, radius, sizes, spacing } from '@/theme/tokens';
+import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
 
 /** Modal sheet showing the platform's own login page. Success = the route leaves the login paths. */
 export default function Login() {
@@ -66,9 +66,9 @@ export default function Login() {
           style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 40, borderWidth: 1, borderColor: colors.hairline }}
         >
           {address.secure && <LockIcon color={colors.primaryOnDark} />}
-          <AppText variant="mono" numberOfLines={1} style={{ flex: 1, fontSize: 13 }}>
+          <AppText variant="caption" numberOfLines={1} style={{ flex: 1, fontFamily: fonts.bodyMedium }}>
             {address.host}
-            <AppText variant="mono" muted style={{ fontSize: 13 }}>{address.path}</AppText>
+            <AppText variant="caption" muted>{address.path}</AppText>
           </AppText>
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel="Reload page" hitSlop={6} onPress={() => webRef.current?.reload()} style={touch}>

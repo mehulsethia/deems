@@ -21,7 +21,7 @@
     "android": {
       "package": "com.onlydm.app",
       "adaptiveIcon": {
-        "backgroundColor": "#0E0F12",
+        "backgroundColor": "#0A0A0A",
         "foregroundImage": "./assets/icon-foreground.png"
       },
       "permissions": [
@@ -38,9 +38,9 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0E0F12",
+          "backgroundColor": "#0A0A0A",
           "dark": {
-            "backgroundColor": "#0E0F12"
+            "backgroundColor": "#0A0A0A"
           },
           "image": "./assets/splash-icon.png",
           "imageWidth": 120,
@@ -56,8 +56,8 @@
       "favicon": "./public/favicon-48x48.png",
       "name": "OnlyDM",
       "shortName": "OnlyDM",
-      "backgroundColor": "#0E0F12",
-      "themeColor": "#0E0F12"
+      "backgroundColor": "#0A0A0A",
+      "themeColor": "#0A0A0A"
     },
     "extra": {
       "router": {},

@@ -27,7 +27,7 @@ export function Wordmark({ variant = 'heading', on = 'dark', style }: Props) {
     <Text
       accessibilityLabel={BRAND_NAME}
       maxFontSizeMultiplier={MAX_FONT_SCALE}
-      style={[base, size, { color, fontFamily: fonts.headlineHeavy }, style]}
+      style={[base, size, { color, fontFamily: fonts.brandHeavy }, style]}
     >
       <Text style={{ fontFamily: fonts.headlineRegular }}>Only</Text>DM
     </Text>

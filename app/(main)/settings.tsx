@@ -164,7 +164,7 @@ export default function Settings() {
             <OnlyDMMark size={sizes.touch} />
             <View style={{ gap: 2 }}>
               <Wordmark variant="heading" />
-              <AppText variant="small" muted>Reply and leave.</AppText>
+              <AppText variant="small" muted>Only DMs, zero distractions.</AppText>
             </View>
           </View>
           <Row label="Version" detail={Constants.expoConfig?.version ?? '1.0.0'} />

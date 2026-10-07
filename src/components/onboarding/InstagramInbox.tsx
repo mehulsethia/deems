@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Text, View, type TextStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
-import { colors, fonts, motion, radius, spacing } from '@/theme/tokens';
+import { colors, motion, radius, spacing } from '@/theme/tokens';
 import { AppText } from '../AppText';
 
 /**
@@ -21,7 +21,7 @@ const IG = {
 
 const RING = ['#FEDA75', '#FA7E1E', '#D62976', '#962FBF', '#4F5BD5'];
 const SKINS = ['#F2C9A8', '#C68A62', '#8D5A3B', '#EBC1A0', '#A86E4C'];
-const BACKDROPS = ['#E7ECFF', '#FFE3EE', '#E3F5EC', '#FFF1DB', '#ECE6FF'];
+const BACKDROPS = ['#F5F5F5', '#E5E5E5', '#EDEDED', '#F0F0F0', '#E8E8E8'];
 const HAIR = ['#2B1D14', '#4A2E1C', '#111111', '#7A4A24', '#1E1A17'];
 
 export const REMOVED_TABS = ['Feed', 'Reels', 'Explore'] as const;
@@ -52,7 +52,7 @@ function IgAvatar({ size, seed, ring }: { size: number; seed: number; ring?: boo
       <Circle cx={24} cy={24} r={inner} fill={BACKDROPS[seed % BACKDROPS.length]} />
       <Path
         d={ring ? 'M13 39c1.4-6 5.6-9 11-9s9.6 3 11 9a19.5 19.5 0 01-22 0z' : 'M11 42c1.6-7.5 6.6-11 13-11s11.4 3.5 13 11a24 24 0 01-26 0z'}
-        fill={['#1463FF', '#E4257A', '#0E0F12', '#5C6370', '#0B4FD6'][seed % 5]}
+        fill={['#3D3D3D', '#6B6B6B', '#171717', '#A3A3A3', '#262626'][seed % 5]}
       />
       <Circle cx={24} cy={21} r={ring ? 6.5 : 8} fill={SKINS[seed % SKINS.length]} />
       <Path
@@ -97,7 +97,7 @@ function Struck({ label, index }: { label: string; index: number }) {
   const line = useAnimatedStyle(() => ({ transform: [{ scaleX: progress.value }] }));
   return (
     <View>
-      <AppText variant="label" tone="removedOnDark" maxFontSizeMultiplier={1} style={{ fontFamily: fonts.monoMedium }}>
+      <AppText variant="label" tone="removedOnDark" maxFontSizeMultiplier={1}>
         {label}
       </AppText>
       <Animated.View
@@ -179,7 +179,7 @@ export function InstagramInbox() {
         {REMOVED_TABS.map((label, i) => (
           <Struck key={label} label={label} index={i} />
         ))}
-        <AppText variant="label" tone="primaryOnDark" maxFontSizeMultiplier={1} style={{ fontFamily: fonts.monoMedium }}>
+        <AppText variant="label" tone="primaryOnDark" maxFontSizeMultiplier={1}>
           Messages
         </AppText>
       </View>

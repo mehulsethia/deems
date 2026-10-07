@@ -14,7 +14,7 @@ export default function WhatsLeft() {
       pane={<InstagramInbox />}
       footer={<Button label="Connect my accounts" onPress={() => router.push('/(onboarding)/trust')} />}
     >
-      <AppText variant="title">Messages. Your friends' stories. That's the whole app.</AppText>
+      <AppText variant="title">Only your DMs. That's the whole app.</AppText>
     </Screen>
   );
 }

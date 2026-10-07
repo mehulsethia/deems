@@ -16,8 +16,8 @@ export type MarkVariant = 'onDark' | 'onLight';
 /** Bubble fill and dot colours for each background. */
 export const markColors = (variant: MarkVariant) =>
   variant === 'onDark'
-    ? { bubble: palette.white, dots: [palette.blue, palette.magenta, palette.ink] as const }
-    : { bubble: palette.ink, dots: [palette.blue, palette.magenta, palette.white] as const };
+    ? { bubble: palette.white, dots: [palette.markBlue, palette.markMagenta, palette.markInk] as const }
+    : { bubble: palette.markInk, dots: [palette.markBlue, palette.markMagenta, palette.white] as const };
 
 /** Width-to-height ratio of the mark's view box. */
 export const MARK_ASPECT = 108 / 100;
