@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "OnlyDM",
-    "slug": "deems",
+    "slug": "onlydm",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -62,7 +62,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9fb52cf1-2534-4e54-b122-57d4b7a74f1c"
+        "projectId": "dc311ba9-3be8-4533-9c38-9c7951ab3256"
       }
     },
     "owner": "kaizen-ventures"
