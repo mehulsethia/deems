@@ -40,11 +40,14 @@ export default function ColdOpen() {
       progress={progressFor('cold-open')}
       footer={
         settled ? (
-          <Animated.View entering={FadeIn.duration(motion.base)}>
+          <Animated.View key="next" entering={FadeIn.duration(motion.base)}>
             <Button label="Every time." onPress={() => router.push('/(onboarding)/pick-apps')} />
           </Animated.View>
-        ) : (
+        ) : spun ? (
+          // Holds the space while the clock turns.
           <View style={{ height: sizes.button }} />
+        ) : (
+          <Button label="Check the time" onPress={() => setSpun(true)} />
         )
       }
     >
