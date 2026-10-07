@@ -81,7 +81,6 @@ export const colors = {
 export type ColorName = keyof typeof colors;
 
 /** Fills for the drawn avatars in the illustration, taken from the palette only. */
-export const avatarTints = [colors.primary, colors.removed, colors.paper, colors.textMuted] as const;
 
 export const fonts = {
   headline: 'BricolageGrotesque_700Bold',

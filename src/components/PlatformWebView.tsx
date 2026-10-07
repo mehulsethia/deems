@@ -20,6 +20,10 @@ export interface PlatformWebViewHandle {
   goBack(): void;
   /** Wipes the web view's local storage and caches. */
   clearStorage(): void;
+  /** Runs a script in the current page. */
+  inject(js: string): void;
+  /** Navigates the current page; the rules pack still decides whether it is allowed. */
+  load(url: string): void;
 }
 
 interface Props {
@@ -34,6 +38,7 @@ interface Props {
   onRoute?: (path: string) => void;
   onUrlChange?: (url: string) => void;
   onShared?: (url: string) => void;
+  onStories?: (items: unknown[]) => void;
   ref?: Ref<PlatformWebViewHandle>;
 }
 
@@ -51,11 +56,12 @@ function parseMessage(raw: string): WebMessage | null {
     const m = JSON.parse(raw);
     if (m?.type === 'route' && typeof m.path === 'string') return m;
     if (m?.type === 'shared' && typeof m.url === 'string') return m;
+    if (m?.type === 'stories' && Array.isArray(m.items)) return m;
   } catch {}
   return null;
 }
 
-export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, ref }: Props) {
+export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, onStories, ref }: Props) {
   const { isWide, webWidth } = useLayout();
   const webRef = useRef<WebView>(null);
   const canGoBack = useRef(false);
@@ -70,6 +76,8 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
     reload: () => webRef.current?.reload(),
     goBack: () => webRef.current?.goBack(),
     clearStorage: () => webRef.current?.clearCache?.(true),
+    inject: (js: string) => webRef.current?.injectJavaScript(js),
+    load: (url: string) => webRef.current?.injectJavaScript(`window.location.href = ${JSON.stringify(url)};true;`),
   }));
 
   // Android hardware back goes back in web history first.
@@ -134,9 +142,10 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
       if (__DEV__) console.log(`[deems:${effectivePack.id}] message`, e.nativeEvent.data);
       if (!msg) return;
       if (msg.type === 'route') onRoute?.(msg.path);
-      else onShared?.(msg.url);
+      else if (msg.type === 'shared') onShared?.(msg.url);
+      else onStories?.(msg.items);
     },
-    [onRoute, onShared, effectivePack.id],
+    [onRoute, onShared, onStories, effectivePack.id],
   );
 
   const onNavigationStateChange = useCallback(
