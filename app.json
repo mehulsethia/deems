@@ -58,6 +58,13 @@
       "shortName": "DeeMs",
       "backgroundColor": "#0E0F12",
       "themeColor": "#0E0F12"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9fb52cf1-2534-4e54-b122-57d4b7a74f1c"
+      }
+    },
+    "owner": "kaizen-ventures"
   }
 }
