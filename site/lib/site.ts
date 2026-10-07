@@ -25,9 +25,9 @@ export const site = {
   appStoreUrl: appStoreId ? `https://apps.apple.com/app/onlydm/id${appStoreId}` : '',
   playStoreUrl: playLive ? `https://play.google.com/store/apps/details?id=${APP_ID}` : '',
   /** Support and legal questions. */
-  contactEmail: 'support@getonlydm.com',
+  contactEmail: 'sethiamehul14@gmail.com',
   /** Early-access sign-ups before launch. */
-  earlyAccessEmail: 'hello@getonlydm.com',
+  earlyAccessEmail: 'sethiamehul14@gmail.com',
   /** Must match the free trial configured in App Store Connect / Google Play. */
   trialDays: 7,
   /** The reminder is scheduled this many days before billing starts (see the app's trial reminder). */

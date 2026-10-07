@@ -19,7 +19,7 @@ Set these as environment variables on your host (or in `site/.env.local`):
 | Variable | What it does |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Optional. Defaults to `https://getonlydm.com` (share previews, canonical link). |
-| `NEXT_PUBLIC_APP_STORE_ID` | The numeric App Store ID. Once set, "Get OnlyDM" and the QR go to `https://apps.apple.com/app/onlydm/id<ID>`. Until then they open an early-access email to hello@getonlydm.com. |
+| `NEXT_PUBLIC_APP_STORE_ID` | The numeric App Store ID. Once set, "Get OnlyDM" and the QR go to `https://apps.apple.com/app/onlydm/id<ID>`. Until then they open an early-access email to sethiamehul14@gmail.com. |
 | `NEXT_PUBLIC_PLAY_STORE_LIVE` | Set to `true` once the Android app is on Google Play. The Android link then goes to `https://play.google.com/store/apps/details?id=com.onlydm.app`. |
 
 Then check `lib/site.ts`:

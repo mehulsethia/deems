@@ -5,10 +5,10 @@ import { androidCta, PrimaryButton } from './StoreButtons';
 import { site } from '@/lib/site';
 
 /** The main benefits, as chat bubbles floating around the phone. */
-const BENEFITS = [
+const BENEFITS: { text: string; pos: string }[] = [
   { text: 'Opens on your messages', pos: 'b1' },
   { text: 'No feed, Reels or Explore', pos: 'b2' },
-  { text: 'All three apps in one place', pos: 'b3', dark: true },
+  { text: 'All three apps in one place', pos: 'b3' },
   { text: 'Sign in on their own page', pos: 'b4' },
   { text: 'Nothing stored on our servers', pos: 'b5' },
 ];
@@ -38,8 +38,21 @@ export function Hero() {
           </div>
           <div className="cta-row">
             <PrimaryButton />
-            <a className="btn btn-secondary" href="#how">
+            <a className="link-arrow" href="#how">
               See how it works
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <path d="M12 5v14M6 13l6 6 6-6" />
+              </svg>
             </a>
           </div>
           <p className="hero-note">
@@ -58,7 +71,7 @@ export function Hero() {
           <HeroCompare />
           <ul className="badges" aria-label="What you get">
             {BENEFITS.map((b) => (
-              <li key={b.text} className={`bubble badge ${b.pos}${b.dark ? ' dark' : ''}`}>
+              <li key={b.text} className={`bubble badge ${b.pos}`}>
                 {b.text}
               </li>
             ))}

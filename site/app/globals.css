@@ -296,6 +296,23 @@ button {
   font-size: 14px;
 }
 
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 12px;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--fg);
+  text-decoration: none;
+}
+.link-arrow svg {
+  transition: transform 0.25s var(--ease);
+}
+.link-arrow:hover svg {
+  transform: translateY(3px);
+}
 .cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -669,9 +686,6 @@ button {
   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.3);
   background: var(--white);
   animation: float 6s ease-in-out infinite;
-}
-.badge.dark {
-  background: var(--black);
 }
 .hero-visual {
   /* Same size as the phone (see .compare-wrap) so badges can sit just over its edges. */
@@ -1923,8 +1937,8 @@ button {
     animation: none;
     box-shadow: none;
   }
-  .badge:not(.dark) {
-    background: var(--paper);
+  .badge {
+    background: var(--white);
   }
   .calc-inputs {
     gap: 32px;
