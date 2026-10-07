@@ -1,7 +1,8 @@
 import { Faq } from '@/components/Faq';
 import { Hero } from '@/components/Hero';
-import { Pricing } from '@/components/Pricing';
+import { GetApp } from '@/components/GetApp';
 import { Reveal } from '@/components/Reveal';
+import { YearsLost } from '@/components/YearsLost';
 import { Closing, Founder, HowItWorks, Privacy, Proof, SoundFamiliar, TriedQuitting, WhatStays } from '@/components/Sections';
 import { contactHref, site } from '@/lib/site';
 
@@ -24,7 +25,7 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: `$3.99 a month, or $14.99 a year (₹299 or ₹999 in India), billed by the App Store or Google Play in your local currency. Yearly saves 69% (72% in India) and starts with ${site.trialDays} days free; we remind you ${site.reminderDaysBefore} days before billing starts. Cancel any time in your store settings.`,
+    a: `You see the price in the app before you subscribe, in your local currency, billed by the App Store or Google Play. The yearly plan starts with ${site.trialDays} days free, and we remind you ${site.reminderDaysBefore} days before billing starts. Cancel any time in your store settings.`,
   },
   {
     q: 'Is it on Android?',
@@ -37,16 +38,26 @@ export default function Home() {
     <>
       <Hero />
       <SoundFamiliar />
+
+      <section className="section s-paper" id="years">
+        <div className="wrap">
+          <Reveal className="section-head">
+            <h2 className="title">
+              Years of your life <em>lost</em> to scrolling.
+            </h2>
+            <p className="lede">Move the sliders. See where the time goes.</p>
+          </Reveal>
+          <Reveal>
+            <YearsLost />
+          </Reveal>
+        </div>
+      </section>
       <TriedQuitting />
       <WhatStays />
       <HowItWorks />
       <Privacy />
 
-      <section className="section s-white" id="pricing">
-        <Reveal className="wrap">
-          <Pricing />
-        </Reveal>
-      </section>
+      <GetApp />
 
       <Proof />
       <Founder />

@@ -137,10 +137,10 @@ export function WhatStays() {
 
 /* ---------- How it works (white) ---------- */
 
-function MiniPhone({ children }: { children: React.ReactNode }) {
+function MiniPhone({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
     <div className="mini" aria-hidden>
-      <div className="mini-screen">{children}</div>
+      <div className={`mini-screen${dark ? ' dark' : ''}`}>{children}</div>
     </div>
   );
 }
@@ -186,7 +186,7 @@ export function HowItWorks() {
             <p>You sign in on Instagram’s, Threads’ or Facebook’s own page, inside DeeMs.</p>
           </Reveal>
           <Reveal className="step" delay={0.16}>
-            <MiniPhone>
+            <MiniPhone dark>
               {[
                 { n: 'Maya', m: 'you free sat?', p: 'instagram' as const },
                 { n: 'Mum', m: 'call me when you’re free', p: 'facebook' as const },
@@ -194,7 +194,7 @@ export function HowItWorks() {
               ].map((c, i) => (
                 <div className="chat" key={c.n}>
                   <span className="chat-av">
-                    <span className="avatar" style={{ width: 38, height: 38, fontSize: 14, background: ['#171717', '#3d3d3d', '#6b6b6b'][i] }}>
+                    <span className="avatar" style={{ width: 38, height: 38, fontSize: 14, background: ['#3d3d3d', '#262626', '#6b6b6b'][i] }}>
                       {c.n[0]}
                     </span>
                     <span className="chat-badge">

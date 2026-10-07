@@ -2,11 +2,13 @@
 
 import { useReducedMotion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
-import { PlatformLogo, type Platform } from './PlatformLogo';
+import { DeemsMark } from './DeemsMark';
+import { PLATFORM_ORDER, PlatformLogo, platformName, type Platform } from './PlatformLogo';
+import { Wordmark } from './Wordmark';
 
-/** Divider sweep: 15% to 85% and back, until the visitor takes over. */
-const SWEEP_MIN = 15;
-const SWEEP_MAX = 85;
+/** Divider sweep: 20% to 80% and back, until the visitor takes over. */
+const SWEEP_MIN = 20;
+const SWEEP_MAX = 80;
 const PERIOD_MS = 9000;
 const clamp = (v: number) => Math.min(96, Math.max(4, v));
 
@@ -117,75 +119,80 @@ function Feed() {
 
 /* ---------- DeeMs: calm inbox, invented people, drawn initials ---------- */
 
-const GREYS = ['#171717', '#3d3d3d', '#6b6b6b', '#0a0a0a', '#3d3d3d'];
+const GREYS = ['#3d3d3d', '#262626', '#6b6b6b', '#3d3d3d', '#262626'];
 
-function Initials({ name, size, shade }: { name: string; size: number; shade: number }) {
+export function Initials({ name, size, shade }: { name: string; size: number; shade: number }) {
   return (
-    <span
-      className="avatar"
-      style={{
-        width: size,
-        height: size,
-        background: GREYS[shade % GREYS.length],
-        fontSize: size * 0.38,
-      }}
-    >
+    <span className="avatar" style={{ width: size, height: size, background: GREYS[shade % GREYS.length], fontSize: size * 0.4 }}>
       {name[0]}
     </span>
   );
 }
 
-const STORIES = ['Mum', 'Maya', 'Sam', 'Priya', 'Jo'];
-
-const CHATS: { name: string; msg: string; time: string; platform: Platform }[] = [
-  {
-    name: 'Mum',
-    msg: 'call me when you’re free',
-    time: '2m',
-    platform: 'facebook',
-  },
-  { name: 'Maya', msg: 'you free sat?', time: '9m', platform: 'instagram' },
-  {
-    name: 'Family group',
-    msg: 'Dad sent a photo',
-    time: '1h',
-    platform: 'facebook',
-  },
+const CHATS: { name: string; msg: string; time: string; platform: Platform; unread?: boolean }[] = [
+  { name: 'Mum', msg: 'call me when you’re free', time: '2m', platform: 'facebook', unread: true },
+  { name: 'Maya', msg: 'you free sat?', time: '9m', platform: 'instagram', unread: true },
+  { name: 'Family group', msg: 'Dad sent a photo', time: '1h', platform: 'facebook' },
   { name: 'Sam', msg: 'voice message 0:14', time: '3h', platform: 'threads' },
   { name: 'Priya', msg: 'haha okay deal', time: '1d', platform: 'instagram' },
+  { name: 'Jo', msg: 'see you there', time: '2d', platform: 'instagram' },
 ];
 
-function Inbox() {
+/** The DeeMs app, as it looks: dark chrome, platform tabs, chats. Nothing else. */
+function App() {
   return (
-    <div className="inbox">
-      <div className="inbox-title">Messages</div>
-      <div className="inbox-stories">
-        {STORIES.map((n, i) => (
-          <span className="story" key={n}>
-            <span className="story-ring">
-              <Initials name={n} size={40} shade={i + 1} />
-            </span>
-            {n}
+    <div className="app">
+      <div className="app-bar">
+        <span className="brand">
+          <DeemsMark size={20} on="dark" />
+          <Wordmark />
+        </span>
+        <span className="settings">Settings</span>
+      </div>
+      <div className="app-tabs">
+        {PLATFORM_ORDER.map((p, i) => (
+          <span className={`app-tab${i === 0 ? ' on' : ''}`} key={p}>
+            <PlatformLogo platform={p} size={14} on={i === 0 ? 'light' : 'dark'} />
+            {platformName(p)}
           </span>
         ))}
       </div>
-      {CHATS.map((c, i) => (
-        <div className="chat" key={c.name}>
-          <span className="chat-av">
-            <Initials name={c.name} size={46} shade={i} />
-            <span className="chat-badge">
-              <PlatformLogo platform={c.platform} size={14} />
+      <div className="chats">
+        {CHATS.map((c, i) => (
+          <div className={`chat${c.unread ? ' unread' : ''}`} key={c.name}>
+            <span className="chat-av">
+              <Initials name={c.name} size={44} shade={i} />
+              <span className="chat-badge">
+                <PlatformLogo platform={c.platform} size={13} />
+              </span>
             </span>
-          </span>
-          <span className="chat-body">
-            <span className="chat-name">
-              {c.name}
-              <time>{c.time}</time>
+            <span className="chat-body">
+              <span className="chat-name">
+                <span className="n">{c.name}</span>
+                <time>{c.time}</time>
+              </span>
+              <span className="chat-msg">{c.msg}</span>
             </span>
-            <span className="chat-msg">{c.msg}</span>
-          </span>
-        </div>
-      ))}
+            {c.unread ? <span className="dot-unread" /> : null}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StatusBar() {
+  return (
+    <div className="statusbar" aria-hidden>
+      <span>9:41</span>
+      <svg width="54" height="12" viewBox="0 0 54 12" fill="currentColor">
+        <rect x="0" y="8" width="3" height="4" rx="1" />
+        <rect x="5" y="5" width="3" height="7" rx="1" />
+        <rect x="10" y="2" width="3" height="10" rx="1" />
+        <rect x="27" y="1" width="22" height="10" rx="3" fill="none" stroke="currentColor" />
+        <rect x="29" y="3" width="15" height="6" rx="1.5" />
+        <rect x="50" y="4" width="2" height="4" rx="1" />
+      </svg>
     </div>
   );
 }
@@ -271,6 +278,7 @@ export function HeroCompare() {
       <div className="phone">
         <div className="phone-screen">
           <span className="phone-notch" aria-hidden />
+          <StatusBar />
           <div
             ref={root}
             className="compare"
@@ -281,7 +289,7 @@ export function HeroCompare() {
             onPointerCancel={stop}
           >
             <div className="compare-layer deems" aria-hidden>
-              <Inbox />
+              <App />
             </div>
             <div className="compare-layer" style={{ clipPath: 'inset(0 calc(100% - var(--pos)) 0 0)' }} aria-hidden>
               <Feed />

@@ -11,10 +11,14 @@
   --paper: #f5f5f5;
   --white: #ffffff;
 
-  --font-headline: 'Bricolage Grotesque Variable', var(--font-geist-sans), system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-body: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Inter for everything structural; crisp heavy weights for numbers and metrics. */
+  --font-headline: 'Inter Variable', Inter, system-ui, sans-serif;
+  --font-body: 'Inter Variable', Inter, system-ui, sans-serif;
+  --font-mono: 'Inter Variable', Inter, system-ui, sans-serif;
+  /* Softer rounded face for chat: SF Pro Rounded on Apple devices, Nunito elsewhere. */
+  --font-chat: ui-rounded, 'SF Pro Rounded', 'Nunito Variable', Nunito, system-ui, sans-serif;
+  /* The DeeMs wordmark keeps the app's brand face. */
+  --font-brand: 'Bricolage Grotesque Variable', 'Inter Variable', system-ui, sans-serif;
 
   --wrap: 1120px;
   --gutter: 24px;
@@ -50,6 +54,7 @@ body {
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.55;
+  font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -177,8 +182,8 @@ button {
 .title {
   font-family: var(--font-headline);
   font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  letter-spacing: -0.045em;
+  line-height: 1;
   text-wrap: balance;
 }
 
@@ -190,14 +195,11 @@ button {
   font-size: clamp(36px, 5.2vw, 68px);
 }
 
-/* Emphasis words: Instrument Serif Italic, same size */
+/* Emphasis words: same face and size, stepped back to the secondary tone */
 .display em,
-.title em,
-.serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+.title em {
+  font-style: normal;
+  color: var(--muted);
 }
 
 .lede {
@@ -211,7 +213,8 @@ button {
 .label {
   font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -310,7 +313,7 @@ button {
 }
 
 .wordmark {
-  font-family: var(--font-headline);
+  font-family: var(--font-brand);
   font-weight: 800;
   font-size: 22px;
   letter-spacing: -0.03em;
@@ -370,32 +373,41 @@ button {
   text-underline-offset: 4px;
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero (fits one screen on desktop) ---------- */
 
 .hero {
   min-height: 100vh;
   min-height: 100svh;
   display: flex;
   align-items: center;
-  padding: 120px 0 96px;
+  padding: 88px 0 32px;
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   align-items: center;
-  gap: 64px;
+  gap: 48px;
+  width: 100%;
 }
 .hero-copy {
   display: grid;
-  gap: 28px;
+  gap: clamp(18px, 2.6vh, 28px);
   justify-items: start;
+}
+.hero .display {
+  font-size: clamp(40px, min(5.4vw, 8.6vh), 84px);
+  line-height: 1.02;
+}
+.hero .display span {
+  display: block;
+  white-space: nowrap;
 }
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: var(--black);
 }
@@ -413,38 +425,103 @@ button {
   color: var(--muted);
 }
 
+/* Benefits as chat bubbles */
+.bubbles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 34em;
+}
+.bubble {
+  font-family: var(--font-chat);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  padding: 9px 15px;
+  border-radius: 20px 20px 20px 6px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--black);
+  white-space: nowrap;
+}
+.bubble.dark {
+  background: var(--black);
+  border-color: var(--black);
+  color: var(--white);
+  border-radius: 20px 20px 6px 20px;
+}
+
 /* ---------- Phone ---------- */
 
+.compare-wrap {
+  --phone-h: min(calc(100svh - 170px), 660px);
+  width: calc(var(--phone-h) * 9 / 18.4);
+  max-width: 100%;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+.compare-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--black);
+  padding: 0 6px;
+}
 .phone {
   position: relative;
-  width: min(100%, 360px);
-  aspect-ratio: 9 / 19;
-  margin: 0 auto;
-  padding: 12px;
-  border-radius: 52px;
+  width: 100%;
+  aspect-ratio: 9 / 18.4;
+  padding: 10px;
+  border-radius: 50px;
   background: var(--black);
   box-shadow:
-    0 40px 80px -30px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(0, 0, 0, 0.06);
+    0 50px 90px -40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 2px #2a2a2a;
 }
 .phone-screen {
   position: relative;
   height: 100%;
   border-radius: 40px;
   overflow: hidden;
-  background: var(--white);
-  color: var(--black);
+  background: var(--black);
+  color: var(--white);
+  container-type: inline-size;
 }
 .phone-notch {
   position: absolute;
-  top: 10px;
+  top: 9px;
   left: 50%;
   transform: translateX(-50%);
-  width: 32%;
-  height: 26px;
+  width: 31%;
+  height: 25px;
   border-radius: 999px;
-  background: var(--black);
+  background: #000;
   z-index: 6;
+}
+.statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 5;
+  pointer-events: none;
+  color: var(--white);
+  mix-blend-mode: difference;
 }
 
 /* Compare slider */
@@ -464,22 +541,24 @@ button {
 /* The DeeMs side starts at the divider, so its avatars and names always show. */
 .compare-layer.deems {
   left: var(--pos);
+  container-type: inline-size;
 }
-.compare-wrap {
-  width: min(100%, 360px);
-  margin: 0 auto;
-  display: grid;
-  gap: 14px;
+.app-bar .brand svg {
+  flex: none;
 }
-.compare-labels {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--black);
-  padding: 0 6px;
+.chat-name .n {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-name time {
+  flex: none;
+}
+@container (max-width: 210px) {
+  .app-bar .settings,
+  .chat-name time {
+    display: none;
+  }
 }
 .compare-divider {
   position: absolute;
@@ -487,7 +566,8 @@ button {
   bottom: 0;
   width: 2px;
   margin-left: -1px;
-  background: var(--black);
+  background: var(--white);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
   z-index: 5;
 }
 .compare-handle {
@@ -499,7 +579,8 @@ button {
   transform: translate(-50%, -50%);
   border-radius: 999px;
   background: var(--white);
-  border: 2px solid var(--black);
+  border: 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   display: grid;
   place-items: center;
   cursor: grab;
@@ -518,12 +599,13 @@ button {
   position: absolute;
   inset: 0;
   background: var(--white);
-  filter: blur(0.7px) grayscale(1);
+  color: var(--black);
+  filter: blur(0.6px) grayscale(1);
 }
 .feed-scroll {
-  padding: 50px 14px 0;
+  padding: 50px 12px 0;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   animation: feed-drift 38s linear infinite;
 }
 @keyframes feed-drift {
@@ -539,8 +621,8 @@ button {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 58px;
-  padding: 0 18px 8px;
+  height: 54px;
+  padding: 0 16px 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -558,8 +640,8 @@ button {
   gap: 8px;
 }
 .f-dot {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
   background: #cfcfcf;
 }
@@ -580,8 +662,8 @@ button {
   place-items: center;
 }
 .f-ad {
-  font-family: var(--font-mono);
   font-size: 9px;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--graphite);
@@ -595,7 +677,7 @@ button {
   gap: 8px;
 }
 .f-card {
-  height: 84px;
+  height: 80px;
   border-radius: 10px;
   background: linear-gradient(180deg, #e3e3e3, #c4c4c4);
 }
@@ -608,73 +690,106 @@ button {
   color: var(--graphite);
 }
 
-/* DeeMs: calm and sharp */
-.inbox {
+/* DeeMs: the app's own dark chrome, chats only */
+.app {
   position: absolute;
   inset: 0;
-  background: var(--white);
-  padding: 52px 16px 0;
+  background: var(--black);
+  color: var(--white);
+  padding: 50px 0 0;
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 12px;
 }
-.inbox-title {
-  white-space: nowrap;
-  font-family: var(--font-headline);
-  font-weight: 800;
-  font-size: 24px;
-  letter-spacing: -0.03em;
-}
-.inbox-stories {
+.app-bar {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 16px 0;
+  white-space: nowrap;
+}
+.app-bar .wordmark {
+  font-size: 20px;
+  --fg: var(--white);
+  --muted: var(--silver);
+}
+.app-bar .settings {
+  font-size: 13px;
+  color: var(--silver);
+}
+.app-tabs {
+  display: flex;
+  gap: 6px;
   overflow: hidden;
+  padding: 0 18px 6px;
+  border-bottom: 1px solid var(--line-dark);
 }
-.story {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  font-size: 10px;
-  color: var(--grey);
-}
-.story-ring {
-  padding: 2px;
+.app-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 11px;
   border-radius: 999px;
-  border: 2px solid var(--black);
+  border: 1px solid var(--line-dark);
+  color: var(--silver);
+  white-space: nowrap;
 }
-.avatar {
+.app-tab.on {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+.app-tab img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.chats {
   display: grid;
-  place-items: center;
-  border-radius: 999px;
-  font-family: var(--font-headline);
-  font-weight: 700;
-  color: var(--white);
+  gap: 2px;
+  padding: 0 10px;
 }
 .chat {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 9px 8px;
+  border-radius: 16px;
+}
+.chat.unread {
+  background: var(--ink);
 }
 .chat-av {
   position: relative;
   flex: none;
 }
+.avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-family: var(--font-chat);
+  font-weight: 800;
+  color: var(--white);
+}
 .chat-badge {
   position: absolute;
   right: -3px;
   bottom: -3px;
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   border-radius: 999px;
   background: var(--white);
-  border: 2px solid var(--white);
+  border: 2px solid var(--black);
   display: grid;
   place-items: center;
   overflow: hidden;
 }
 .chat-badge img {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   object-fit: contain;
 }
 .chat-body {
@@ -682,10 +797,12 @@ button {
   flex: 1;
   display: grid;
   gap: 1px;
+  font-family: var(--font-chat);
+  letter-spacing: 0.005em;
 }
 .chat-name {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   display: flex;
@@ -693,27 +810,39 @@ button {
   gap: 8px;
 }
 .chat-name time {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 400;
-  color: var(--grey);
+  font-weight: 500;
+  color: var(--silver);
+  font-variant-numeric: tabular-nums;
 }
 .chat-msg {
-  font-size: 13px;
-  color: var(--grey);
+  font-size: 13.5px;
+  color: var(--silver);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.chat.unread .chat-msg {
+  color: var(--white);
+  font-weight: 600;
+}
+.dot-unread {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--white);
+  flex: none;
 }
 
 /* ---------- Sound familiar ---------- */
 
 .quote {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(30px, 4.2vw, 56px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-family: var(--font-chat);
+  font-weight: 700;
+  font-size: clamp(28px, 3.8vw, 50px);
+  line-height: 1.15;
+  letter-spacing: 0;
   color: var(--white);
   margin: 0 0 56px;
   max-width: 18em;
@@ -970,18 +1099,8 @@ button {
   color: var(--muted);
 }
 
-/* ---------- Pricing ---------- */
+/* ---------- Trial timeline ---------- */
 
-.pricing {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 64px;
-  align-items: start;
-}
-.pricing-copy {
-  display: grid;
-  gap: 32px;
-}
 .timeline {
   list-style: none;
   margin: 0;
@@ -1009,81 +1128,6 @@ button {
   text-transform: uppercase;
   padding-top: 4px;
 }
-.plans-wrap {
-  display: grid;
-  gap: 20px;
-  justify-items: stretch;
-}
-.plans {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.plan {
-  position: relative;
-  display: grid;
-  gap: 6px;
-  text-align: left;
-  padding: 28px 20px 22px;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--white);
-  cursor: pointer;
-}
-.plan.on {
-  border: 2px solid var(--black);
-  padding: 27px 19px 21px;
-}
-.plan-pill {
-  position: absolute;
-  top: -12px;
-  left: 18px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  background: var(--black);
-  color: var(--white);
-  border-radius: 99px;
-  padding: 4px 10px;
-}
-.plan-name {
-  font-weight: 600;
-}
-.plan-price {
-  font-family: var(--font-headline);
-  font-weight: 800;
-  font-size: clamp(30px, 3.4vw, 40px);
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  overflow-wrap: anywhere;
-}
-.plan-price small {
-  display: inline-block;
-  white-space: nowrap;
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 15px;
-  letter-spacing: 0;
-  color: var(--grey);
-}
-.plan-sub {
-  font-size: 14px;
-  color: var(--grey);
-}
-.plan-save {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-top: 6px;
-}
-.saving {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-}
 .tick {
   display: grid;
   place-items: center;
@@ -1092,6 +1136,287 @@ button {
   border-radius: 99px;
   background: var(--fg);
   color: var(--bg);
+}
+
+/* ---------- Years lost calculator ---------- */
+
+.calc {
+  display: grid;
+  gap: 16px;
+}
+.calc-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+  padding: 36px 40px 28px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+}
+.calc-field {
+  display: grid;
+  gap: 18px;
+}
+.calc-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.calc-top label {
+  font-size: 15px;
+  color: var(--grey);
+}
+.calc-readout {
+  font-weight: 800;
+  font-size: clamp(20px, 2vw, 26px);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.calc-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--grey);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Range: black fill, grey track, black thumb */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  color: var(--black);
+  border: 0;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+}
+.range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(to right, var(--black) var(--fill), var(--line) var(--fill));
+}
+.range::-moz-range-track {
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(to right, var(--black) var(--fill), var(--line) var(--fill));
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -9px;
+  border-radius: 99px;
+  background: var(--black);
+  border: 4px solid var(--white);
+  box-shadow: 0 0 0 1px var(--black), 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+.range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 99px;
+  background: var(--black);
+  border: 4px solid var(--white);
+  box-shadow: 0 0 0 1px var(--black), 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+.range:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: 6px;
+}
+
+.calc-results {
+  position: relative;
+}
+.calc-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  transition: filter 0.6s var(--ease), opacity 0.6s var(--ease);
+}
+.calc-results.locked .calc-cards {
+  filter: blur(14px);
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+}
+.calc-card {
+  border-radius: 28px;
+  padding: 36px 40px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+.calc-card.dark {
+  background: var(--black);
+  border-color: var(--black);
+  color: var(--white);
+  --muted: var(--silver);
+  --fg: var(--white);
+  --bg: var(--black);
+}
+.calc-kicker {
+  font-size: clamp(17px, 1.6vw, 20px);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.calc-card.dark .calc-kicker {
+  color: #d4d4d4;
+}
+.calc-big {
+  font-weight: 900;
+  font-size: clamp(72px, 9vw, 128px);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.calc-big small {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-left: 12px;
+}
+.year-grid {
+  margin: 20px 0 8px;
+  display: grid;
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  gap: 4px;
+}
+.year-grid span {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--line);
+  transition: background-color 0.25s var(--ease);
+}
+.year-grid span.on {
+  background: var(--black);
+}
+.calc-pill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 26px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  background: var(--black);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% {
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+}
+.info {
+  position: relative;
+  display: inline-flex;
+}
+.info-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 99px;
+  border: 1.5px solid currentColor;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  padding: 0;
+}
+.info-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  width: 240px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--black);
+  font-size: 13px;
+  line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  z-index: 3;
+}
+.info:hover .info-tip,
+.info-btn:focus-visible + .info-tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---------- Get the app ---------- */
+
+.getapp {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 64px;
+  align-items: center;
+}
+.getapp-copy {
+  display: grid;
+  gap: 28px;
+  max-width: 560px;
+}
+.qr-card {
+  display: grid;
+  width: 280px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--white);
+  text-decoration: none;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s var(--ease);
+}
+.qr-card:hover {
+  transform: translateY(-2px);
+}
+.qr {
+  display: block;
+  padding: 28px;
+}
+.qr svg {
+  width: 100%;
+  height: auto;
+}
+.qr-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: var(--black);
+  color: var(--white);
+  font-weight: 700;
+}
+
+/* Mini phone with the app's dark chrome */
+.mini-screen.dark {
+  background: var(--black);
+  color: var(--white);
+  align-content: center;
 }
 
 /* ---------- Proof and founder (hidden until content exists) ---------- */
@@ -1111,8 +1436,7 @@ button {
 }
 .proof blockquote {
   margin: 0;
-  font-family: var(--font-serif);
-  font-style: italic;
+  font-family: var(--font-chat);
   font-size: 24px;
   line-height: 1.25;
 }
@@ -1126,8 +1450,8 @@ button {
   line-height: 1.5;
 }
 .signature {
-  font-family: var(--font-serif);
-  font-style: italic;
+  font-family: var(--font-chat);
+  font-weight: 700;
   font-size: 30px;
 }
 
@@ -1281,8 +1605,27 @@ button {
 
 @media (max-width: 960px) {
   .hero-grid,
-  .pricing {
+  .getapp,
+  .calc-inputs,
+  .calc-cards {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .hero {
+    min-height: 0;
+    padding: 112px 0 72px;
+  }
+  .hero .display {
+    font-size: clamp(38px, 9.4vw, 72px);
+  }
+  .compare-wrap {
+    --phone-h: 640px;
+    width: min(100%, 340px);
+  }
+  .calc-inputs {
+    gap: 32px;
+  }
+  .getapp {
+    justify-items: start;
   }
   .hero-grid {
     gap: 56px;
@@ -1309,15 +1652,42 @@ button {
     display: none;
   }
   .hero {
-    padding: 104px 0 72px;
-    min-height: 0;
+    padding: 100px 0 64px;
+  }
+  .hero .display span {
+    white-space: normal;
   }
   .compare-wrap {
     width: 100%;
-    max-width: 400px;
+    max-width: 360px;
   }
-  .phone {
-    width: 100%;
+  .bubble {
+    font-size: 13px;
+    padding: 7px 11px;
+  }
+  .bubbles {
+    gap: 6px;
+  }
+  .year-grid span {
+    border-radius: 1.5px;
+  }
+  /* A QR code can't be scanned from the phone showing it; the button above does the same job. */
+  .getapp > :last-child {
+    display: none;
+  }
+  .calc-inputs,
+  .calc-card {
+    padding: 28px 22px;
+  }
+  .year-grid {
+    gap: 2px;
+  }
+  .calc-pill {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+  .qr-card {
+    width: min(100%, 280px);
   }
   .duo,
   .stays,
@@ -1351,14 +1721,9 @@ button {
   .cta-row .btn {
     flex: 1 1 100%;
   }
-  .plan {
-    padding: 26px 14px 18px;
-  }
-  .plan.on {
-    padding: 25px 13px 17px;
-  }
-  .plan-price {
-    font-size: 26px;
+  .calc-top {
+    flex-direction: column;
+    gap: 4px;
   }
 }
 
@@ -1366,9 +1731,12 @@ button {
   html {
     scroll-behavior: auto;
   }
-  .feed-scroll {
+  .feed-scroll,
+  .pulse {
     animation: none;
   }
+  .calc-cards,
+  .year-grid span,
   .btn,
   .faq-plus {
     transition: none;
