@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Logo } from '@/components/Logo';
 import { PlatformWebView, type PlatformWebViewHandle } from '@/components/PlatformWebView';
-import { StoriesBackBar, StoriesTray } from '@/components/StoriesTray';
+import { StoriesBackBar } from '@/components/StoriesBackBar';
 import { isAllowedPath, isLoginPath, pathMatches } from '@/rules/matching';
 import { getPack } from '@/rules/store';
 import type { PlatformId } from '@/rules/types';
@@ -13,7 +13,7 @@ import { PICK_ORDER, platformLabel } from '@/state/platformMeta';
 import { connectedPlatforms, getActivePlatform, markSignedInTo, setActivePlatform } from '@/state/platforms';
 import { readProgress } from '@/state/progress';
 import { onWebEvent } from '@/state/webEvents';
-import { parseStories, STORIES_SCRIPT, storyUrl, type StoryItem } from '@/stories/instagram';
+import { STORY_RINGS_SCRIPT } from '@/stories/instagram';
 import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
 
 /** Connected platforms, in the order the user picked them. Falls back to the active one if none is connected. */
@@ -24,9 +24,7 @@ function tabsFor(connected: PlatformId[]): PlatformId[] {
   return tabs.length ? tabs : [getActivePlatform()];
 }
 
-/** How often the story tray is refreshed while the inbox list is showing. */
-const STORIES_REFRESH_MS = 60_000;
-const isInboxList = (path: string) => pathMatches(path, ['/direct/inbox']);
+const isMessages = (path: string) => pathMatches(path, ['/direct']);
 const isStory = (path: string) => pathMatches(path, ['/stories']);
 
 export default function Inbox() {
@@ -63,10 +61,7 @@ export default function Inbox() {
     };
   }, [active]);
 
-  // Instagram's web inbox has no story row, so DeeMs draws one from the signed-in session.
   const [igPath, setIgPath] = useState('');
-  const [stories, setStories] = useState<StoryItem[]>([]);
-  const storiesFetchedAt = useRef(0);
 
   const onRoute = useCallback((id: PlatformId, path: string) => {
     const pack = getPack(id);
@@ -75,17 +70,10 @@ export default function Inbox() {
     if (live) markSignedInTo(id);
     if (id !== 'instagram') return;
     setIgPath(path);
-    if (live && isInboxList(path) && Date.now() - storiesFetchedAt.current > STORIES_REFRESH_MS) {
-      storiesFetchedAt.current = Date.now();
-      refs.current.instagram?.inject(STORIES_SCRIPT);
-    }
+    // Instagram's web inbox doesn't mark who has a story; the script rings those avatars like the app does.
+    // Safe to run on every visit: it installs once per page and refreshes at most every 30 seconds.
+    if (live && isMessages(path)) refs.current.instagram?.inject(STORY_RINGS_SCRIPT);
   }, []);
-
-  const openStory = (username: string) => {
-    // Coming back from a story should show it as watched.
-    storiesFetchedAt.current = 0;
-    refs.current.instagram?.load(storyUrl(username));
-  };
 
   const onShared = useCallback(
     (id: PlatformId, url: string) => router.push({ pathname: '/(main)/post', params: { url, platform: id } }),
@@ -127,9 +115,6 @@ export default function Inbox() {
         </ScrollView>
       )}
 
-      {active === 'instagram' && isInboxList(igPath) && stories.length > 0 && (
-        <StoriesTray items={stories} onOpen={openStory} />
-      )}
       {active === 'instagram' && isStory(igPath) && (
         <StoriesBackBar onBack={() => refs.current.instagram?.load(getPack('instagram').startUrl)} />
       )}
@@ -148,7 +133,6 @@ export default function Inbox() {
                 showProgress
                 onRoute={(p) => onRoute(id, p)}
                 onShared={(u) => onShared(id, u)}
-                onStories={id === 'instagram' ? (items) => setStories(parseStories(items)) : undefined}
               />
             </View>
           ))}

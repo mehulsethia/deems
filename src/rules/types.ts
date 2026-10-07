@@ -54,5 +54,4 @@ export type NavigationDecision =
 /** Message posted from the injected script to React Native. */
 export type WebMessage =
   | { type: 'route'; path: string }
-  | { type: 'shared'; url: string }
-  | { type: 'stories'; items: unknown[] };
+  | { type: 'shared'; url: string };

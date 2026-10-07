@@ -38,7 +38,6 @@ interface Props {
   onRoute?: (path: string) => void;
   onUrlChange?: (url: string) => void;
   onShared?: (url: string) => void;
-  onStories?: (items: unknown[]) => void;
   ref?: Ref<PlatformWebViewHandle>;
 }
 
@@ -56,12 +55,11 @@ function parseMessage(raw: string): WebMessage | null {
     const m = JSON.parse(raw);
     if (m?.type === 'route' && typeof m.path === 'string') return m;
     if (m?.type === 'shared' && typeof m.url === 'string') return m;
-    if (m?.type === 'stories' && Array.isArray(m.items)) return m;
   } catch {}
   return null;
 }
 
-export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, onStories, ref }: Props) {
+export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, ref }: Props) {
   const { isWide, webWidth } = useLayout();
   const webRef = useRef<WebView>(null);
   const canGoBack = useRef(false);
@@ -142,10 +140,9 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
       if (__DEV__) console.log(`[deems:${effectivePack.id}] message`, e.nativeEvent.data);
       if (!msg) return;
       if (msg.type === 'route') onRoute?.(msg.path);
-      else if (msg.type === 'shared') onShared?.(msg.url);
-      else onStories?.(msg.items);
+      else onShared?.(msg.url);
     },
-    [onRoute, onShared, onStories, effectivePack.id],
+    [onRoute, onShared, effectivePack.id],
   );
 
   const onNavigationStateChange = useCallback(
