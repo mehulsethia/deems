@@ -12,7 +12,7 @@ export function StoreButtons({ align = 'start' }: { align?: 'start' | 'center' }
     <div className="cta-row" style={{ justifyContent: align === 'center' ? 'center' : undefined }}>
       {ios ? (
         <a className="btn btn-primary" href={ios}>
-          <Apple /> Get Deems for iPhone
+          <Apple /> Get DeeMs for iPhone
         </a>
       ) : (
         <a className="btn btn-primary" href={earlyAccessHref('iPhone')}>
@@ -36,7 +36,7 @@ export function StoreButtons({ align = 'start' }: { align?: 'start' | 'center' }
 export function TrialNote() {
   return (
     <p className="fine">
-      Free for {site.trialDays} days. We remind you before it ends. Cancel any time.
+      {site.trialDays} days free on yearly. We remind you before it ends. Cancel any time.
     </p>
   );
 }

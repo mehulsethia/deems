@@ -34,6 +34,12 @@ In the app, set `EXPO_PUBLIC_SITE_URL` to the same domain so Settings and the pa
 
 Vercel: import the repo and set **Root Directory** to `site`. Any static host works too: upload `site/out`.
 
+## Pricing
+
+Launch prices live in `lib/pricing.ts`: $3.99 a month and $14.99 a year (base price), ₹299 and ₹999 in India,
+with a 7-day free trial on yearly. Visitors in India (by time zone or an `-IN` language) see rupees. The saving is
+computed from those numbers. They must match what's set in App Store Connect and the Google Play Console.
+
 ## Notes
 
 - `public/screens/` are real screenshots of the Deems app (its web build, 1170×2532). Retake them when the app's UI

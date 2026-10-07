@@ -1,4 +1,4 @@
-/** The Deems mark, from assets/deems-brand/svg (same path data). Dot colours are fixed. */
+/** The DeeMs mark, from assets/deems-brand/svg (same path data). Dot colours are fixed. */
 export function DeemsMark({ size = 28, variant = 'onDark', title }: { size?: number; variant?: 'onDark' | 'onLight'; title?: string }) {
   const bubble = variant === 'onDark' ? '#FFFFFF' : '#0E0F12';
   const last = variant === 'onDark' ? '#0E0F12' : '#FFFFFF';

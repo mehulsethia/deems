@@ -3,7 +3,7 @@
  * Store links come from env vars so the same build works before and after launch.
  */
 export const site = {
-  name: 'Deems',
+  name: 'DeeMs',
   tagline: 'Reply and leave.',
   description:
     'Your Instagram, Threads and Facebook messages and your friends’ stories. Without the feed, Reels or Explore.',
@@ -18,8 +18,8 @@ export const site = {
   /** The reminder is scheduled this many days before billing starts (see the app's trial reminder). */
   reminderDaysBefore: 2,
   legal: {
-    /** The person or company that operates Deems, as it should appear in the policies. */
-    operator: 'Deems',
+    /** The person or company that operates DeeMs, as it should appear in the policies. */
+    operator: 'DeeMs',
     updated: '6 October 2026',
     /** e.g. "the laws of India". Leave empty and the governing-law clause is left out of the terms. */
     governingLaw: '',
@@ -27,6 +27,6 @@ export const site = {
 } as const;
 
 export const earlyAccessHref = (platform: string) =>
-  `mailto:${site.contactEmail}?subject=${encodeURIComponent(`Deems early access (${platform})`)}`;
+  `mailto:${site.contactEmail}?subject=${encodeURIComponent(`DeeMs early access (${platform})`)}`;
 
-export const contactHref = `mailto:${site.contactEmail}?subject=${encodeURIComponent('Deems')}`;
+export const contactHref = `mailto:${site.contactEmail}?subject=${encodeURIComponent('DeeMs')}`;

@@ -8,6 +8,8 @@ import {
   trialDaysOf,
   trialEndDate,
   yearlySavingsPercent,
+  yearlySavingsAmount,
+  pricePerMonth,
   type PackageLike,
 } from '../src/purchases/plans';
 import { NO_ACCESS, type Plan } from '../src/purchases/types';
@@ -110,5 +112,37 @@ describe('formatPrice', () => {
   });
   it('falls back for unknown currency codes', () => {
     expect(formatPrice(2.5, 'not-a-code')).toContain('2.50');
+  });
+});
+
+describe('launch pricing', () => {
+  const plan = (kind: 'monthly' | 'yearly', price: number, currencyCode: string) => ({
+    id: kind,
+    kind,
+    price,
+    currencyCode,
+    priceString: String(price),
+    trialDays: null,
+  });
+
+  it('saves 69% ($32.89 a year) on $3.99 monthly vs $14.99 yearly', () => {
+    const m = plan('monthly', 3.99, 'USD');
+    const y = plan('yearly', 14.99, 'USD');
+    expect(yearlySavingsPercent(m, y)).toBe(69);
+    expect(yearlySavingsAmount(m, y)).toBe(32.89);
+    expect(formatPrice(pricePerMonth(y), 'USD', 'en-US')).toBe('$1.25');
+  });
+
+  it('saves 72% (₹2,589 a year) on ₹299 monthly vs ₹999 yearly', () => {
+    const m = plan('monthly', 299, 'INR');
+    const y = plan('yearly', 999, 'INR');
+    expect(yearlySavingsPercent(m, y)).toBe(72);
+    expect(yearlySavingsAmount(m, y)).toBe(2589);
+    expect(Math.round(pricePerMonth(y) * 100) / 100).toBe(83.25);
+  });
+
+  it('shows no saving across currencies or when yearly costs more', () => {
+    expect(yearlySavingsAmount(plan('monthly', 3.99, 'USD'), plan('yearly', 999, 'INR'))).toBeNull();
+    expect(yearlySavingsAmount(plan('monthly', 1, 'USD'), plan('yearly', 20, 'USD'))).toBeNull();
   });
 });

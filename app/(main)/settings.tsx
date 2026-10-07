@@ -7,11 +7,13 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { AppText } from '@/components/AppText';
 import { ChevronIcon } from '@/components/Icons';
 import { DeemsMark } from '@/components/DeemsMark';
+import { Wordmark } from '@/components/Wordmark';
 import { Screen } from '@/components/Screen';
-import { CONTACT_EMAIL, CONTACT_URL, HOW_TO_CANCEL_URL } from '@/config/links';
+import { CONTACT_EMAIL, CONTACT_URL } from '@/config/links';
+import type { LegalDocId } from '@/legal/content';
 import { FEATURE_LOCK_INSTAGRAM_APP } from '@/lock/flag';
 import { cancelTrialReminder } from '@/notifications/trialReminder';
-import { formatDate, LEGAL, MANAGE_SUBSCRIPTIONS_URL } from '@/purchases';
+import { formatDate, MANAGE_SUBSCRIPTIONS_URL } from '@/purchases';
 import { usePayments } from '@/purchases/PaymentsProvider';
 import { getActivePack, PLATFORM_IDS } from '@/rules/store';
 import { platformLabel } from '@/state/platformMeta';
@@ -81,7 +83,7 @@ export default function Settings() {
   const signOut = () =>
     Alert.alert(
       'Sign out and clear data?',
-      'This signs you out of everything inside Deems and clears everything Deems stored on this device. Your subscription is not affected.',
+      'This signs you out of everything inside DeeMs and clears everything DeeMs stored on this device. Your subscription is not affected.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -102,6 +104,7 @@ export default function Settings() {
     );
 
   const open = (url: string) => WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url));
+  const openDoc = (doc: LegalDocId) => router.push({ pathname: '/legal/[doc]', params: { doc } });
 
   return (
     <Screen>
@@ -110,9 +113,10 @@ export default function Settings() {
 
         <Section title="Subscription">
           <Row label="Status" detail={status} />
+          {!customer.isPro || mode === 'dev' ? <Row label="Plans and pricing" detail="Monthly or yearly, 7 days free on yearly" onPress={() => router.push('/paywall')} /> : null}
           <Row label="Restore purchases" onPress={doRestore} disabled={busy || mode === 'dev'} />
           <Row label="Manage subscription" onPress={() => open(MANAGE_SUBSCRIPTIONS_URL)} disabled={mode === 'dev'} />
-          <Row label="How to cancel" onPress={() => open(HOW_TO_CANCEL_URL)} last={!note} />
+          <Row label="Cancel anytime · How to cancel" onPress={() => openDoc('cancel')} last={!note} />
           {note && (
             <AppText variant="small" muted accessibilityLiveRegion="polite" style={{ padding: spacing.md }}>
               {note}
@@ -147,11 +151,11 @@ export default function Settings() {
 
         <Section title="Privacy, terms and contact">
           <AppText variant="small" style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-            Deems shows each app's own website. You sign in on their page, and Deems never reads, stores or sends your password, cookies or
+            DeeMs shows each app's own website. You sign in on their page, and DeeMs never reads, stores or sends your password, cookies or
             messages. It has no analytics. The only things stored on this device are your onboarding answers and which accounts you're signed in to.
           </AppText>
-          <Row label="Privacy policy" onPress={LEGAL.privacy ? () => open(LEGAL.privacy) : undefined} />
-          <Row label="Terms of use" onPress={() => open(LEGAL.terms)} />
+          <Row label="Privacy Policy" onPress={() => openDoc('privacy')} />
+          <Row label="Terms of Use" onPress={() => openDoc('terms')} />
           <Row label="Contact" detail={CONTACT_EMAIL} onPress={() => Linking.openURL(CONTACT_URL).catch(() => {})} last />
         </Section>
 
@@ -159,7 +163,7 @@ export default function Settings() {
           <View accessible style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
             <DeemsMark size={sizes.touch} />
             <View style={{ gap: 2 }}>
-              <AppText variant="heading">Deems</AppText>
+              <Wordmark variant="heading" />
               <AppText variant="small" muted>Reply and leave.</AppText>
             </View>
           </View>

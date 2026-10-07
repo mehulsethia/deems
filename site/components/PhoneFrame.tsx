@@ -1,9 +1,8 @@
 import Image from 'next/image';
 
-/** A real screenshot of the Deems app (site/public/screens) in an iPhone-style frame. */
+/** A real screenshot of the DeeMs app (site/public/screens) in an iPhone-style frame. */
 export const SCREENS = {
   pickApps: '/screens/03-pick-apps.jpg',
-  receipt: '/screens/06-receipt.jpg',
   year: '/screens/07-year.jpg',
   refund: '/screens/08-refund.jpg',
   whatsLeft: '/screens/10-whats-left-peeled.jpg',

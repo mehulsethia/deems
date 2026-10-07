@@ -1,4 +1,4 @@
-/* Deems brand tokens. Same values as the app's src/theme/tokens.ts. Dark-first. */
+/* DeeMs brand tokens. Same values as the app's src/theme/tokens.ts. Dark-first. */
 :root {
   --blue: #1463ff;
   --blue-on-dark: #5b93ff;
@@ -1226,4 +1226,126 @@ a {
 .phone-status-icons svg {
   height: 0.85em;
   width: auto;
+}
+
+/* Wordmark: the two e's step back so "DMs" reads first. */
+.wm-e {
+  color: var(--slate-on-dark);
+}
+
+/* ---------- Pricing plans ---------- */
+.pricing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+.pricing-copy .title {
+  margin-top: 18px;
+}
+.plans-wrap {
+  display: grid;
+  gap: 22px;
+  justify-items: stretch;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: 32px;
+  background: var(--ink-2);
+  border: 1px solid var(--hairline);
+}
+.plans {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  padding-top: 12px;
+}
+.plan {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  text-align: left;
+  min-width: 0;
+  min-height: 168px;
+  padding: 26px clamp(14px, 3.5vw, 20px) 20px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 2px solid var(--hairline);
+  color: var(--white);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 200ms var(--ease), background-color 200ms var(--ease);
+}
+.plan.on {
+  border-color: var(--blue);
+  background: #161c2b;
+}
+.plan-pill {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--blue);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.plan-name {
+  font-weight: 600;
+}
+.plan-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 2px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(21px, 5.6vw, 32px);
+  letter-spacing: -0.02em;
+}
+.plan-price small {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--slate-on-dark);
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+.plan-sub {
+  font-size: 14px;
+  color: var(--slate-on-dark);
+}
+.plan-save {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-on-dark);
+}
+.saving {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 18px;
+}
+.plans-wrap .cta-row {
+  justify-content: center;
+}
+@media (max-width: 860px) {
+  .pricing {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 380px) {
+  .plans {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
 }

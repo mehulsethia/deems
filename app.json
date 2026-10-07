@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Deems",
+    "name": "DeeMs",
     "slug": "deems",
     "version": "1.0.0",
     "orientation": "default",
@@ -11,9 +11,9 @@
       "bundleIdentifier": "app.senseibles.hearth",
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Deems uses the camera so you can take a photo to send in a message.",
-        "NSMicrophoneUsageDescription": "Deems uses the microphone so you can record voice notes and video messages.",
-        "NSPhotoLibraryUsageDescription": "Deems lets you choose photos and videos to send in a message.",
+        "NSCameraUsageDescription": "DeeMs uses the camera so you can take a photo to send in a message.",
+        "NSMicrophoneUsageDescription": "DeeMs uses the microphone so you can record voice notes and video messages.",
+        "NSPhotoLibraryUsageDescription": "DeeMs lets you choose photos and videos to send in a message.",
         "ITSAppUsesNonExemptEncryption": false
       },
       "icon": "./assets/icon.png"
@@ -54,8 +54,8 @@
     },
     "web": {
       "favicon": "./public/favicon-48x48.png",
-      "name": "Deems",
-      "shortName": "Deems",
+      "name": "DeeMs",
+      "shortName": "DeeMs",
       "backgroundColor": "#0E0F12",
       "themeColor": "#0E0F12"
     }

@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 export const SITE_URL = (process.env.EXPO_PUBLIC_SITE_URL || '').replace(/\/+$/, '');
 
 export const CONTACT_EMAIL = 'sethiamehul14@gmail.com';
-export const CONTACT_URL = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Deems')}`;
+export const CONTACT_URL = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('DeeMs')}`;
 
 /** Store help pages explaining how to cancel a subscription. */
 export const HOW_TO_CANCEL_URL =

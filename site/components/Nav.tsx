@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { contactHref, earlyAccessHref, site } from '@/lib/site';
 import { DeemsMark } from './DeemsMark';
+import { Wordmark } from './Wordmark';
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,7 +19,7 @@ export function Nav() {
       <div className="wrap nav-inner">
         <Link href="/" className="brand" aria-label="Deems, home">
           <DeemsMark size={28} />
-          Deems
+          <Wordmark />
         </Link>
         <nav className="nav-links" aria-label="Main">
           <Link href="/#how">How it works</Link>

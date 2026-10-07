@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { contactHref, site } from '@/lib/site';
 
-export const metadata: Metadata = { title: 'Privacy Policy', description: 'What Deems collects: almost nothing, and nothing that identifies you.' };
+export const metadata: Metadata = { title: 'Privacy Policy', description: 'What DeeMs collects: almost nothing, and nothing that identifies you.' };
 
 const ext = { rel: 'noopener noreferrer', className: 'text-link' } as const;
 
@@ -19,23 +19,23 @@ export default function Privacy() {
           <strong>The short version.</strong>
         </p>
         <ul>
-          <li>Deems never sees your password and never reads, stores or sends your messages.</li>
-          <li>Deems has no accounts, no servers holding your data, no analytics and no ads.</li>
+          <li>DeeMs never sees your password and never reads, stores or sends your messages.</li>
+          <li>DeeMs has no accounts, no servers holding your data, no analytics and no ads.</li>
           <li>What the app keeps stays on your phone, and one tap in Settings deletes it.</li>
           <li>Payments go through Apple or Google. We never see your card.</li>
         </ul>
       </div>
 
-      <h2>What Deems is</h2>
+      <h2>What DeeMs is</h2>
       <p>
-        Deems is an app for iPhone and Android that opens the official Instagram, Threads and Facebook websites in a focused
+        DeeMs is an app for iPhone and Android that opens the official Instagram, Threads and Facebook websites in a focused
         window showing your messages and friends’ stories, with the feed, Reels and Explore hidden. You sign in directly with
-        each platform, on its own page. Deems is operated by {operator} (“Deems”, “we”, “us”) and is not affiliated with Meta.
+        each platform, on its own page. DeeMs is operated by {operator} (“DeeMs”, “we”, “us”) and is not affiliated with Meta.
       </p>
 
       <h2>What we never collect</h2>
       <p>
-        Your passwords, your messages, your photos, voice notes and stories, and your contacts. Deems has no accounts and no
+        Your passwords, your messages, your photos, voice notes and stories, and your contacts. DeeMs has no accounts and no
         login of its own. Your sign-in happens directly between you and the platform inside the app, and that session stays
         on your device. It never passes through or gets stored on our servers, because there is no server holding it. You
         can also end a session from the platform’s own “Where you’re logged in” settings.
@@ -60,7 +60,7 @@ export default function Privacy() {
         <li>Which apps you picked, and which ones you’re signed in to.</li>
         <li>Your two setup answers (time spent in these apps a day, and how much of that is talking), used only to draw your receipt.</li>
         <li>Where you are in setup, and which account you last looked at.</li>
-        <li>The platforms’ own sign-in cookies, stored by your phone’s web view. Deems doesn’t read them.</li>
+        <li>The platforms’ own sign-in cookies, stored by your phone’s web view. DeeMs doesn’t read them.</li>
       </ul>
       <p>
         <strong>Settings › Sign out and clear data</strong> deletes all of it. Deleting the app does the same.
@@ -68,7 +68,7 @@ export default function Privacy() {
 
       <h2>Purchases</h2>
       <p>
-        Deems offers auto-renewable subscriptions, bought through Apple (App Store) or Google (Google Play) and billed to
+        DeeMs offers auto-renewable subscriptions, bought through Apple (App Store) or Google (Google Play) and billed to
         your store account. We never see your payment details. RevenueCat verifies your subscription status using an
         anonymous identifier generated on your phone, plus the store’s purchase receipt. We use that status only to unlock
         the app.
@@ -121,7 +121,7 @@ export default function Privacy() {
 
       <h2>Children</h2>
       <p>
-        Deems is not meant for children under 13, or under the minimum age to use Instagram, Threads or Facebook where you
+        DeeMs is not meant for children under 13, or under the minimum age to use Instagram, Threads or Facebook where you
         live. We don’t knowingly collect anything from children.
       </p>
 

@@ -6,11 +6,11 @@ import { PhoneFrame, SCREENS } from './PhoneFrame';
 import { EASE } from './Reveal';
 
 const STEPS = [
-  { title: 'Pick your apps.', body: 'Instagram, Threads, Facebook. One, two or all three.', src: SCREENS.pickApps, alt: 'Choosing Instagram, Threads and Facebook in Deems.' },
-  { title: 'Add it up.', body: 'Two questions, your own answers. They print as a receipt, nothing projected.', src: SCREENS.receipt, alt: 'The Deems receipt printing your time per day.' },
+  { title: 'Pick your apps.', body: 'Instagram, Threads, Facebook. One, two or all three.', src: SCREENS.pickApps, alt: 'Choosing Instagram, Threads and Facebook in DeeMs.' },
+  { title: 'Add it up.', body: 'Two questions, your own answers. They print as a receipt, nothing projected.', src: SCREENS.year, alt: 'The DeeMs receipt: your time per day and per year.' },
   { title: 'Refund the rest.', body: 'Feed, Reels and Explore get struck off. Messages stay.', src: SCREENS.refund, alt: 'The receipt with feed, Reels and Explore struck off and refunded.' },
-  { title: 'Sign in on their own page.', body: 'You sign in on the platform’s own page inside Deems. We never see your password.', src: SCREENS.trust, alt: 'Deems explaining that you sign in on the platform’s own page.' },
-  { title: 'Reply and leave.', body: 'Messages and your friends’ stories. That’s the whole app.', src: SCREENS.whatsLeft, alt: 'Deems with only messages and stories left.' },
+  { title: 'Sign in on their own page.', body: 'You sign in on the platform’s own page inside DeeMs. We never see your password.', src: SCREENS.trust, alt: 'DeeMs explaining that you sign in on the platform’s own page.' },
+  { title: 'Reply and leave.', body: 'Messages and your friends’ stories. That’s the whole app.', src: SCREENS.whatsLeft, alt: 'DeeMs with only messages and stories left.' },
 ];
 
 export function Tour() {

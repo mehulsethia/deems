@@ -10,9 +10,9 @@ import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `Deems: ${site.tagline}`, template: '%s · Deems' },
+  title: { default: `DeeMs: ${site.tagline}`, template: '%s · DeeMs' },
   description: site.description,
-  applicationName: 'Deems',
+  applicationName: 'DeeMs',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -25,12 +25,12 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
-    siteName: 'Deems',
-    title: `Deems: ${site.tagline}`,
+    siteName: 'DeeMs',
+    title: `DeeMs: ${site.tagline}`,
     description: site.description,
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Deems. Reply and leave.' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'DeeMs. Reply and leave.' }],
   },
-  twitter: { card: 'summary_large_image', title: `Deems: ${site.tagline}`, description: site.description, images: ['/og.png'] },
+  twitter: { card: 'summary_large_image', title: `DeeMs: ${site.tagline}`, description: site.description, images: ['/og.png'] },
 };
 
 export const viewport: Viewport = {

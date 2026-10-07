@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Linking, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { DeemsMark } from '@/components/DeemsMark';
-import { CloseIcon } from '@/components/Icons';
+import { CloseIcon, TickIcon } from '@/components/Icons';
 import { Loader } from '@/components/Loader';
 import { Screen } from '@/components/Screen';
-import { HOW_TO_CANCEL_URL } from '@/config/links';
 import { socialProof } from '@/config/socialProof';
+import type { LegalDocId } from '@/legal/content';
 import { scheduleTrialReminder } from '@/notifications/trialReminder';
 import { trialTimeline } from '@/notifications/timeline';
 import { formatDaysCaps } from '@/onboarding/maths';
@@ -20,10 +19,11 @@ import {
   cancellationNote,
   formatDate,
   formatPrice,
-  LEGAL,
   periodWord,
+  pricePerMonth,
   STORE,
   trialEndDate,
+  yearlySavingsAmount,
   yearlySavingsPercent,
   type Plan,
 } from '@/purchases';
@@ -32,7 +32,14 @@ import { markOnboardingComplete, saveStep } from '@/state/progress';
 import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
 
-const open = (url: string) => (url ? WebBrowser.openBrowserAsync(url).catch(() => Linking.openURL(url)) : undefined);
+/** Underlined text link, at least 44pt tall. */
+function FooterLink({ label, onPress, role = 'link', disabled }: { label: string; onPress: () => void; role?: 'link' | 'button'; disabled?: boolean }) {
+  return (
+    <Pressable accessibilityRole={role} accessibilityState={{ disabled: !!disabled }} onPress={onPress} disabled={disabled} hitSlop={4} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
+      <AppText variant="caption" muted style={{ textDecorationLine: 'underline' }}>{label}</AppText>
+    </Pressable>
+  );
+}
 
 function MiniReceipt({ days }: { days: string }) {
   return (
@@ -62,30 +69,64 @@ function Step({ day, text, last }: { day: string; text: string; last?: boolean }
   );
 }
 
-function PlanCard({ p, on, stacked, savings, onPress }: { p: Plan; on: boolean; stacked: boolean; savings: number | null; onPress: () => void }) {
-  const name = p.kind === 'yearly' ? 'Yearly' : 'Monthly';
-  const perMonth = p.kind === 'yearly' ? formatPrice(p.price / 12, p.currencyCode) : null;
+function PlanCard({
+  p,
+  on,
+  stacked,
+  savePercent,
+  saveAmount,
+  onPress,
+}: {
+  p: Plan;
+  on: boolean;
+  stacked: boolean;
+  savePercent: number | null;
+  saveAmount: string | null;
+  onPress: () => void;
+}) {
+  const yearly = p.kind === 'yearly';
+  const name = yearly ? 'Yearly' : 'Monthly';
+  const perMonth = formatPrice(pricePerMonth(p), p.currencyCode);
+  const label =
+    `${name} plan, ${p.priceString} per ${periodWord(p.kind)}` +
+    (yearly ? `, ${perMonth} a month` : '') +
+    (p.trialDays ? `, ${p.trialDays} days free` : '') +
+    (savePercent && saveAmount ? `, save ${savePercent}%, ${saveAmount} a year` : '');
   return (
     <Pressable
       accessibilityRole="radio"
       accessibilityState={{ selected: on }}
-      accessibilityLabel={`${name} plan, ${p.priceString} per ${periodWord(p.kind)}${perMonth ? `, ${perMonth} a month` : ''}${savings ? `, save ${savings}%` : ''}`}
+      accessibilityLabel={label}
       onPress={onPress}
-      style={{ flex: stacked ? undefined : 1, minHeight: stacked ? 88 : 112, borderRadius: radius.card, borderWidth: 2, borderColor: on ? colors.primary : colors.hairline, backgroundColor: colors.surface, padding: spacing.md, gap: spacing.xs }}
+      style={{
+        flex: stacked ? undefined : 1,
+        minHeight: stacked ? 96 : 150,
+        borderRadius: radius.card,
+        borderWidth: 2,
+        borderColor: on ? colors.primary : colors.hairline,
+        backgroundColor: colors.surface,
+        padding: spacing.md,
+        paddingTop: p.trialDays ? spacing.lg : spacing.md,
+        gap: spacing.xs,
+        justifyContent: 'center',
+      }}
     >
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.sm }}>
-        <AppText variant="bodyMedium">{name}</AppText>
-        {savings ? (
-          <View style={{ backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: spacing.sm }}>
-            <AppText variant="label" tone="onPrimary">Save {savings}%</AppText>
-          </View>
-        ) : null}
-      </View>
-      <AppText variant="mono" style={{ fontSize: 20, lineHeight: 26 }}>{p.priceString}</AppText>
-      <AppText variant="caption" muted>
-        per {periodWord(p.kind)}
-        {perMonth ? ` · ${perMonth} a month` : ''}
+      {p.trialDays ? (
+        <View style={{ position: 'absolute', top: -12, alignSelf: 'center', backgroundColor: colors.primary, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: 3 }}>
+          <AppText variant="label" tone="onPrimary">{p.trialDays} days free</AppText>
+        </View>
+      ) : null}
+      <AppText variant="bodyMedium">{name}</AppText>
+      <AppText variant="mono" style={{ fontSize: 22, lineHeight: 28 }}>
+        {yearly ? perMonth : p.priceString}
+        <AppText variant="small" muted> / month</AppText>
       </AppText>
+      {yearly ? <AppText variant="caption" muted>{p.priceString} billed yearly</AppText> : <AppText variant="caption" muted>Billed monthly</AppText>}
+      {savePercent ? (
+        <AppText variant="label" tone="primaryOnDark" style={{ marginTop: 2 }}>
+          Save {savePercent}%
+        </AppText>
+      ) : null}
     </Pressable>
   );
 }
@@ -111,8 +152,10 @@ export default function Paywall() {
   const plan = plans.find((p) => p.id === selected) ?? null;
   const yearly = plans.find((p) => p.kind === 'yearly');
   const monthly = plans.find((p) => p.kind === 'monthly');
-  // A saving is only shown when computed from the store's real prices.
-  const savings = yearly && monthly ? yearlySavingsPercent(monthly, yearly) : null;
+  // Savings are only shown when computed from the store's real prices.
+  const savePercent = yearly && monthly ? yearlySavingsPercent(monthly, yearly) : null;
+  const saveRaw = yearly && monthly ? yearlySavingsAmount(monthly, yearly) : null;
+  const saveAmount = saveRaw && yearly ? formatPrice(saveRaw, yearly.currencyCode) : null;
   const trialDays = plan?.trialDays ?? null;
   const billingDate = trialDays ? formatDate(trialEndDate(now, trialDays)) : null;
   const timeline = trialDays ? trialTimeline(trialDays) : null;
@@ -140,6 +183,7 @@ export default function Paywall() {
   const doRestore = async () => {
     if (await restore()) finish();
   };
+  const openDoc = (doc: LegalDocId) => router.push({ pathname: '/legal/[doc]', params: { doc } });
 
   const firstCharge = plan
     ? trialDays && billingDate
@@ -162,6 +206,14 @@ export default function Paywall() {
       headerRight={closeButton}
       footer={
         <>
+          {trialDays ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm }}>
+              <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
+                <TickIcon size={11} color={colors.onPrimary} />
+              </View>
+              <AppText variant="bodyMedium">No payment due now</AppText>
+            </View>
+          ) : null}
           {mode === 'dev' ? (
             <Button label="Continue (dev mode)" onPress={finish} />
           ) : (
@@ -172,40 +224,22 @@ export default function Paywall() {
               {firstCharge}
             </AppText>
           )}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.md }}>
-            <Pressable accessibilityRole="button" onPress={doRestore} disabled={busy} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
-              <AppText variant="caption" muted>Restore</AppText>
-            </Pressable>
-            <Pressable accessibilityRole="link" onPress={() => open(LEGAL.terms)} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
-              <AppText variant="caption" muted>Terms</AppText>
-            </Pressable>
-            <Pressable
-              accessibilityRole="link"
-              accessibilityState={{ disabled: !LEGAL.privacy }}
-              onPress={() => open(LEGAL.privacy)}
-              disabled={!LEGAL.privacy}
-              style={{ minHeight: sizes.touch, justifyContent: 'center', opacity: LEGAL.privacy ? 1 : 0.4 }}
-            >
-              <AppText variant="caption" muted>Privacy</AppText>
-            </Pressable>
-            <Pressable accessibilityRole="link" onPress={() => open(HOW_TO_CANCEL_URL)} style={{ minHeight: sizes.touch, justifyContent: 'center' }}>
-              <AppText variant="caption" muted>How to cancel</AppText>
-            </Pressable>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <AppText variant="caption" muted>Cancel anytime · </AppText>
+            <FooterLink label="How to cancel" onPress={() => openDoc('cancel')} />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.lg }}>
+            <FooterLink label="Terms of Use" onPress={() => openDoc('terms')} />
+            <FooterLink label="Privacy Policy" onPress={() => openDoc('privacy')} />
+            <FooterLink label="Restore" role="button" onPress={doRestore} disabled={busy} />
           </View>
         </>
-      }
-      footerNote={
-        plan ? (
-          <AppText variant="caption" muted center>
-            {cancellationNote(plan, now, STORE)}
-          </AppText>
-        ) : null
       }
       pane={
         <View style={{ gap: spacing.lg }}>
           {mode === 'dev' && (
             <AppText variant="caption" muted>
-              Dev mode: no store keys are set, so everything is unlocked. These prices are placeholders.
+              Dev mode: no store keys are set, so purchases are simulated and everything is unlocked. Prices shown are the US launch prices.
             </AppText>
           )}
 
@@ -220,15 +254,41 @@ export default function Paywall() {
           {/* Side by side when they fit; stacked on narrow phones and at large text sizes. */}
           <View style={{ flexDirection: stackPlans ? 'column' : 'row', gap: spacing.md }} accessibilityRole="radiogroup">
             {plans.map((p) => (
-              <PlanCard key={p.id} p={p} on={p.id === selected} stacked={stackPlans} savings={p.kind === 'yearly' ? savings : null} onPress={() => setSelected(p.id)} />
+              <PlanCard
+                key={p.id}
+                p={p}
+                on={p.id === selected}
+                stacked={stackPlans}
+                savePercent={p.kind === 'yearly' ? savePercent : null}
+                saveAmount={p.kind === 'yearly' ? saveAmount : null}
+                onPress={() => setSelected(p.id)}
+              />
             ))}
           </View>
+
+          {saveAmount && savePercent ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm }}>
+              <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
+                <TickIcon size={11} color={colors.onPrimary} />
+              </View>
+              <AppText variant="bodyMedium">
+                Yearly saves you {saveAmount} a year
+              </AppText>
+            </View>
+          ) : null}
 
           {error && (
             <AppText variant="small" tone="removedOnDark" accessibilityLiveRegion="polite">
               {error}
             </AppText>
           )}
+
+          {/* The store's renewal terms scroll with the content; the links below stay pinned. */}
+          {plan ? (
+            <AppText variant="caption" muted center>
+              {cancellationNote(plan, now, STORE)}
+            </AppText>
+          ) : null}
 
           {/* Real social proof only; renders nothing while the hook is empty. */}
           {proof.map((t) => (

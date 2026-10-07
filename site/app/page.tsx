@@ -3,9 +3,9 @@ import { Calculator } from '@/components/Calculator';
 import { ColdOpen } from '@/components/ColdOpen';
 import { DeemsMark } from '@/components/DeemsMark';
 import { Faq } from '@/components/Faq';
+import { Pricing } from '@/components/Pricing';
 import { Hero } from '@/components/Hero';
 import { Exit, Eye, LockSmall, NoServer, Page } from '@/components/Icons';
-import { PhoneFrame, SCREENS } from '@/components/PhoneFrame';
 import { Refunded } from '@/components/Refunded';
 import { Reveal } from '@/components/Reveal';
 import { StoreButtons, TrialNote } from '@/components/StoreButtons';
@@ -15,12 +15,12 @@ import { contactHref, site } from '@/lib/site';
 
 const FAQ = [
   {
-    q: 'What is Deems, exactly?',
+    q: 'What is DeeMs, exactly?',
     a: 'An app that opens the real Instagram, Threads and Facebook websites with the feed, Reels and Explore hidden. Messages, group chats and your friends’ stories work as normal.',
   },
   {
-    q: 'Does Deems see my password or my messages?',
-    a: 'No. You sign in on the platform’s own page, and Deems never reads, stores or sends your password, cookies or messages. We don’t run servers that hold your data.',
+    q: 'Does DeeMs see my password or my messages?',
+    a: 'No. You sign in on the platform’s own page, and DeeMs never reads, stores or sends your password, cookies or messages. We don’t run servers that hold your data.',
   },
   {
     q: 'Can I still see a post a friend sends me?',
@@ -28,11 +28,11 @@ const FAQ = [
   },
   {
     q: 'Is this made by Instagram or Meta?',
-    a: 'No. Deems is independent and not affiliated with Meta. You use your normal accounts, under their normal rules.',
+    a: 'No. DeeMs is independent and not affiliated with Meta. You use your normal accounts, under their normal rules.',
   },
   {
     q: 'What does it cost?',
-    a: `It’s free for ${site.trialDays} days, then a subscription billed by the App Store or Google Play. We remind you ${site.reminderDaysBefore} days before billing starts, and you can cancel any time in your store settings.`,
+    a: `$3.99 a month, or $14.99 a year (₹299 or ₹999 in India), billed by the App Store or Google Play in your local currency. Yearly saves 69% (72% in India) and starts with ${site.trialDays} days free; we remind you ${site.reminderDaysBefore} days before billing starts. Cancel any time in your store settings.`,
   },
   {
     q: 'Is it on Android?',
@@ -105,7 +105,7 @@ export default function Home() {
           <Reveal className="section-head">
             <span className="eyebrow">Privacy</span>
             <h2 className="title">You sign in on their own page.</h2>
-            <p className="lede">Deems never sees your password or your messages.</p>
+            <p className="lede">DeeMs never sees your password or your messages.</p>
           </Reveal>
           <div className="bento">
             <Reveal className="card span-4">
@@ -113,7 +113,7 @@ export default function Home() {
                 <Page />
               </span>
               <h3>Their sign-in page, not ours</h3>
-              <p className="muted">You sign in on Instagram’s, Threads’ or Facebook’s own page, inside Deems.</p>
+              <p className="muted">You sign in on Instagram’s, Threads’ or Facebook’s own page, inside DeeMs.</p>
               <div className="address" aria-hidden>
                 <span className="lock">
                   <LockSmall />
@@ -133,53 +133,24 @@ export default function Home() {
                 <Eye />
               </span>
               <h3>No analytics. No ads.</h3>
-              <p className="muted">Deems doesn’t track what you do. There’s nothing to sell, so nothing is collected.</p>
+              <p className="muted">DeeMs doesn’t track what you do. There’s nothing to sell, so nothing is collected.</p>
             </Reveal>
             <Reveal className="card span-3" delay={0.16}>
               <span className="icon">
                 <Exit />
               </span>
               <h3>Sign out any time</h3>
-              <p className="muted">One tap in Settings signs you out and clears everything Deems kept on your phone.</p>
+              <p className="muted">One tap in Settings signs you out and clears everything DeeMs kept on your phone.</p>
             </Reveal>
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="section">
-        <div className="wrap price">
-          <Reveal>
-            <span className="eyebrow">Pricing</span>
-            <h2 className="title" style={{ marginTop: 18 }}>
-              Try it for {site.trialDays} days.
-            </h2>
-            <ol className="timeline">
-              <li>
-                <span>
-                  <b>Today</b> - your messages, nothing else
-                </span>
-              </li>
-              <li>
-                <span>
-                  <b>Day {site.trialDays - site.reminderDaysBefore}</b> - we remind you
-                </span>
-              </li>
-              <li>
-                <span>
-                  <b>Day {site.trialDays}</b> - billing starts unless you cancel
-                </span>
-              </li>
-            </ol>
-            <StoreButtons />
-            <p className="fine" style={{ marginTop: 14 }}>
-              Billed by the App Store or Google Play. Cancel any time in your store settings.
-            </p>
-          </Reveal>
-          <Reveal className="price-phone" delay={0.1}>
-            <PhoneFrame src={SCREENS.year} alt="Deems showing your time per year: 43 full days not talking to a single person." />
-          </Reveal>
-        </div>
+      <section className="section" id="pricing">
+        <Reveal className="wrap">
+          <Pricing />
+        </Reveal>
       </section>
 
       {/* FAQ */}

@@ -193,7 +193,7 @@ export function Calculator() {
 
         <div className="verdict" aria-live="polite">
           {talker ? (
-            <p className="heading">You’re already mostly here to talk. Deems keeps it that way.</p>
+            <p className="heading">You’re already mostly here to talk. DeeMs keeps it that way.</p>
           ) : (
             <>
               <p className="heading">

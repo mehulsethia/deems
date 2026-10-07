@@ -109,7 +109,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0, rotate: -7 }}
             transition={{ duration: 1.1, ease: EASE, delay: 0.55 }}
           >
-            <PhoneFrame src={SCREENS.pickApps} alt="Deems setup: choose Instagram, Threads and Facebook." />
+            <PhoneFrame src={SCREENS.pickApps} alt="DeeMs setup: choose Instagram, Threads and Facebook." />
           </motion.div>
         </motion.div>
         <motion.div className="stage-phone center" style={{ y: centerY }}>
@@ -118,7 +118,7 @@ export function Hero() {
               <PhoneFrame
                 src={SCREENS.refund}
                 priority
-                alt="Deems receipt: messages kept, feed, Reels and Explore struck off and stamped refunded."
+                alt="DeeMs receipt: messages kept, feed, Reels and Explore struck off and stamped refunded."
               />
             </motion.div>
           </motion.div>
@@ -129,7 +129,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0, rotate: 7 }}
             transition={{ duration: 1.1, ease: EASE, delay: 0.65 }}
           >
-            <PhoneFrame src={SCREENS.whatsLeft} alt="What is left in Deems: messages and friends’ stories." />
+            <PhoneFrame src={SCREENS.whatsLeft} alt="What is left in DeeMs: messages and friends’ stories." />
           </motion.div>
         </motion.div>
 

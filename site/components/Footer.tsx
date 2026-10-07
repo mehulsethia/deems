@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { contactHref, site } from '@/lib/site';
 import { DeemsMark } from './DeemsMark';
+import { Wordmark } from './Wordmark';
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
           <div style={{ display: 'grid', gap: 8 }}>
             <span className="brand">
               <DeemsMark size={24} />
-              Deems
+              <Wordmark />
             </span>
             <span className="muted">{site.tagline}</span>
           </div>
@@ -21,10 +22,10 @@ export function Footer() {
           </nav>
         </div>
         <p className="fine">
-          Not affiliated with Meta. Instagram, Threads and Facebook are trademarks of Meta Platforms, Inc. Deems shows their
+          Not affiliated with Meta. Instagram, Threads and Facebook are trademarks of Meta Platforms, Inc. DeeMs shows their
           own websites, with the feed, Reels and Explore hidden.
         </p>
-        <p className="fine">© {new Date().getFullYear()} Deems</p>
+        <p className="fine">© {new Date().getFullYear()} DeeMs</p>
       </div>
     </footer>
   );

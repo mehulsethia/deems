@@ -82,6 +82,16 @@ export function yearlySavingsPercent(monthly: Plan, yearly: Plan): number | null
   return pct > 0 ? pct : null;
 }
 
+/** What the yearly plan saves over twelve monthly payments, in the plans' currency; null when none or currencies differ. */
+export function yearlySavingsAmount(monthly: Plan, yearly: Plan): number | null {
+  if (monthly.currencyCode !== yearly.currencyCode || monthly.price <= 0) return null;
+  const saving = Math.round((monthly.price * 12 - yearly.price) * 100) / 100;
+  return saving > 0 ? saving : null;
+}
+
+/** A plan's price spread over a month (the yearly price divided by 12). */
+export const pricePerMonth = (plan: Plan): number => (plan.kind === 'yearly' ? plan.price / 12 : plan.price);
+
 export function formatPrice(amount: number, currencyCode: string, locale?: string): string {
   try {
     return new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode }).format(amount);
