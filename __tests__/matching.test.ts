@@ -77,7 +77,7 @@ describe('bundled instagram pack', () => {
     }
   });
   it('does not allow feed, explore, reels or profiles', () => {
-    for (const p of ['/', '/explore/', '/reels/', '/someuser/', '/p/abc/']) {
+    for (const p of ['/', '/explore/', '/reels/', '/someuser/', '/accounts/edit/', '/reels/audio/123/']) {
       expect(isAllowedPath(pack, p)).toBe(false);
     }
   });
@@ -115,6 +115,18 @@ describe('decideNavigation', () => {
     expect(decideNavigation(pack, 'about:blank')).toEqual({ action: 'allow' });
     expect(decideNavigation(pack, 'instagram://mainfeed')).toEqual({ action: 'block' });
     expect(decideNavigation(pack, 'intent://x#Intent;end')).toEqual({ action: 'block' });
+  });
+});
+
+describe('instagram shared items in the main view', () => {
+  it('shows posts in Instagram’s own viewer (with the caption) and sends reels to the locked viewer', () => {
+    expect(decideNavigation(pack, 'https://www.instagram.com/p/Cabc/')).toEqual({ action: 'allow' });
+    expect(decideNavigation(pack, 'https://www.instagram.com/reel/Cabc/')).toMatchObject({ action: 'shared' });
+  });
+  it('never opens a song page, profile or settings', () => {
+    for (const p of ['/reels/audio/123/', '/someuser/', '/accounts/edit/']) {
+      expect(decideNavigation(pack, `https://www.instagram.com${p}`)).toMatchObject({ action: 'redirect' });
+    }
   });
 });
 

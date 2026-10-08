@@ -43,9 +43,13 @@ export function hostMatches(host: string, list: readonly string[]): boolean {
   return list.some((entry) => h === entry.toLowerCase() || h.endsWith('.' + entry.toLowerCase()));
 }
 
-/** A specific post/reel, not the bare `/reels/` tab. */
+/** Pages under a shared prefix that are not one shared item, such as a song's page (/reels/audio/...). */
+const NOT_ITEMS = ['audio'];
+
+/** A specific post/reel, not the bare `/reels/` tab or a song page. */
 export function isSharedContentPath(path: string, prefixes: readonly string[]): boolean {
   const p = normalizePath(path).toLowerCase().replace(/\/$/, '');
+  if (NOT_ITEMS.includes(p.split('/')[2] ?? '')) return false;
   return prefixes.some((prefix) => {
     const base = normalizePath(prefix).toLowerCase().replace(/\/$/, '');
     return p.startsWith(base + '/');

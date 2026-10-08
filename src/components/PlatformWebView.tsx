@@ -99,6 +99,18 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
     return () => sub.remove();
   }, [active]);
 
+  // The page script, the native guard and the address check can all spot the same shared item; open it once.
+  const lastShared = useRef({ url: '', at: 0 });
+  const share = useCallback(
+    (url: string) => {
+      const now = Date.now();
+      if (lastShared.current.url === url && now - lastShared.current.at < 2000) return;
+      lastShared.current = { url, at: now };
+      onShared?.(url);
+    },
+    [onShared],
+  );
+
   const handle = useCallback(
     (url: string): boolean => {
       const d = decideNavigation(effectivePack, url);
@@ -113,18 +125,18 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
           // A reel or post from another platform (an Instagram reel sent on Facebook) still opens locked, not in a browser.
           const real = unwrapLinkShim(d.url);
           // Photos and videos sent in a chat open in OnlyDM's own viewer too.
-          if (onShared && !lockedUrl && (sharedPackFor(real) || isMediaUrl(real))) onShared(real);
+          if (onShared && !lockedUrl && (sharedPackFor(real) || isMediaUrl(real))) share(real);
           else WebBrowser.openBrowserAsync(d.url).catch(() => {});
           return false;
         }
         case 'shared':
-          onShared?.(d.url);
+          share(d.url);
           return false;
         default:
           return false;
       }
     },
-    [effectivePack, onShared, lockedUrl],
+    [effectivePack, share, onShared, lockedUrl],
   );
 
   const onShouldStart = useCallback(
@@ -153,17 +165,29 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
       if (__DEV__) console.log(`[onlydm:${effectivePack.id}] message`, e.nativeEvent.data);
       if (!msg) return;
       if (msg.type === 'route') onRoute?.(msg.path);
-      else onShared?.(msg.url);
+      else share(msg.url);
     },
-    [onRoute, onShared, effectivePack.id],
+    [onRoute, share, effectivePack.id],
   );
 
+  // Backstop: every address the page ends up on is checked again, however it got there (in-page routers
+  // can change the URL without a navigation the guards above see).
+  const lastChecked = useRef('');
   const onNavigationStateChange = useCallback(
     (nav: WebViewNavigation) => {
       canGoBack.current = nav.canGoBack;
       onUrlChange?.(nav.url);
+      if (!nav.url || nav.url === lastChecked.current) return;
+      lastChecked.current = nav.url;
+      const d = decideNavigation(effectivePack, nav.url);
+      if (d.action === 'redirect') {
+        webRef.current?.injectJavaScript(`window.location.replace(${JSON.stringify(d.url)});true;`);
+      } else if (d.action === 'shared' && !lockedUrl) {
+        share(d.url);
+        webRef.current?.goBack();
+      }
     },
-    [onUrlChange],
+    [onUrlChange, effectivePack, lockedUrl, share],
   );
 
   const retry = () => {

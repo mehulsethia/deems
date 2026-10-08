@@ -73,7 +73,7 @@ export function lockScript(allowedPaths: string[], swipe: SwipeLock): string {
   var ALLOWED = ${JSON.stringify(allowed)};
   var SWIPE = ${JSON.stringify(swipe)};
   var STYLE_ID = 'onlydm-lock';
-  var CSS = 'html,body{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}' +
+  var CSS = 'html,body{overflow:hidden!important;overscroll-behavior:none!important}' +
     '*{scroll-snap-type:none!important;overscroll-behavior:none!important}';
   function same(url) {
     try {
@@ -107,6 +107,8 @@ export function lockScript(allowedPaths: string[], swipe: SwipeLock): string {
   document.addEventListener('touchmove', function (e) {
     var t = e.touches[0];
     if (!t) return;
+    // Comments, share and other sheets scroll as normal; only the item itself is held in place.
+    if (e.target && e.target.closest && e.target.closest('[role="dialog"]')) return;
     if (SWIPE === 'all' || Math.abs(t.clientY - y) >= Math.abs(t.clientX - x)) e.preventDefault();
   }, { passive: false, capture: true });
   document.addEventListener('wheel', function (e) { e.preventDefault(); }, { passive: false, capture: true });
