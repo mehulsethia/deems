@@ -1,4 +1,4 @@
-import { HeroCompare } from './HeroCompare';
+import { HeroDemo } from './HeroDemo';
 import { PlatformIcons } from './PlatformIcons';
 import { Reveal } from './Reveal';
 import { androidCta, PrimaryButton } from './StoreButtons';
@@ -68,7 +68,7 @@ export function Hero() {
             <span />
             <span />
           </div>
-          <HeroCompare />
+          <HeroDemo />
           <div className="badges" role="list" aria-label="What you get">
             {[BENEFITS.slice(0, 3), BENEFITS.slice(3)].map((row) => (
               <div className="badges-row" key={row[0]}>
