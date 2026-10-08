@@ -92,12 +92,61 @@ function Feed() {
 
 /* ---------- Shared bits ---------- */
 
-const SHADES = ['#d4d4d4', '#bdbdbd', '#a3a3a3', '#c8c8c8', '#b0b0b0', '#dadada'];
+/* Drawn portraits: invented people, no photos. Each seed picks a backdrop, skin, hair and top. */
+const BACKDROPS = ['#f6d6c8', '#cfe3f7', '#d9efd9', '#efe0f7', '#fbe7b5', '#d6eef0', '#f3d1dc', '#e3e3e3'];
+const SKINS = ['#f2c9a8', '#c68a62', '#8d5a3b', '#ebc1a0', '#a86e4c', '#e0b08e', '#5c3a26'];
+const HAIRS = ['#2b1d14', '#4a2e1c', '#111111', '#7a4a24', '#c9a46a', '#3b2618', '#8c8c8c'];
+const TOPS = ['#3d3d3d', '#2f5d8c', '#b5523b', '#4f7a52', '#7b5ea7', '#c99a2e', '#262626', '#9a9a9a'];
+type Style = 'short' | 'long' | 'bun' | 'curly' | 'buzz' | 'side';
+const STYLES: Style[] = ['short', 'long', 'curly', 'bun', 'side', 'buzz'];
 
-function Face({ name, size, i, online }: { name: string; size: number; i: number; online?: boolean }) {
+function Portrait({ seed }: { seed: number }) {
+  const pick = <T,>(list: T[], k: number) => list[(seed * k + k) % list.length];
+  const hair = pick(HAIRS, 3);
+  const style = pick(STYLES, 5);
+  const skin = pick(SKINS, 2);
   return (
-    <span className="dm-face" style={{ width: u(size), height: u(size), background: SHADES[i % SHADES.length], fontSize: u(size * 0.38) }}>
-      {name.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase()}
+    <svg viewBox="0 0 48 48" width="100%" height="100%" aria-hidden>
+      <rect width="48" height="48" fill={pick(BACKDROPS, 1)} />
+      {style === 'long' ? <path d="M13 22c0-8 5-13 11-13s11 5 11 13v16H13z" fill={hair} /> : null}
+      <path d="M8 50c1.5-9 7.5-14 16-14s14.5 5 16 14z" fill={pick(TOPS, 7)} />
+      <rect x="20.5" y="27" width="7" height="8" rx="3" fill={skin} />
+      <ellipse cx="24" cy="21.5" rx="8" ry="9" fill={skin} />
+      {style === 'short' ? <path d="M15.8 20c0-6 3.6-9.5 8.2-9.5s8.2 3.5 8.2 9.5c-2-3-5-4.2-8.2-4.2S17.8 17 15.8 20z" fill={hair} /> : null}
+      {style === 'side' ? <path d="M15.8 21c-.5-6.5 3.6-10.5 8.4-10.5 5 0 8.4 3.6 8 9.5-3.5-.6-9-2.5-11-5.5-1 3-3 5.5-5.4 6.5z" fill={hair} /> : null}
+      {style === 'buzz' ? <path d="M16 19.5c.4-5.4 3.8-8.5 8-8.5s7.6 3.1 8 8.5c-2.4-2.6-5-3.6-8-3.6s-5.6 1-8 3.6z" fill={hair} opacity="0.85" /> : null}
+      {style === 'long' ? <path d="M15.8 21c0-6.5 3.6-10.5 8.2-10.5s8.2 4 8.2 10.5c-3-1.2-6.5-3.5-8.2-6.3-1.7 2.8-5.2 5.1-8.2 6.3z" fill={hair} /> : null}
+      {style === 'bun' ? (
+        <>
+          <circle cx="24" cy="9.5" r="4" fill={hair} />
+          <path d="M15.8 20.5c0-6.2 3.6-10 8.2-10s8.2 3.8 8.2 10c-2.4-2.8-5-4-8.2-4s-5.8 1.2-8.2 4z" fill={hair} />
+        </>
+      ) : null}
+      {style === 'curly' ? (
+        <g fill={hair}>
+          {[[17, 15], [21, 12], [26, 11.5], [30.5, 14], [32.5, 18.5], [15.5, 19], [23.5, 14.5], [28.5, 16]].map(([x, y]) => (
+            <circle key={`${x}-${y}`} cx={x} cy={y} r="3.6" />
+          ))}
+        </g>
+      ) : null}
+    </svg>
+  );
+}
+
+/** Two portraits for a group chat, as Messenger and Instagram stack them. */
+function Group({ seed }: { seed: number }) {
+  return (
+    <>
+      <span className="dm-group back"><Portrait seed={seed} /></span>
+      <span className="dm-group front"><Portrait seed={seed + 3} /></span>
+    </>
+  );
+}
+
+function Face({ size, i, online, group }: { name?: string; size: number; i: number; online?: boolean; group?: boolean }) {
+  return (
+    <span className={`dm-face${group ? ' is-group' : ''}`} style={{ width: u(size), height: u(size) }}>
+      {group ? <Group seed={i} /> : <span className="dm-photo"><Portrait seed={i} /></span>}
       {online ? <span className="dm-online" /> : null}
     </span>
   );
@@ -121,6 +170,10 @@ const IG_CHATS = [
   { name: 'Arjun Mehta', msg: '4+ new messages', time: '19h', unread: true },
   { name: 'Dominic', msg: '2 new messages', time: '1d', unread: true },
   { name: 'Tara', msg: 'Tara sent an attachment.', time: '1w' },
+  { name: 'Kabir', msg: 'Kabir sent an attachment.', time: '2w' },
+  { name: 'Nina, Omar and Jess', msg: 'Omar: lol same', time: '2w', group: true },
+  { name: 'Ella Brooks', msg: 'Liked a message', time: '3w' },
+  { name: 'Marco', msg: 'You: see you there', time: '4w' },
 ];
 
 function InstagramScreen() {
@@ -142,12 +195,12 @@ function InstagramScreen() {
       </div>
       <div className="ig-note">
         <span className="ig-bubble">What’s new…</span>
-        <Face name="Sam" size={44} i={2} />
+        <Face size={44} i={5} />
         <span className="ig-note-label">Your note</span>
       </div>
       {IG_CHATS.map((c, i) => (
         <div className={`dm-row${c.unread ? ' unread' : ''}`} key={c.name}>
-          <Face name={c.name} size={36} i={i} />
+          <Face size={36} i={i} group={'group' in c && c.group} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
@@ -169,6 +222,10 @@ const TH_CHATS = [
   { name: 'sana.writes', msg: 'You sent a post', time: '3d' },
   { name: 'theo.r', msg: 'Good morning ☀️ see you at 10', time: '1w' },
   { name: 'june.wav', msg: 'You sent a post', time: '1w' },
+  { name: 'ravi.makes', msg: 'haha yes', time: '2w' },
+  { name: 'cleo_', msg: 'Sent a photo', time: '2w' },
+  { name: 'oscar.p', msg: 'You: thanks!', time: '3w' },
+  { name: 'maya.k', msg: 'Reacted ❤️ to your message', time: '4w' },
 ];
 
 function ThreadsScreen() {
@@ -187,7 +244,7 @@ function ThreadsScreen() {
       </div>
       {TH_CHATS.map((c, i) => (
         <div className="dm-row" key={c.name}>
-          <Face name={c.name} size={36} i={i + 2} />
+          <Face size={36} i={i + 9} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
@@ -205,9 +262,13 @@ function ThreadsScreen() {
 const FB_CHATS = [
   { name: 'Noah Fischer', msg: 'Are we still on for Sunday?', time: '1h' },
   { name: 'Priya Nair', msg: 'You: Happy birthday!! 🎉', time: '1h' },
-  { name: 'Dev, Aria and Kai', msg: 'You: What’s up w you guys?', time: '1h', online: true },
+  { name: 'Dev, Aria and Kai', msg: 'You: What’s up w you guys?', time: '1h', online: true, group: true },
   { name: 'Leo Martins', msg: 'Hello', time: '1d', reply: true },
   { name: 'Ana Costa', msg: 'Messages and calls are secured…', time: '7w', online: true },
+  { name: 'Mum', msg: 'Call me when you’re free', time: '8w' },
+  { name: 'Sunday football', msg: 'Jay: same time next week?', time: '9w', group: true },
+  { name: 'Hana Ito', msg: 'You: Thank you so much!', time: '10w' },
+  { name: 'Ben Carter', msg: 'Sounds good', time: '12w' },
 ];
 
 function FacebookScreen() {
@@ -235,7 +296,7 @@ function FacebookScreen() {
       </div>
       {FB_CHATS.map((c, i) => (
         <div className="dm-row" key={c.name}>
-          <Face name={c.name} size={36} i={i + 1} online={c.online} />
+          <Face size={36} i={i + 17} online={c.online} group={'group' in c && c.group} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
