@@ -83,7 +83,10 @@ describe('extra platform scripts', () => {
   it('are valid JavaScript and only added for Threads', () => {
     const { EXTRA_SCRIPTS, withExtras } = require('@/rules/extraScripts');
     expect(() => new Function(EXTRA_SCRIPTS.threads)).not.toThrow();
-    expect(withExtras('instagram', 'x')).toBe('x');
+    expect(() => new Function(EXTRA_SCRIPTS.messenger)).not.toThrow();
+    expect(withExtras('instagram', 'x')).toContain('__onlydmFill');
+    expect(withExtras('instagram', 'x')).not.toContain('__onlydmThreads');
+    expect(() => new Function(withExtras('messenger', 'var a = 1;'))).not.toThrow();
     expect(withExtras('threads', 'x')).toContain('__onlydmThreads');
   });
 });

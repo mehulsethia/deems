@@ -168,6 +168,6 @@ export const motion = {
 export const layout = {
   maxContentWidth: 560,
   wideBreakpoint: 700,
-  /** Web content (desktop layout) on iPad / Mac. */
-  webMaxWidth: 880,
+  /** The inbox column on tablets and desktops: phone width, so the platforms show their phone layout. */
+  webMaxWidth: 520,
 } as const;

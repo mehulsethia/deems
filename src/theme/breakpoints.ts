@@ -17,7 +17,7 @@ export interface LayoutInfo {
   narrow: boolean;
   /** Multiplier for headline sizes, 0.86..1.12. */
   headlineScale: number;
-  /** Desktop web layout inside the web view (iPad, Mac, tablets). */
+  /** Tablet or desktop width: the inbox becomes a centred phone-width column. */
   isWide: boolean;
   webWidth: number;
 }

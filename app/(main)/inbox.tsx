@@ -14,6 +14,10 @@ import { readProgress } from '@/state/progress';
 import { onWebEvent } from '@/state/webEvents';
 import { STORY_RINGS_SCRIPT } from '@/stories/instagram';
 import { colors, fonts, radius, sizes, spacing } from '@/theme/tokens';
+import { useLayout } from '@/theme/useLayout';
+
+/** The three inboxes are light pages; the strip under them (home indicator, Android nav bar) matches. */
+const PAGE_BACKGROUND = '#FFFFFF';
 
 /** Connected platforms, in the order the user picked them. Falls back to the active one if none is connected. */
 function tabsFor(connected: PlatformId[]): PlatformId[] {
@@ -27,6 +31,7 @@ const isMessages = (path: string) => pathMatches(path, ['/direct']);
 
 export default function Inbox() {
   const insets = useSafeAreaInsets();
+  const { webWidth, isWide } = useLayout();
   const router = useRouter();
   const refs = useRef<Partial<Record<PlatformId, PlatformWebViewHandle | null>>>({});
 
@@ -77,58 +82,60 @@ export default function Inbox() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }}>
-      <View style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md }}>
-        <Logo size={22} />
-        <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={6} onPress={() => router.push('/(main)/settings')} style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.sm }}>
-          <AppText variant="bodyMedium" muted>Settings</AppText>
-        </Pressable>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right, alignItems: 'center' }}>
+      {/* One phone-width column on every screen: header, tabs and inbox line up on phones, tablets and desktops. */}
+      <View style={{ flex: 1, width: webWidth, maxWidth: '100%' }}>
+        <View style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md }}>
+          <Logo size={22} />
+          <Pressable accessibilityRole="button" accessibilityLabel="Settings" hitSlop={6} onPress={() => router.push('/(main)/settings')} style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.sm }}>
+            <AppText variant="bodyMedium" muted>Settings</AppText>
+          </Pressable>
+        </View>
 
-      {tabs.length > 1 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          accessibilityRole="tablist"
-          style={{ flexGrow: 0 }}
-          contentContainerStyle={{ gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.sm }}
-        >
-          {tabs.map((id) => {
-            const on = id === active;
-            return (
-              <Pressable
-                key={id}
-                accessibilityRole="tab"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={platformLabel(id)}
-                onPress={() => select(id)}
-                style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.surface, borderWidth: 1, borderColor: on ? colors.primary : colors.hairline }}
-              >
-                <AppText variant="small" tone={on ? 'onPrimary' : 'text'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-      )}
+        {tabs.length > 1 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            accessibilityRole="tablist"
+            style={{ flexGrow: 0 }}
+            contentContainerStyle={{ gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.sm }}
+          >
+            {tabs.map((id) => {
+              const on = id === active;
+              return (
+                <Pressable
+                  key={id}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={platformLabel(id)}
+                  onPress={() => select(id)}
+                  style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.surface, borderWidth: 1, borderColor: on ? colors.primary : colors.hairline }}
+                >
+                  <AppText variant="small" tone={on ? 'onPrimary' : 'text'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        )}
 
-
-      <View style={{ flex: 1 }}>
-        {tabs
-          .filter((id) => visited.includes(id))
-          .map((id) => (
-            <View key={id} style={{ flex: 1, display: id === active ? 'flex' : 'none' }}>
-              <PlatformWebView
-                ref={(h) => {
-                  refs.current[id] = h;
-                }}
-                pack={getPack(id)}
-                active={id === active}
-                showProgress
-                onRoute={(p) => onRoute(id, p)}
-                onShared={(u) => onShared(id, u)}
-              />
-            </View>
-          ))}
+        <View style={{ flex: 1, backgroundColor: PAGE_BACKGROUND, paddingBottom: insets.bottom, overflow: 'hidden', borderTopLeftRadius: isWide ? radius.card : 0, borderTopRightRadius: isWide ? radius.card : 0 }}>
+          {tabs
+            .filter((id) => visited.includes(id))
+            .map((id) => (
+              <View key={id} style={{ flex: 1, display: id === active ? 'flex' : 'none' }}>
+                <PlatformWebView
+                  ref={(h) => {
+                    refs.current[id] = h;
+                  }}
+                  pack={getPack(id)}
+                  active={id === active}
+                  showProgress
+                  onRoute={(p) => onRoute(id, p)}
+                  onShared={(u) => onShared(id, u)}
+                />
+              </View>
+            ))}
+        </View>
       </View>
     </View>
   );

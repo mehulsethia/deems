@@ -62,7 +62,7 @@ function parseMessage(raw: string): WebMessage | null {
 }
 
 export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = true, onRoute, onUrlChange, onShared, ref }: Props) {
-  const { isWide, webWidth } = useLayout();
+  const { webWidth } = useLayout();
   const webRef = useRef<WebView>(null);
   const canGoBack = useRef(false);
   const [progress, setProgress] = useState(0);
@@ -76,7 +76,8 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
         : withExtras(effectivePack.id, buildScript(effectivePack)),
     [effectivePack, lockedUrl],
   );
-  const userAgent = isWide ? pack.userAgent.desktop : Platform.OS === 'ios' ? pack.userAgent.ios : pack.userAgent.android;
+  // The phone layout everywhere: on tablets and desktops the inbox sits in a phone-width column.
+  const userAgent = Platform.OS === 'ios' ? pack.userAgent.ios : pack.userAgent.android;
 
   useImperativeHandle(ref, () => ({
     reload: () => webRef.current?.reload(),
@@ -197,7 +198,7 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <View style={[styles.column, { width: webWidth }, isWide && { borderColor: colors.hairline, borderLeftWidth: 1, borderRightWidth: 1 }]}>
+      <View style={[styles.column, { width: webWidth }]}>
         <WebView
           key={userAgent}
           ref={webRef}
