@@ -7,6 +7,7 @@ const IDS: readonly PlatformId[] = ['instagram', 'threads', 'messenger'];
 
 export const isSignedInTo = (id: PlatformId): boolean => storage.getBoolean(signedInKey(id)) ?? false;
 export const markSignedInTo = (id: PlatformId) => storage.set(signedInKey(id), true);
+export const markSignedOutOf = (id: PlatformId) => storage.remove(signedInKey(id));
 
 export const connectedPlatforms = (): PlatformId[] => IDS.filter(isSignedInTo);
 

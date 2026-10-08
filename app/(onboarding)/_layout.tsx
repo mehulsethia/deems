@@ -29,7 +29,7 @@ export default function OnboardingLayout() {
       {RECEIPT_SCREENS.map((name) => (
         <Stack.Screen key={name} name={name} options={{ animation: 'fade' }} />
       ))}
-      <Stack.Screen name="login" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="login" options={{ presentation: 'fullScreenModal' }} />
       <Stack.Screen name="reveal" options={{ animation: 'fade' }} />
     </Stack>
   );

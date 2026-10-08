@@ -17,12 +17,31 @@ import { formatDate, MANAGE_SUBSCRIPTIONS_URL } from '@/purchases';
 import { usePayments } from '@/purchases/PaymentsProvider';
 import { getActivePack, PLATFORM_IDS } from '@/rules/store';
 import { platformLabel } from '@/state/platformMeta';
+import { disconnectPlatform } from '@/state/disconnect';
 import { connectedPlatforms } from '@/state/platforms';
+import type { PlatformId } from '@/rules/types';
 import { clearProgress } from '@/state/progress';
 import { emitWebEvent } from '@/state/webEvents';
-import { colors, radius, sizes, spacing, type ColorName } from '@/theme/tokens';
+import { colors, fonts, radius, sizes, spacing, type ColorName } from '@/theme/tokens';
 
-function Row({ label, detail, onPress, disabled, tone, last }: { label: string; detail?: string; onPress?: () => void; disabled?: boolean; tone?: ColorName; last?: boolean }) {
+function Row({
+  label,
+  detail,
+  onPress,
+  disabled,
+  tone,
+  last,
+  action,
+}: {
+  label: string;
+  detail?: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  tone?: ColorName;
+  last?: boolean;
+  /** A small outlined button on the right, e.g. Disconnect. */
+  action?: { label: string; onPress: () => void; accessibilityLabel: string };
+}) {
   const actionable = !!onPress && !disabled;
   return (
     <Pressable
@@ -48,6 +67,25 @@ function Row({ label, detail, onPress, disabled, tone, last }: { label: string; 
         {detail ? <AppText variant="small" muted>{detail}</AppText> : null}
       </View>
       {actionable && <ChevronIcon color={colors.textMuted} />}
+      {action ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action.accessibilityLabel}
+          onPress={action.onPress}
+          hitSlop={6}
+          style={({ pressed }) => ({
+            minHeight: 36,
+            justifyContent: 'center',
+            paddingHorizontal: spacing.md,
+            borderRadius: radius.pill,
+            borderWidth: 1,
+            borderColor: colors.text,
+            opacity: pressed ? 0.6 : 1,
+          })}
+        >
+          <AppText variant="small" style={{ fontFamily: fonts.bodySemi }}>{action.label}</AppText>
+        </Pressable>
+      ) : null}
     </Pressable>
   );
 }
@@ -80,14 +118,33 @@ export default function Settings() {
 
   const doRestore = async () => setNote((await restore()) ? 'Subscription restored.' : 'No active subscription found.');
 
-  const signOut = () =>
+  const disconnect = (id: PlatformId) => {
+    const name = platformLabel(id);
     Alert.alert(
-      'Sign out and clear data?',
-      'This signs you out of everything inside OnlyDM and clears everything OnlyDM stored on this device. Your subscription is not affected.',
+      `Disconnect ${name}?`,
+      `This signs you out of ${name} inside OnlyDM and removes its sign-in from this phone. Your other accounts stay connected, and your ${name} account itself isn't affected.`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Sign out',
+          text: 'Disconnect',
+          style: 'destructive',
+          onPress: async () => {
+            await disconnectPlatform(id);
+            setConnected(connectedPlatforms());
+          },
+        },
+      ],
+    );
+  };
+
+  const signOut = () =>
+    Alert.alert(
+      'Sign out of everything?',
+      'This disconnects Instagram, Threads and Facebook, clears your OnlyDM answers from this phone and starts OnlyDM from the beginning. Your subscription is not affected.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign out of everything',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -134,6 +191,7 @@ export default function Settings() {
                 label={on ? name : `Connect ${name}`}
                 detail={on ? 'Connected' : 'Sign in on its own page'}
                 onPress={on ? undefined : () => router.push({ pathname: '/(onboarding)/login', params: { platform: id } })}
+                action={on ? { label: 'Disconnect', onPress: () => disconnect(id), accessibilityLabel: `Disconnect ${name}` } : undefined}
                 last={i === PLATFORM_IDS.length - 1}
               />
             );
@@ -142,7 +200,7 @@ export default function Settings() {
 
         <Section title="Show">
           <Row label="Reload current page" onPress={() => { emitWebEvent('reload'); router.back(); }} />
-          <Row label="Sign out and clear data" tone="removedOnDark" onPress={signOut} last />
+          <Row label="Sign out of everything" detail="Disconnects all accounts and starts over" tone="removedOnDark" onPress={signOut} last />
         </Section>
 
         <Section title="Coming later">

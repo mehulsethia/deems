@@ -71,8 +71,8 @@ describe('shared content', () => {
 });
 
 describe('bundled instagram pack', () => {
-  it('allows the inbox, stories and sign-in paths', () => {
-    for (const p of ['/direct/inbox/', '/direct/t/1/', '/stories/a/1/', '/accounts/login/', '/challenge/', '/two_factor/', '/auth/x']) {
+  it('allows the inbox and sign-in paths', () => {
+    for (const p of ['/direct/inbox/', '/direct/t/1/', '/accounts/login/', '/challenge/', '/two_factor/', '/auth/x']) {
       expect(isAllowedPath(pack, p)).toBe(true);
     }
   });
@@ -124,5 +124,17 @@ describe('lockPackToUrl', () => {
     expect(decideNavigation(locked, 'https://www.instagram.com/reel/Cabc/')).toEqual({ action: 'allow' });
     expect(decideNavigation(locked, 'https://www.instagram.com/direct/inbox/')).toMatchObject({ action: 'redirect' });
     expect(decideNavigation(locked, 'https://www.instagram.com/reel/Cother/')).toMatchObject({ action: 'redirect' });
+  });
+  it('follows the same media between /reel, /reels, /p and /tv', () => {
+    const locked = lockPackToUrl(pack, 'https://www.instagram.com/reel/Cabc/?igsh=1');
+    for (const p of ['/reels/Cabc/', '/p/Cabc/', '/tv/Cabc', '/reel/Cabc/comments/']) {
+      expect(decideNavigation(locked, `https://www.instagram.com${p}`)).toEqual({ action: 'allow' });
+    }
+    expect(decideNavigation(locked, 'https://www.instagram.com/reels/Cnext/')).toMatchObject({ action: 'redirect' });
+  });
+  it('keeps a shared story to that person', () => {
+    const locked = lockPackToUrl(pack, 'https://www.instagram.com/stories/maya/3141/');
+    expect(decideNavigation(locked, 'https://www.instagram.com/stories/maya/3142/')).toEqual({ action: 'allow' });
+    expect(decideNavigation(locked, 'https://www.instagram.com/stories/jo/1/')).toMatchObject({ action: 'redirect' });
   });
 });

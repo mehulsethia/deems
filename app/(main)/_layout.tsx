@@ -13,7 +13,7 @@ export default function MainLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
-      <Stack.Screen name="post" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="post" options={{ presentation: 'fullScreenModal' }} />
     </Stack>
   );
 }

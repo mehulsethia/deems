@@ -8,8 +8,9 @@ import type {
 } from 'react-native-webview/lib/WebViewTypes';
 import * as WebBrowser from 'expo-web-browser';
 import { decideNavigation, lockPackToUrl } from '@/rules/matching';
+import { withExtras } from '@/rules/extraScripts';
 import { buildScript } from '@/rules/scriptBuilder';
-import { isReelUrl, sharedPackFor, unwrapLinkShim, withReelLock } from '@/rules/sharedContent';
+import { isMediaUrl, sharedPackFor, swipeLockFor, unwrapLinkShim, withLock } from '@/rules/sharedContent';
 import type { PlatformRules, WebMessage } from '@/rules/types';
 import { colors, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
@@ -69,7 +70,10 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
 
   const effectivePack = useMemo(() => (lockedUrl ? lockPackToUrl(pack, lockedUrl) : pack), [pack, lockedUrl]);
   const script = useMemo(
-    () => (lockedUrl && isReelUrl(lockedUrl) ? withReelLock(buildScript(effectivePack), lockedUrl) : buildScript(effectivePack)),
+    () =>
+      lockedUrl
+        ? withLock(buildScript(effectivePack), effectivePack.allowedPathPrefixes, swipeLockFor(lockedUrl))
+        : withExtras(effectivePack.id, buildScript(effectivePack)),
     [effectivePack, lockedUrl],
   );
   const userAgent = isWide ? pack.userAgent.desktop : Platform.OS === 'ios' ? pack.userAgent.ios : pack.userAgent.android;
@@ -108,7 +112,8 @@ export function PlatformWebView({ pack, uri, lockedUrl, showProgress, active = t
         case 'external': {
           // A reel or post from another platform (an Instagram reel sent on Facebook) still opens locked, not in a browser.
           const real = unwrapLinkShim(d.url);
-          if (onShared && !lockedUrl && sharedPackFor(real)) onShared(real);
+          // Photos and videos sent in a chat open in OnlyDM's own viewer too.
+          if (onShared && !lockedUrl && (sharedPackFor(real) || isMediaUrl(real))) onShared(real);
           else WebBrowser.openBrowserAsync(d.url).catch(() => {});
           return false;
         }

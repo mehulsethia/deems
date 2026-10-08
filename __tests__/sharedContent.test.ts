@@ -1,4 +1,4 @@
-import { isReelUrl, reelLockScript, sharedPackFor, unwrapLinkShim, withReelLock } from '@/rules/sharedContent';
+import { isMediaUrl, isReelUrl, lockScript, sharedPackFor, swipeLockFor, unwrapLinkShim, withLock } from '@/rules/sharedContent';
 
 describe('isReelUrl', () => {
   it('matches a specific reel, not the reels tab or a post', () => {
@@ -39,18 +39,51 @@ describe('unwrapLinkShim', () => {
   });
 });
 
-describe('reelLockScript', () => {
-  it('is valid JavaScript with the locked path embedded safely', () => {
-    const js = reelLockScript('https://www.instagram.com/reel/Cabc/?igsh=1');
+describe('lockScript', () => {
+  it('is valid JavaScript with the allowed paths embedded safely', () => {
+    const js = lockScript(['/reel/Cabc', '/p/Cabc/'], 'vertical');
     expect(() => new Function(js)).not.toThrow();
-    expect(js).toContain('var LOCKED = "/reel/cabc";');
+    expect(js).toContain('var ALLOWED = ["/reel/cabc","/p/cabc"];');
+    expect(js).toContain('var SWIPE = "vertical";');
   });
 });
 
-describe('withReelLock', () => {
+describe('withLock', () => {
   it('keeps the lock running even if the rules script throws', () => {
-    const js = withReelLock('throw new Error("rules");\ntrue;', 'https://www.instagram.com/reel/Cabc/');
+    const js = withLock('throw new Error("rules");\ntrue;', ['/reel/cabc'], 'vertical');
     expect(() => new Function(js)).not.toThrow();
-    expect(js.indexOf('window.__onlydmReelLock')).toBeGreaterThan(js.indexOf('catch (e) {}'));
+    expect(js.indexOf('window.__onlydmLock')).toBeGreaterThan(js.indexOf('catch (e) {}'));
+  });
+});
+
+describe('swipeLockFor', () => {
+  it('locks swiping on reels and stories, not posts', () => {
+    expect(swipeLockFor('https://www.instagram.com/reel/Cabc/')).toBe('vertical');
+    expect(swipeLockFor('https://www.instagram.com/stories/maya/123/')).toBe('all');
+    expect(swipeLockFor('https://www.instagram.com/p/Cabc/')).toBe('none');
+  });
+});
+
+describe('isMediaUrl', () => {
+  it('recognises photos and videos from Meta media servers only', () => {
+    expect(isMediaUrl('https://scontent-lhr8-1.cdninstagram.com/v/t51/abc.jpg?x=1')).toBe(true);
+    expect(isMediaUrl('https://video.fbcdn.net/v/abc.mp4')).toBe(true);
+    expect(isMediaUrl('https://evil.example/cdninstagram.com/a.jpg')).toBe(false);
+    expect(isMediaUrl('http://scontent.cdninstagram.com/a.jpg')).toBe(false);
+  });
+});
+
+describe('shared stories', () => {
+  it('open in the locked viewer', () => {
+    expect(sharedPackFor('https://www.instagram.com/stories/maya/3141/', 'instagram')?.id).toBe('instagram');
+  });
+});
+
+describe('extra platform scripts', () => {
+  it('are valid JavaScript and only added for Threads', () => {
+    const { EXTRA_SCRIPTS, withExtras } = require('@/rules/extraScripts');
+    expect(() => new Function(EXTRA_SCRIPTS.threads)).not.toThrow();
+    expect(withExtras('instagram', 'x')).toBe('x');
+    expect(withExtras('threads', 'x')).toContain('__onlydmThreads');
   });
 });

@@ -38,27 +38,48 @@ export function sharedPackFor(url: string, preferred?: PlatformId): PlatformRule
   return null;
 }
 
-/** Runs the rules script, then the reel lock, so an error in one never stops the other. */
-export function withReelLock(rulesScript: string, url: string): string {
-  return `try {\n${rulesScript}\n} catch (e) {}\n${reelLockScript(url)}`;
+const MEDIA_HOSTS = ['cdninstagram.com', 'fbcdn.net'];
+
+/** A photo or video file sent in a chat (served from Meta's media servers). */
+export function isMediaUrl(url: string): boolean {
+  const parsed = parseUrl(url);
+  return !!parsed && parsed.protocol === 'https' && MEDIA_HOSTS.some((h) => parsed.host === h || parsed.host.endsWith('.' + h));
+}
+
+export const isStoryUrl = (url: string): boolean => {
+  const parsed = parseUrl(url);
+  return !!parsed && isSharedContentPath(parsed.path, ['/stories']);
+};
+
+/** How much swiping the shared viewer allows: none for reels and stories (taps still work), normal for posts. */
+export type SwipeLock = 'vertical' | 'all' | 'none';
+export const swipeLockFor = (url: string): SwipeLock => (isStoryUrl(url) ? 'all' : isReelUrl(url) ? 'vertical' : 'none');
+
+/** Runs the rules script, then the lock, so an error in one never stops the other. */
+export function withLock(rulesScript: string, allowedPaths: string[], swipe: SwipeLock): string {
+  return `try {\n${rulesScript}\n} catch (e) {}\n${lockScript(allowedPaths, swipe)}`;
 }
 
 /**
- * Runs after the rules script in the shared viewer for a reel: navigation to any other address is
- * ignored without reloading, and vertical swipes, wheel and arrow keys do nothing, so the next reel
- * never loads. Taps (play, pause, sound, like) still work.
+ * Runs after the rules script in the shared viewer. Moving to any other item is ignored without reloading.
+ * For reels, vertical swipes, wheel and arrow keys do nothing, so the next reel never loads; for stories, no
+ * swipe does anything. Taps (play, pause, sound, like, next frame) still work.
  */
-export function reelLockScript(url: string): string {
-  const path = normalizePath(parseUrl(url)?.path ?? '/').toLowerCase().replace(/\/$/, '');
+export function lockScript(allowedPaths: string[], swipe: SwipeLock): string {
+  const allowed = allowedPaths.map((p) => normalizePath(p).toLowerCase().replace(/\/$/, ''));
   return `(function () {
-  if (window.__onlydmReelLock) return;
-  window.__onlydmReelLock = true;
-  var LOCKED = ${JSON.stringify(path)};
-  var STYLE_ID = 'onlydm-reel-lock';
+  if (window.__onlydmLock) return;
+  window.__onlydmLock = true;
+  var ALLOWED = ${JSON.stringify(allowed)};
+  var SWIPE = ${JSON.stringify(swipe)};
+  var STYLE_ID = 'onlydm-lock';
   var CSS = 'html,body{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}' +
     '*{scroll-snap-type:none!important;overscroll-behavior:none!important}';
   function same(url) {
-    try { return new URL(String(url), location.href).pathname.toLowerCase().replace(/\\/$/, '') === LOCKED; } catch (e) { return true; }
+    try {
+      var p = new URL(String(url), location.href).pathname.toLowerCase().replace(/\\/$/, '');
+      return ALLOWED.some(function (a) { return p === a || p.indexOf(a + '/') === 0; });
+    } catch (e) { return true; }
   }
   ['pushState', 'replaceState'].forEach(function (name) {
     var orig = history[name];
@@ -67,6 +88,7 @@ export function reelLockScript(url: string): string {
       return orig.apply(history, arguments);
     };
   });
+  if (SWIPE === 'none') return;
   function ensureStyle() {
     var root = document.head || document.documentElement;
     if (!root || document.getElementById(STYLE_ID)) return;
@@ -84,7 +106,8 @@ export function reelLockScript(url: string): string {
   }, { passive: true, capture: true });
   document.addEventListener('touchmove', function (e) {
     var t = e.touches[0];
-    if (t && Math.abs(t.clientY - y) >= Math.abs(t.clientX - x)) e.preventDefault();
+    if (!t) return;
+    if (SWIPE === 'all' || Math.abs(t.clientY - y) >= Math.abs(t.clientX - x)) e.preventDefault();
   }, { passive: false, capture: true });
   document.addEventListener('wheel', function (e) { e.preventDefault(); }, { passive: false, capture: true });
   document.addEventListener('keydown', function (e) {

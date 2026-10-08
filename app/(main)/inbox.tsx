@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Logo } from '@/components/Logo';
 import { PlatformWebView, type PlatformWebViewHandle } from '@/components/PlatformWebView';
-import { StoriesBackBar } from '@/components/StoriesBackBar';
 import { isAllowedPath, isLoginPath, pathMatches } from '@/rules/matching';
 import { getPack } from '@/rules/store';
 import type { PlatformId } from '@/rules/types';
@@ -25,7 +24,6 @@ function tabsFor(connected: PlatformId[]): PlatformId[] {
 }
 
 const isMessages = (path: string) => pathMatches(path, ['/direct']);
-const isStory = (path: string) => pathMatches(path, ['/stories']);
 
 export default function Inbox() {
   const insets = useSafeAreaInsets();
@@ -61,7 +59,6 @@ export default function Inbox() {
     };
   }, [active]);
 
-  const [igPath, setIgPath] = useState('');
 
   const onRoute = useCallback((id: PlatformId, path: string) => {
     const pack = getPack(id);
@@ -69,7 +66,6 @@ export default function Inbox() {
     // Being on a real page (not sign-in or a checkpoint) means the session is live.
     if (live) markSignedInTo(id);
     if (id !== 'instagram') return;
-    setIgPath(path);
     // Instagram's web inbox doesn't mark who has a story; the script rings those avatars like the app does.
     // Safe to run on every visit: it installs once per page and refreshes at most every 30 seconds.
     if (live && isMessages(path)) refs.current.instagram?.inject(STORY_RINGS_SCRIPT);
@@ -115,9 +111,6 @@ export default function Inbox() {
         </ScrollView>
       )}
 
-      {active === 'instagram' && isStory(igPath) && (
-        <StoriesBackBar onBack={() => refs.current.instagram?.load(getPack('instagram').startUrl)} />
-      )}
 
       <View style={{ flex: 1 }}>
         {tabs

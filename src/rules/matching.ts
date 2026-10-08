@@ -79,14 +79,27 @@ export function decideNavigation(pack: PlatformRules, url: string): NavigationDe
   return { action: 'redirect', url: pack.startUrl };
 }
 
-/** Pack restricted to one URL, for the shared-content modal. */
+/**
+ * The paths a shared item may move between while it stays the same item. Instagram links the same media as
+ * /p/ID, /reel/ID, /reels/ID or /tv/ID and redirects between them, so all of those are allowed; a shared story
+ * may move between that person's story frames (/stories/name/...).
+ */
+export function lockedPathsFor(pack: PlatformRules, url: string): string[] {
+  const path = normalizePath(parseUrl(url)?.path ?? '/');
+  const segs = path.split('/').filter(Boolean);
+  const prefix = segs.length >= 2 ? '/' + segs[0].toLowerCase() : '';
+  const shared = pack.sharedContentPathPrefixes.map((p) => normalizePath(p).toLowerCase().replace(/\/$/, ''));
+  if (!prefix || !shared.includes(prefix)) return [path];
+  if (prefix === '/stories') return [`/stories/${segs[1]}`];
+  return shared.filter((p) => p !== '/stories').map((p) => `${p}/${segs[1]}`);
+}
+
+/** Pack restricted to one shared item, for the shared-content modal. */
 export function lockPackToUrl(pack: PlatformRules, url: string): PlatformRules {
-  const parsed = parseUrl(url);
-  const path = parsed?.path ?? '/';
   return {
     ...pack,
     startUrl: url,
-    allowedPathPrefixes: [path],
+    allowedPathPrefixes: lockedPathsFor(pack, url),
     loginPathPrefixes: [],
     sharedContentPathPrefixes: [],
   };
