@@ -726,7 +726,7 @@ button {
 
 .compare-wrap {
   /* Leaves room under the phone for two rows of badges. */
-  --phone-h: min(calc(100svh - 262px), 560px);
+  --phone-h: min(calc(100svh - 216px), 600px);
   width: calc(var(--phone-h) * 9 / 18.4);
   max-width: 100%;
   margin: 0 auto;
@@ -963,31 +963,6 @@ button {
 
 /* ---------- Hero demo: feed, then OnlyDM on Instagram, Threads, Facebook ---------- */
 
-.demo-steps {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.demo-step {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--white);
-  color: var(--grey);
-  cursor: pointer;
-  transition: all 0.25s var(--ease);
-}
-.demo-step.on {
-  background: var(--black);
-  border-color: var(--black);
-  color: var(--white);
-}
 .demo-app {
   position: absolute;
   inset: 0;
@@ -999,6 +974,8 @@ button {
   clip-path: inset(0 0 0 0);
 }
 .dm-app {
+  /* Everything inside is drawn for a 260px-wide screen and scales with the phone. */
+  --u: calc(100cqw / 260);
   position: absolute;
   inset: 0;
   background: var(--black);
@@ -1011,27 +988,31 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 14px 8px;
+  padding: calc(2 * var(--u)) calc(16 * var(--u)) calc(7 * var(--u));
+}
+.dm-bar .brand svg {
+  width: calc(16 * var(--u));
+  height: auto;
 }
 .dm-bar .wordmark {
-  font-size: 18px;
+  font-size: calc(16 * var(--u));
   --fg: var(--white);
 }
 .dm-settings {
-  font-size: 12px;
+  font-size: calc(11 * var(--u));
   color: var(--silver);
 }
 .dm-tabs {
   display: flex;
-  gap: 6px;
-  padding: 0 12px 10px;
+  gap: calc(5 * var(--u));
+  padding: 0 calc(14 * var(--u)) calc(9 * var(--u));
 }
 .dm-tab {
   flex: 1;
   text-align: center;
-  font-size: 12px;
+  font-size: calc(11 * var(--u));
   font-weight: 600;
-  padding: 6px 4px;
+  padding: calc(5 * var(--u)) calc(2 * var(--u));
   border-radius: 999px;
   border: 1px solid var(--line-dark);
   color: var(--white);
@@ -1061,28 +1042,28 @@ button {
   background: #fff;
   color: #0a0a0a;
   font-family: -apple-system, 'Inter Variable', system-ui, sans-serif;
-  padding: 10px 12px 0;
+  padding: calc(9 * var(--u)) calc(14 * var(--u)) 0;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: calc(7 * var(--u));
   overflow: hidden;
 }
 .dm-search {
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 11px;
+  gap: calc(6 * var(--u));
+  height: calc(27 * var(--u));
+  padding: 0 calc(10 * var(--u));
   border-radius: 999px;
   background: #efefef;
   color: #737373;
-  font-size: 12px;
+  font-size: calc(11 * var(--u));
   flex: none;
 }
 .dm-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: calc(9 * var(--u));
   flex: none;
 }
 .dm-face {
@@ -1096,10 +1077,10 @@ button {
 }
 .dm-online {
   position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 11px;
-  height: 11px;
+  right: calc(-1 * var(--u));
+  bottom: calc(-1 * var(--u));
+  width: calc(10 * var(--u));
+  height: calc(10 * var(--u));
   border-radius: 999px;
   background: #31a24c;
   border: 2px solid #fff;
@@ -1108,17 +1089,17 @@ button {
   min-width: 0;
   flex: 1;
   display: grid;
-  gap: 1px;
+  gap: calc(1 * var(--u));
 }
 .dm-name {
-  font-size: 12.5px;
+  font-size: calc(11.5 * var(--u));
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .dm-msg {
-  font-size: 11.5px;
+  font-size: calc(10.5 * var(--u));
   color: #737373;
   white-space: nowrap;
   overflow: hidden;
@@ -1136,7 +1117,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
+  height: calc(22 * var(--u));
   flex: none;
 }
 .ig-head > svg {
@@ -1146,57 +1127,57 @@ button {
 .ig-user {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: calc(3 * var(--u));
   font-weight: 700;
-  font-size: 14px;
+  font-size: calc(13 * var(--u));
 }
 .ig-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   text-align: center;
-  font-size: 12px;
+  font-size: calc(11 * var(--u));
   font-weight: 600;
   color: #737373;
   border-bottom: 1px solid #dbdbdb;
-  margin: 0 -12px;
+  margin: 0 calc(-14 * var(--u));
   flex: none;
 }
 .ig-tabs span {
-  padding: 6px 0 7px;
+  padding: calc(4 * var(--u)) 0 calc(6 * var(--u));
 }
 .ig-tabs .on {
   color: #0a0a0a;
   border-bottom: 1.5px solid #0a0a0a;
-  margin-bottom: -1px;
+  margin-bottom: calc(-1 * var(--u));
 }
 .ig-note {
   display: grid;
   justify-items: start;
-  gap: 3px;
+  gap: calc(3 * var(--u));
   flex: none;
   position: relative;
-  padding-top: 18px;
+  padding-top: calc(16 * var(--u));
 }
 .ig-bubble {
   position: absolute;
   top: 0;
   left: 0;
-  font-size: 9.5px;
+  font-size: calc(9 * var(--u));
   color: #737373;
   background: #fff;
   border-radius: 10px;
-  padding: 4px 8px;
+  padding: calc(3 * var(--u)) calc(7 * var(--u));
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   z-index: 1;
 }
 .ig-note-label {
-  font-size: 10px;
+  font-size: calc(9.5 * var(--u));
   color: #737373;
-  padding-left: 2px;
+  padding-left: calc(2 * var(--u));
 }
 .ig-dot {
-  width: 7px;
-  height: 7px;
+  width: calc(7 * var(--u));
+  height: calc(7 * var(--u));
   border-radius: 999px;
   background: #4150f7;
   flex: none;
@@ -1211,18 +1192,18 @@ button {
 }
 .th-title {
   font-weight: 800;
-  font-size: 19px;
+  font-size: calc(18 * var(--u));
 }
 .th-pills,
 .fb-pills {
   display: flex;
-  gap: 6px;
+  gap: calc(3 * var(--u));
   flex: none;
 }
 .th-pills span {
-  font-size: 11.5px;
+  font-size: calc(10.5 * var(--u));
   font-weight: 600;
-  padding: 5px 12px;
+  padding: calc(4 * var(--u)) calc(11 * var(--u));
   border-radius: 999px;
   border: 1px solid #dbdbdb;
 }
@@ -1239,15 +1220,15 @@ button {
 }
 .fb-title {
   font-weight: 800;
-  font-size: 21px;
+  font-size: calc(19 * var(--u));
 }
 .fb-actions {
   display: flex;
-  gap: 6px;
+  gap: calc(6 * var(--u));
 }
 .fb-circle {
-  width: 28px;
-  height: 28px;
+  width: calc(25 * var(--u));
+  height: calc(25 * var(--u));
   border-radius: 999px;
   background: #e4e6eb;
   display: grid;
@@ -1258,9 +1239,9 @@ button {
   color: #65676b;
 }
 .fb-pills span {
-  font-size: 11px;
+  font-size: calc(10 * var(--u));
   font-weight: 600;
-  padding: 5px 9px;
+  padding: calc(4 * var(--u)) calc(7 * var(--u));
   border-radius: 999px;
   color: #050505;
 }

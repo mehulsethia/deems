@@ -1,14 +1,14 @@
 'use client';
 
 import { useReducedMotion } from 'motion/react';
-import { useEffect, useRef, useState, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { OnlyDMMark } from './OnlyDMMark';
 import { Wordmark } from './Wordmark';
 
 /**
  * The hero phone, as a short story on a loop: the usual feed, then OnlyDM wipes in on its Instagram tab,
  * then Threads, then Facebook. The chat screens follow each site's real inbox layout with invented people.
- * Visitors can jump to any step; autoplay pauses while they do. Reduce Motion: no autoplay, opens on Instagram.
+ * Reduce Motion: no autoplay; it rests on Instagram.
  */
 
 type Step = 'feed' | 'instagram' | 'threads' | 'facebook';
@@ -19,7 +19,6 @@ const STEPS: { id: Step; label: string; ms: number }[] = [
   { id: 'facebook', label: 'Facebook', ms: 3400 },
 ];
 const PLATFORMS: Step[] = ['instagram', 'threads', 'facebook'];
-const RESUME_AFTER_MS = 9000;
 
 /* ---------- The usual way: a generic feed, drawn in greyscale ---------- */
 
@@ -97,15 +96,18 @@ const SHADES = ['#d4d4d4', '#bdbdbd', '#a3a3a3', '#c8c8c8', '#b0b0b0', '#dadada'
 
 function Face({ name, size, i, online }: { name: string; size: number; i: number; online?: boolean }) {
   return (
-    <span className="dm-face" style={{ width: size, height: size, background: SHADES[i % SHADES.length], fontSize: size * 0.38 }}>
+    <span className="dm-face" style={{ width: u(size), height: u(size), background: SHADES[i % SHADES.length], fontSize: u(size * 0.38) }}>
       {name.replace(/[^A-Za-z]/g, '').charAt(0).toUpperCase()}
       {online ? <span className="dm-online" /> : null}
     </span>
   );
 }
 
+/** A length in phone units: the screens are drawn for a 260px-wide screen and scale with the phone. */
+const u = (n: number) => `calc(${n} * var(--u))`;
+
 const Icon = ({ d, size = 18 }: { d: string; size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg style={{ width: u(size), height: u(size), flex: 'none' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d={d} />
   </svg>
 );
@@ -119,7 +121,6 @@ const IG_CHATS = [
   { name: 'Arjun Mehta', msg: '4+ new messages', time: '19h', unread: true },
   { name: 'Dominic', msg: '2 new messages', time: '1d', unread: true },
   { name: 'Tara', msg: 'Tara sent an attachment.', time: '1w' },
-  { name: 'Kabir', msg: 'Kabir sent an attachment.', time: '2w' },
 ];
 
 function InstagramScreen() {
@@ -141,12 +142,12 @@ function InstagramScreen() {
       </div>
       <div className="ig-note">
         <span className="ig-bubble">What’s new…</span>
-        <Face name="Sam" size={50} i={2} />
+        <Face name="Sam" size={44} i={2} />
         <span className="ig-note-label">Your note</span>
       </div>
       {IG_CHATS.map((c, i) => (
         <div className={`dm-row${c.unread ? ' unread' : ''}`} key={c.name}>
-          <Face name={c.name} size={40} i={i} />
+          <Face name={c.name} size={36} i={i} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
@@ -186,7 +187,7 @@ function ThreadsScreen() {
       </div>
       {TH_CHATS.map((c, i) => (
         <div className="dm-row" key={c.name}>
-          <Face name={c.name} size={40} i={i + 2} />
+          <Face name={c.name} size={36} i={i + 2} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
@@ -234,7 +235,7 @@ function FacebookScreen() {
       </div>
       {FB_CHATS.map((c, i) => (
         <div className="dm-row" key={c.name}>
-          <Face name={c.name} size={40} i={i + 1} online={c.online} />
+          <Face name={c.name} size={36} i={i + 1} online={c.online} />
           <span className="dm-text">
             <span className="dm-name">{c.name}</span>
             <span className="dm-msg">
@@ -307,41 +308,18 @@ function StatusBar() {
 export function HeroDemo() {
   const reduce = useReducedMotion();
   const [picked, setPicked] = useState<Step>('feed');
-  const [touched, setTouched] = useState(false);
-  // Bumped on every choice so the timer restarts even when the same step is chosen again.
-  const [nonce, setNonce] = useState(0);
-  const hold = useRef(false);
-  // Reduce Motion: no autoplay; open on Instagram until the visitor picks a step.
-  const step: Step = reduce && !touched ? 'instagram' : picked;
+  const step: Step = reduce ? 'instagram' : picked;
 
   useEffect(() => {
     if (reduce) return;
     const current = STEPS.findIndex((s) => s.id === picked);
-    const delay = STEPS[current].ms + (hold.current ? RESUME_AFTER_MS : 0);
-    const t = setTimeout(() => {
-      hold.current = false;
-      setPicked(STEPS[(current + 1) % STEPS.length].id);
-    }, delay);
+    const t = setTimeout(() => setPicked(STEPS[(current + 1) % STEPS.length].id), STEPS[current].ms);
     return () => clearTimeout(t);
-  }, [picked, reduce, nonce]);
-
-  const choose = (id: Step) => {
-    hold.current = true;
-    setTouched(true);
-    setPicked(id);
-    setNonce((n) => n + 1);
-  };
+  }, [picked, reduce]);
 
   const onApp = step !== 'feed';
   return (
     <div className="compare-wrap demo-wrap">
-      <div className="demo-steps" role="group" aria-label="See it in action">
-        {STEPS.map((s) => (
-          <button key={s.id} type="button" className={`demo-step${s.id === step ? ' on' : ''}`} aria-pressed={s.id === step} onClick={() => choose(s.id)}>
-            {s.label}
-          </button>
-        ))}
-      </div>
       <div className="phone" aria-hidden>
         <div className="phone-screen">
           <span className="phone-notch" />
