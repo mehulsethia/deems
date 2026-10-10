@@ -8,6 +8,7 @@ import { BricolageGrotesque_400Regular, BricolageGrotesque_800ExtraBold } from '
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black } from '@expo-google-fonts/inter';
 import { Nunito_600SemiBold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
 import { GeistMono_400Regular, GeistMono_500Medium, GeistMono_700Bold } from '@expo-google-fonts/geist-mono';
+import { Backdrop } from '@/components/Backdrop';
 import { PaymentsProvider } from '@/purchases/PaymentsProvider';
 import { colors } from '@/theme/tokens';
 
@@ -43,8 +44,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaymentsProvider>
-        <StatusBar style="light" />
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+        <StatusBar style="dark" />
+        <Backdrop />
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(onboarding)" />
           <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />

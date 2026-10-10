@@ -88,7 +88,7 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, alignItems: 'center', backgroundColor: colors.background },
+  root: { flex: 1, alignItems: 'center', backgroundColor: 'transparent' },
   column: { flex: 1, maxWidth: '100%', paddingHorizontal: sizes.gutter },
   header: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   touch: { minWidth: sizes.touch, minHeight: sizes.touch, justifyContent: 'center' },

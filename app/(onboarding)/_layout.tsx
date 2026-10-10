@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Stack, useSegments } from 'expo-router';
 import { saveStep } from '@/state/progress';
 import { isOnboardingStep } from '@/state/onboardingSteps';
-import { colors, motion } from '@/theme/tokens';
+import { motion } from '@/theme/tokens';
 
 /** The receipt "stays" across these screens, so they cross-fade instead of sliding. */
 const RECEIPT_SCREENS = ['receipt', 'year', 'refund'] as const;
@@ -23,7 +23,7 @@ export default function OnboardingLayout() {
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
         animationDuration: motion.base,
-        contentStyle: { backgroundColor: colors.background },
+        contentStyle: { backgroundColor: 'transparent' },
       }}
     >
       {RECEIPT_SCREENS.map((name) => (
