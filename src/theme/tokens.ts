@@ -2,8 +2,9 @@ import type { FontVariant } from 'react-native';
 
 /**
  * OnlyDM brand tokens. The single source of truth for colour, type, shape and motion.
- * Same system as getonlydm.com: black and white, dark-first. The only colour in the app is the two dots in
- * the OnlyDM mark and the official Meta logos. No coloured gradients, glows or tinted shadows.
+ * Light glass: white base, near-black ink, like getonlydm.com. UI colours stay greyscale. The only colour in
+ * the UI is the OnlyDM mark and the official Meta logos; the soft pastel glow lives in `atmosphere` (backdrop
+ * only) and `platformBloom` (halo behind a selected tile).
  */
 
 /** Raw brand palette. Components use the semantic `colors` below, not these. */
@@ -12,6 +13,7 @@ export const palette = {
   black: '#0A0A0A',
   ink: '#171717',
   graphite: '#3D3D3D',
+  slate: '#595959',
   grey: '#6B6B6B',
   silver: '#A3A3A3',
   line: '#E5E5E5',
@@ -25,49 +27,71 @@ export const palette = {
 } as const;
 
 export const colors = {
-  // Dark surfaces
-  background: palette.black,
-  surface: palette.ink,
-  hairline: palette.lineDark,
+  // Light surfaces
+  background: palette.white,
+  surface: palette.white,
+  hairline: palette.line,
 
-  // Text on dark
-  text: palette.white,
-  /** Secondary text on dark (silver, 8:1 on black). */
-  textMuted: palette.silver,
+  // Frosted glass (cards, icon buttons)
+  glassFill: 'rgba(255,255,255,0.72)',
+  /** 1px highlight along the top edge of glass. */
+  glassEdge: 'rgba(255,255,255,0.95)',
+  glassBorder: 'rgba(10,10,10,0.07)',
 
-  /** Primary action, selected state, progress, things you keep: white on black, like the site's inverted buttons. */
-  primary: palette.white,
-  onPrimary: palette.black,
-  /** White as text, links or thin lines on dark surfaces. */
-  primaryOnDark: palette.white,
+  // Text on light
+  text: palette.black,
+  /** Secondary text (grey, 5.3:1 on white). */
+  textMuted: palette.grey,
 
-  /** Struck-off and removed items: grey strikes and fills, never coloured. */
+  /** Primary action, selected state, progress: near-black on white. */
+  primary: palette.black,
+  onPrimary: palette.white,
+  /** Links and thin accents. Name kept from the dark theme so call sites do not change. */
+  primaryOnDark: palette.black,
+
+  /** Disabled primary button: pale fill, readable label. */
+  disabledFill: palette.line,
+  disabledText: palette.slate,
+
+  /** Struck-off and removed items: grey. */
   removed: palette.grey,
-  /** Removed items as text or thin lines on dark surfaces. */
-  removedOnDark: palette.silver,
-  /** Solid fill carrying white text (the REFUNDED stamp), and removed text on white. */
+  removedOnDark: palette.grey,
   removedText: palette.black,
   onRemoved: palette.white,
 
-  /** Secondary button: outline only, white label. */
-  inverse: palette.white,
-  onInverse: palette.black,
+  /** Secondary button: glass pill, ink label. */
+  inverse: palette.black,
+  onInverse: palette.white,
 
-  // Receipt paper
+  // Receipt paper (lifted with a shadow on the light screen)
   paper: palette.white,
   onPaper: palette.black,
   paperKept: palette.black,
 
-  // Light surfaces (the receipt and light illustrations)
   lightSurface: palette.paper,
   textOnLight: palette.black,
   textMutedOnLight: palette.grey,
 
   /** Dims content behind sheets. */
-  scrim: 'rgba(10,10,10,0.72)',
+  scrim: 'rgba(10,10,10,0.35)',
   /** Neutral black shadow. */
   shadow: '#000000',
   transparent: 'transparent',
+} as const;
+
+/** Backdrop glow (blue, violet, pink: the three logo dots). Never used for UI elements. */
+export const atmosphere = {
+  tint: '#F7F8FB',
+  blue: '#BFD4FF',
+  violet: '#D9C9FF',
+  pink: '#FFCFE3',
+} as const;
+
+/** Soft halo behind a selected platform tile. */
+export const platformBloom = {
+  instagram: '#F7A8C8',
+  threads: '#C9CCD6',
+  messenger: '#A9C8FF',
 } as const;
 
 export type ColorName = keyof typeof colors;
@@ -80,8 +104,8 @@ export const fonts = {
   headlineRegular: 'BricolageGrotesque_400Regular',
   /** Wordmark "DM". */
   brandHeavy: 'BricolageGrotesque_800ExtraBold',
-  headline: 'Inter_800ExtraBold',
-  headlineHeavy: 'Inter_900Black',
+  headline: 'Inter_600SemiBold',
+  headlineHeavy: 'Inter_700Bold',
   body: 'Inter_400Regular',
   bodyMedium: 'Inter_500Medium',
   bodySemi: 'Inter_600SemiBold',
@@ -93,12 +117,12 @@ export const fonts = {
   monoBold: 'GeistMono_700Bold',
 } as const;
 
-/** Headlines: tight tracking (-4%), line height 1.05. Labels: Inter caps with +12% tracking. */
+/** Headlines: SemiBold, tracking -3%, line height 1.1. Labels: Inter caps with +12% tracking. */
 const headline = (fontSize: number, fontFamily: string = fonts.headline) => ({
   fontFamily,
   fontSize,
-  lineHeight: Math.round(fontSize * 1.05),
-  letterSpacing: -0.04 * fontSize,
+  lineHeight: Math.round(fontSize * 1.1),
+  letterSpacing: -0.03 * fontSize,
 });
 const label = (fontSize: number) => ({
   fontFamily: fonts.bodySemi,
@@ -111,7 +135,7 @@ const label = (fontSize: number) => ({
 const TABULAR: FontVariant[] = ['tabular-nums'];
 
 export const typeScale = {
-  display: headline(40, fonts.headlineHeavy),
+  display: headline(42, fonts.headline),
   title: headline(32),
   heading: headline(22),
   body: { fontFamily: fonts.body, fontSize: 17, lineHeight: 24 },
@@ -125,13 +149,14 @@ export const typeScale = {
   receipt: { fontFamily: fonts.mono, fontSize: 13, lineHeight: 20, letterSpacing: 0.06 * 13 },
   label: label(12),
   /** Big numbers (time readouts): crisp, heavy, tabular. */
-  readout: { fontFamily: fonts.headlineHeavy, fontSize: 48, lineHeight: 54, letterSpacing: -1.5, fontVariant: TABULAR },
+  readout: { fontFamily: fonts.headline, fontSize: 56, lineHeight: 62, letterSpacing: -2, fontVariant: TABULAR },
 } as const;
 
 export type TypeVariant = keyof typeof typeScale;
 
 export const radius = {
-  card: 16,
+  card: 22,
+  tile: 28,
   pill: 999,
 } as const;
 
@@ -147,7 +172,7 @@ export const spacing = {
 export const sizes = {
   button: 56,
   touch: 44,
-  progress: 2,
+  progress: 3,
   hairline: 1,
   /** Screen side padding. */
   gutter: 24,
@@ -170,4 +195,12 @@ export const layout = {
   wideBreakpoint: 700,
   /** The inbox column on tablets and desktops: phone width, so the platforms show their phone layout. */
   webMaxWidth: 520,
+} as const;
+
+/** Site easing as Easing.bezier control points. */
+export const EASE = [0.22, 1, 0.36, 1] as const;
+
+export const springs = {
+  press: { damping: 18, stiffness: 320, mass: 0.6 },
+  sheet: { damping: 22, stiffness: 180, mass: 1 },
 } as const;
