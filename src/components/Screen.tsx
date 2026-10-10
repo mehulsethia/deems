@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { Easing, FadeInDown, useReducedMotion } from 'react-native-reanimated';
 import { colors, EASE, motion, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
@@ -43,6 +43,9 @@ interface Props {
 export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false, ownBackdrop = false }: Props) {
   const { contentWidth, spread, short } = useLayout();
   const router = useRouter();
+  // Insets come from the root provider, not a native SafeAreaView: inside a full-screen modal the native view can
+  // report a zero top inset, which put the close button and header under the status bar.
+  const insets = useSafeAreaInsets();
   const showBack = back && router.canGoBack();
   const noteInScroll = short && footerNote;
   const reduce = useReducedMotion();
@@ -62,7 +65,7 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
   );
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom', 'left', 'right']}>
+    <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
       {ownBackdrop ? <Backdrop /> : null}
       <View style={[styles.column, { width: contentWidth }]}>
         {progress !== undefined && (
@@ -93,7 +96,7 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
           </Animated.View>
         ) : null}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { WebView } from 'react-native-webview';
@@ -36,6 +36,7 @@ function MediaViewer({ url }: { url: string }) {
 export default function SharedPost() {
   const { url, platform } = useLocalSearchParams<{ url?: string; platform?: PlatformId }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   // The platform the link was shared on first, then any other that can show it (an Instagram reel sent on Facebook).
   const media = typeof url === 'string' && isMediaUrl(url);
   const pack = typeof url === 'string' && !media ? sharedPackFor(url, platform) : null;
@@ -48,12 +49,12 @@ export default function SharedPost() {
   if (!valid || typeof url !== 'string') return null;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
+    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         <AppText variant="heading">Shared with you</AppText>
         <Button label="Done" variant="ghost" onPress={() => router.back()} style={{ minHeight: 44, paddingVertical: 0, paddingHorizontal: spacing.md }} />
       </View>
       {pack ? <PlatformWebView pack={pack} lockedUrl={url} showProgress /> : <MediaViewer url={url} />}
-    </SafeAreaView>
+    </View>
   );
 }
