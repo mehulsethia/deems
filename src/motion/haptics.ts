@@ -10,3 +10,6 @@ export const thud = () => {
 export const select = () => {
   Haptics.selectionAsync().catch(() => {});
 };
+export const success = () => {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+};

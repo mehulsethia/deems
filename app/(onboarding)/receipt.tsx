@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeIn } from 'react-native-reanimated';
-import { AppText } from '@/components/AppText';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { Receipt } from '@/components/onboarding/Receipt';
 import { Screen } from '@/components/Screen';
@@ -36,7 +36,7 @@ export default function ReceiptScreen() {
     >
       {printed && (
         <Animated.View entering={FadeIn.duration(motion.slow)}>
-          <AppText variant="title" accessibilityLiveRegion="polite">{line}</AppText>
+          <AnimatedHeadline live>{line}</AnimatedHeadline>
         </Animated.View>
       )}
     </Screen>

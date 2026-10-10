@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { OnlyDMMark } from '@/components/OnlyDMMark';
+import { GlassIconButton } from '@/components/GlassIconButton';
 import { CloseIcon, TickIcon } from '@/components/Icons';
 import { Loader } from '@/components/Loader';
 import { Screen } from '@/components/Screen';
@@ -13,6 +15,7 @@ import { scheduleTrialReminder } from '@/notifications/trialReminder';
 import { trialTimeline } from '@/notifications/timeline';
 import { formatDaysCaps } from '@/onboarding/maths';
 import { useBreakdown } from '@/onboarding/useAnswers';
+import { select, success } from '@/motion/haptics';
 import { usePayments } from '@/purchases/PaymentsProvider';
 import {
   billingSummary,
@@ -46,7 +49,7 @@ function MiniReceipt({ days }: { days: string }) {
     <View
       accessible
       accessibilityLabel={`Time refunded per year: ${days.toLowerCase()}.`}
-      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
+      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }], shadowColor: colors.shadow, shadowOpacity: 0.14, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } }}
     >
       <AppText variant="receipt" tone="onPaper">TIME REFUNDED PER YEAR</AppText>
       <AppText variant="receipt" tone="onPaper" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
@@ -97,14 +100,21 @@ function PlanCard({
       accessibilityRole="radio"
       accessibilityState={{ selected: on }}
       accessibilityLabel={label}
-      onPress={onPress}
+      onPress={() => {
+        select();
+        onPress();
+      }}
       style={{
         flex: stacked ? undefined : 1,
         minHeight: stacked ? 96 : 150,
         borderRadius: radius.card,
-        borderWidth: 2,
-        borderColor: on ? colors.primary : colors.hairline,
-        backgroundColor: colors.surface,
+        borderWidth: on ? 2 : 1,
+        borderColor: on ? colors.primary : colors.glassBorder,
+        backgroundColor: on ? colors.surface : colors.glassFill,
+        shadowColor: colors.shadow,
+        shadowOpacity: on ? 0.12 : 0.04,
+        shadowRadius: 20,
+        shadowOffset: { width: 0, height: 10 },
         padding: spacing.md,
         paddingTop: p.trialDays ? spacing.lg : spacing.md,
         gap: spacing.xs,
@@ -176,6 +186,7 @@ export default function Paywall() {
   const buy = async () => {
     if (!plan) return;
     if ((await purchase(plan.id)) === 'purchased') {
+      success();
       if (plan.trialDays && billingDate) await scheduleTrialReminder(new Date(), plan.trialDays, billingDate);
       finish();
     }
@@ -192,13 +203,14 @@ export default function Paywall() {
     : null;
 
   const closeButton = (
-    <Pressable accessibilityRole="button" accessibilityLabel="Close" onPress={close} hitSlop={6} style={{ width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center' }}>
+    <GlassIconButton label="Close" onPress={close}>
       <CloseIcon color={colors.text} />
-    </Pressable>
+    </GlassIconButton>
   );
 
   return (
     <Screen
+      ownBackdrop
       back={false}
       paneFirst={false}
       progress={progressFor('paywall')}
@@ -215,7 +227,7 @@ export default function Paywall() {
             </View>
           ) : null}
           {mode === 'dev' ? (
-            <Button label="Continue (dev mode)" onPress={finish} />
+            <Button label={__DEV__ ? 'Continue (dev mode)' : 'Continue'} onPress={finish} />
           ) : (
             <Button label={trialDays ? `Start ${trialDays} days free` : 'Subscribe'} onPress={buy} disabled={!plan || busy} />
           )}
@@ -224,10 +236,7 @@ export default function Paywall() {
               {firstCharge}
             </AppText>
           )}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            <AppText variant="caption" muted>Cancel anytime · </AppText>
-            <FooterLink label="How to cancel" onPress={() => openDoc('cancel')} />
-          </View>
+
           <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.lg }}>
             <FooterLink label="Terms of Use" onPress={() => openDoc('terms')} />
             <FooterLink label="Privacy Policy" onPress={() => openDoc('privacy')} />
@@ -237,7 +246,7 @@ export default function Paywall() {
       }
       pane={
         <View style={{ gap: spacing.lg }}>
-          {mode === 'dev' && (
+          {__DEV__ && mode === 'dev' && (
             <AppText variant="caption" muted>
               Dev mode: no store keys are set, so purchases are simulated and everything is unlocked. Prices shown are the US launch prices.
             </AppText>
@@ -297,13 +306,18 @@ export default function Paywall() {
               <AppText variant="caption" muted>{t.attribution}</AppText>
             </View>
           ))}
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <AppText variant="caption" muted>Cancel anytime · </AppText>
+            <FooterLink label="How to cancel" onPress={() => openDoc('cancel')} />
+          </View>
         </View>
       }
     >
       <View style={{ gap: spacing.lg }}>
         {days && <MiniReceipt days={days} />}
 
-        <AppText variant="title">{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AppText>
+        <AnimatedHeadline>{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AnimatedHeadline>
 
         {timeline && billingDate && (
           <View>

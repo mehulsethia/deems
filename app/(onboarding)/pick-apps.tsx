@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppText } from '@/components/AppText';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { AppTile } from '@/components/onboarding/AppTile';
 import { Screen } from '@/components/Screen';
@@ -28,6 +28,7 @@ export default function PickApps() {
 
   return (
     <Screen
+      centred
       progress={progressFor('pick-apps')}
       paneFirst={false}
       pane={
@@ -39,7 +40,7 @@ export default function PickApps() {
       }
       footer={<Button label="Next" disabled={picked.length === 0} onPress={next} />}
     >
-      <AppText variant="title">Where do your people message you?</AppText>
+      <AnimatedHeadline>Where do your people message you?</AnimatedHeadline>
     </Screen>
   );
 }

@@ -2,7 +2,6 @@ import { Redirect, Stack } from 'expo-router';
 import { FullScreenLoader } from '@/components/Loader';
 import { FEATURES } from '@/config/features';
 import { usePayments } from '@/purchases/PaymentsProvider';
-import { colors } from '@/theme/tokens';
 
 export default function MainLayout() {
   const { ready, isPro } = usePayments();
@@ -12,7 +11,7 @@ export default function MainLayout() {
   if (FEATURES.paywall && !ready) return <FullScreenLoader />;
 
   return (
-    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
       <Stack.Screen name="post" options={{ presentation: 'fullScreenModal' }} />
     </Stack>
   );

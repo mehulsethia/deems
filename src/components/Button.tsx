@@ -1,38 +1,52 @@
 import { Pressable, StyleSheet, type PressableProps } from 'react-native';
+import Animated from 'react-native-reanimated';
+import { tick } from '@/motion/haptics';
+import { usePressScale } from '@/motion/usePressScale';
 import { colors, radius, sizes, spacing } from '@/theme/tokens';
 import { AppText } from './AppText';
+import { LinearGradient } from './LinearGradient';
 
-interface Props extends Omit<PressableProps, 'children'> {
+interface Props extends Omit<PressableProps, 'children' | 'style'> {
   label: string;
-  /** primary: white pill, black label. secondary: 1px white outline, white label. ghost: text only. Same as the site. */
+  /** primary: dark pill. secondary: glass pill. ghost: text only. */
   variant?: 'primary' | 'secondary' | 'ghost';
+  style?: PressableProps['style'];
 }
 
-const look = {
-  primary: { bg: colors.primary, fg: 'onPrimary', border: colors.primary },
-  secondary: { bg: colors.transparent, fg: 'text', border: colors.text },
-  ghost: { bg: colors.transparent, fg: 'text', border: colors.transparent },
-} as const;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export function Button({ label, variant = 'primary', disabled, style, ...rest }: Props) {
-  const l = look[variant];
+export function Button({ label, variant = 'primary', disabled, style, onPress, ...rest }: Props) {
+  const press = usePressScale();
+  const primary = variant === 'primary';
+  const bg = disabled && primary ? colors.disabledFill : primary ? colors.primary : variant === 'secondary' ? colors.glassFill : colors.transparent;
+  const border = variant === 'secondary' ? colors.glassBorder : colors.transparent;
+  const tone = disabled && primary ? 'disabledText' : primary ? 'onPrimary' : 'text';
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
-      style={(state) => [
+      onPressIn={press.onPressIn}
+      onPressOut={press.onPressOut}
+      onPress={(e) => {
+        tick();
+        onPress?.(e);
+      }}
+      style={[
         styles.base,
-        { backgroundColor: l.bg, borderColor: l.border, opacity: disabled ? 0.4 : state.pressed ? 0.8 : 1 },
-        typeof style === 'function' ? style(state) : style,
+        { backgroundColor: bg, borderColor: border },
+        primary && !disabled && styles.lift,
+        press.style,
+        typeof style === 'function' ? undefined : style,
       ]}
       {...rest}
     >
-      <AppText variant="button" tone={l.fg} center>
+      {primary && !disabled ? <LinearGradient /> : null}
+      <AppText variant="button" tone={tone} center>
         {label}
       </AppText>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
@@ -45,5 +59,13 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  lift: {
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
   },
 });

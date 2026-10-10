@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { AppText } from '@/components/AppText';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { ClockFace } from '@/components/onboarding/ClockFace';
 import { NotificationBanner } from '@/components/onboarding/NotificationBanner';
@@ -29,9 +29,9 @@ export default function ColdOpen() {
 
   const headline = settled ? 'That was 47 minutes ago.' : 'You opened the app to answer this.';
   const headlineView = (
-    <Animated.View key={headline} entering={FadeIn.duration(motion.base)} exiting={FadeOut.duration(motion.fast)}>
-      <AppText variant="display" accessibilityLiveRegion="polite">{headline}</AppText>
-    </Animated.View>
+    <View accessibilityLiveRegion="polite">
+      <AnimatedHeadline variant="display">{headline}</AnimatedHeadline>
+    </View>
   );
 
   return (
@@ -64,11 +64,9 @@ export default function ColdOpen() {
           {spread && headlineView}
         </View>
         <View style={{ flex: 1, minHeight: clock, justifyContent: 'center', alignItems: 'center' }}>
-          {spun && (
-            <Animated.View entering={FadeIn.duration(motion.fast)}>
-              <ClockFace size={clock} spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
-            </Animated.View>
-          )}
+          <Animated.View entering={FadeIn.delay(300).duration(motion.slow)}>
+            <ClockFace size={clock} spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
+          </Animated.View>
         </View>
         {!spread && headlineView}
       </Pressable>

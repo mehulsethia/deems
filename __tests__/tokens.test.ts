@@ -1,4 +1,4 @@
-import { colors, palette } from '../src/theme/tokens';
+import { atmosphere, colors, palette, platformBloom } from '../src/theme/tokens';
 
 /** WCAG relative luminance contrast ratio. */
 function contrast(a: string, b: string): number {
@@ -21,10 +21,11 @@ describe('brand contrast: text pairs the app uses (4.5:1)', () => {
     ['muted text on surface', colors.textMuted, colors.surface],
     ['primary button label', colors.onPrimary, colors.primary],
     ['secondary button label', colors.text, colors.background],
-    ['white text and links on dark', colors.primaryOnDark, colors.background],
-    ['white text and links on surface', colors.primaryOnDark, colors.surface],
-    ['removed text on dark', colors.removedOnDark, colors.background],
+    ['links on background', colors.primaryOnDark, colors.background],
+    ['links on surface', colors.primaryOnDark, colors.surface],
+    ['removed text on background', colors.removedOnDark, colors.background],
     ['removed text on surface', colors.removedOnDark, colors.surface],
+    ['disabled button label', colors.disabledText, colors.disabledFill],
     ['receipt text', colors.onPaper, colors.paper],
     ['receipt MESSAGES value', colors.paperKept, colors.paper],
     ['REFUNDED stamp label', colors.onRemoved, colors.removedText],
@@ -38,9 +39,8 @@ describe('brand contrast: text pairs the app uses (4.5:1)', () => {
 
 describe('brand contrast: graphics and outlines (3:1)', () => {
   const pairs: [string, string, string][] = [
-    ['selected fill or outline on dark', colors.primary, colors.background],
+    ['selected fill or outline on background', colors.primary, colors.background],
     ['selected fill or outline on surface', colors.primary, colors.surface],
-    ['progress line', colors.primaryOnDark, colors.hairline],
     ['strike-through on receipt', colors.removed, colors.paper],
     ['clock centre dot', colors.removed, colors.surface],
   ];
@@ -58,14 +58,20 @@ describe('palette rules', () => {
     }
   });
 
-  it('keeps brand colour to the mark only', () => {
+  it('keeps brand and glow colour out of UI colours', () => {
     const ui = JSON.stringify(colors).toUpperCase();
-    expect(ui).not.toContain(palette.markBlue.toUpperCase());
-    expect(ui).not.toContain(palette.markMagenta.toUpperCase());
+    for (const c of [palette.markBlue, palette.markMagenta, ...Object.values(atmosphere), ...Object.values(platformBloom)]) {
+      expect(ui).not.toContain(c.toUpperCase());
+    }
   });
 
   it('keeps no old palette values', () => {
     const all = JSON.stringify({ colors, palette }).toUpperCase();
     for (const old of ['#C6FF3D', '#FF5A36', '#5B93FF', '#FF5C9F', '#D81B72', '#0B4FD6', '#17191E', '#B4B9C2']) expect(all).not.toContain(old);
+  });
+
+  it('is a light theme', () => {
+    expect(colors.background).toBe('#FFFFFF');
+    expect(colors.text).toBe('#0A0A0A');
   });
 });

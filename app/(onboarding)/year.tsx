@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { Easing, FadeIn, useAnimatedReaction, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Receipt } from '@/components/onboarding/Receipt';
@@ -54,9 +55,7 @@ export default function Year() {
     >
       {done && (
           <Animated.View entering={FadeIn.duration(motion.slow)} style={{ gap: spacing.md }}>
-            <AppText variant="title" accessibilityLiveRegion="polite">
-              That's {b.days} full days a year. Not talking to a single person.
-            </AppText>
+            <AnimatedHeadline live>{`That's ${b.days} full days a year. Not talking to a single person.`}</AnimatedHeadline>
             <AppText variant="small" muted>{formatDuration(b.other)} a day x 365 days</AppText>
           </Animated.View>
         )}

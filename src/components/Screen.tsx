@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, sizes, spacing } from '@/theme/tokens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { Easing, FadeInDown, useReducedMotion } from 'react-native-reanimated';
+import { colors, EASE, motion, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
+import { Backdrop } from './Backdrop';
+import { GlassIconButton } from './GlassIconButton';
 import { BackIcon } from './Icons';
 import { ProgressLine } from './ProgressLine';
 
@@ -28,6 +31,8 @@ interface Props {
   headerRight?: ReactNode;
   /** Vertically centre the content when it is shorter than the screen. */
   centred?: boolean;
+  /** Draw the glow inside this screen. Needed for modals, which are presented outside the root Backdrop. */
+  ownBackdrop?: boolean;
 }
 
 /**
@@ -35,11 +40,16 @@ interface Props {
  * 24px gutters, always scrollable so nothing clips on small screens or at 130% text.
  * One centred column on phones; two panes split on the centre line when there is width to spare.
  */
-export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false }: Props) {
+export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false, ownBackdrop = false }: Props) {
   const { contentWidth, spread, short } = useLayout();
   const router = useRouter();
+  // Insets come from the root provider, not a native SafeAreaView: inside a full-screen modal the native view can
+  // report a zero top inset, which put the close button and header under the status bar.
+  const insets = useSafeAreaInsets();
   const showBack = back && router.canGoBack();
   const noteInScroll = short && footerNote;
+  const reduce = useReducedMotion();
+  const enter = (delay: number) => (reduce ? undefined : FadeInDown.delay(delay).duration(motion.slow).easing(Easing.bezier(...EASE)));
 
   const body = spread && pane ? (
     <View style={styles.spread}>
@@ -55,7 +65,8 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
   );
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom', 'left', 'right']}>
+    <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+      {ownBackdrop ? <Backdrop /> : null}
       <View style={[styles.column, { width: contentWidth }]}>
         {progress !== undefined && (
           <View style={{ paddingTop: spacing.sm }}>
@@ -64,34 +75,35 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
         )}
         <View style={styles.header}>
           {showBack ? (
-            <Pressable accessibilityRole="button" accessibilityLabel="Go back" hitSlop={8} onPress={() => router.back()} style={styles.touch}>
+            <GlassIconButton label="Go back" onPress={() => router.back()}>
               <BackIcon color={colors.text} />
-            </Pressable>
+            </GlassIconButton>
           ) : (
             headerLeft ?? <View />
           )}
           {headerRight}
         </View>
         <ScrollView style={styles.body} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {body}
+          <Animated.View entering={enter(80)} style={{ flexGrow: 1 }}>
+            {body}
+          </Animated.View>
           {noteInScroll ? <View style={styles.note}>{footerNote}</View> : null}
         </ScrollView>
         {footer || (footerNote && !noteInScroll) ? (
-          <View style={styles.footer}>
+          <Animated.View entering={enter(220)} style={styles.footer}>
             {footer}
             {!noteInScroll ? footerNote : null}
-          </View>
+          </Animated.View>
         ) : null}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, alignItems: 'center', backgroundColor: colors.background },
+  root: { flex: 1, alignItems: 'center', backgroundColor: 'transparent' },
   column: { flex: 1, maxWidth: '100%', paddingHorizontal: sizes.gutter },
-  header: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  touch: { minWidth: sizes.touch, minHeight: sizes.touch, justifyContent: 'center' },
+  header: { minHeight: 52, paddingTop: spacing.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   body: { flex: 1 },
   scrollContent: { flexGrow: 1, paddingBottom: spacing.lg },
   stack: { flexGrow: 1, gap: spacing.xl },

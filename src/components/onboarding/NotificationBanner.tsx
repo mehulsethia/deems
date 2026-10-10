@@ -21,9 +21,14 @@ export function NotificationBanner({ sender, text, delay = 600 }: { sender: stri
         gap: spacing.md,
         padding: spacing.md,
         borderRadius: radius.card,
-        backgroundColor: colors.surface,
+        backgroundColor: colors.glassFill,
         borderWidth: 1,
-        borderColor: colors.hairline,
+        borderColor: colors.glassBorder,
+        borderTopColor: colors.glassEdge,
+        shadowColor: colors.shadow,
+        shadowOpacity: 0.06,
+        shadowRadius: 24,
+        shadowOffset: { width: 0, height: 10 },
       }}
     >
       <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
