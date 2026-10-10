@@ -63,7 +63,7 @@ export function Backdrop() {
       {BLOBS.map((b) => (
         <Blob key={b.color} spec={b} width={width} height={height} still={still} />
       ))}
-      <Image source={GRAIN} resizeMode="repeat" style={[StyleSheet.absoluteFill, { opacity: 0.03 }]} />
+      <Image source={GRAIN} resizeMode="cover" style={[StyleSheet.absoluteFill, { opacity: 0.03 }]} />
     </View>
   );
 }

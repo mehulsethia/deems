@@ -5,6 +5,7 @@ import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { OnlyDMMark } from '@/components/OnlyDMMark';
+import { GlassIconButton } from '@/components/GlassIconButton';
 import { CloseIcon, TickIcon } from '@/components/Icons';
 import { Loader } from '@/components/Loader';
 import { Screen } from '@/components/Screen';
@@ -198,13 +199,14 @@ export default function Paywall() {
     : null;
 
   const closeButton = (
-    <Pressable accessibilityRole="button" accessibilityLabel="Close" onPress={close} hitSlop={6} style={{ width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center' }}>
+    <GlassIconButton label="Close" onPress={close}>
       <CloseIcon color={colors.text} />
-    </Pressable>
+    </GlassIconButton>
   );
 
   return (
     <Screen
+      ownBackdrop
       back={false}
       paneFirst={false}
       progress={progressFor('paywall')}
@@ -221,7 +223,7 @@ export default function Paywall() {
             </View>
           ) : null}
           {mode === 'dev' ? (
-            <Button label="Continue (dev mode)" onPress={finish} />
+            <Button label={__DEV__ ? 'Continue (dev mode)' : 'Continue'} onPress={finish} />
           ) : (
             <Button label={trialDays ? `Start ${trialDays} days free` : 'Subscribe'} onPress={buy} disabled={!plan || busy} />
           )}
@@ -230,10 +232,7 @@ export default function Paywall() {
               {firstCharge}
             </AppText>
           )}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
-            <AppText variant="caption" muted>Cancel anytime · </AppText>
-            <FooterLink label="How to cancel" onPress={() => openDoc('cancel')} />
-          </View>
+
           <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', columnGap: spacing.lg }}>
             <FooterLink label="Terms of Use" onPress={() => openDoc('terms')} />
             <FooterLink label="Privacy Policy" onPress={() => openDoc('privacy')} />
@@ -243,7 +242,7 @@ export default function Paywall() {
       }
       pane={
         <View style={{ gap: spacing.lg }}>
-          {mode === 'dev' && (
+          {__DEV__ && mode === 'dev' && (
             <AppText variant="caption" muted>
               Dev mode: no store keys are set, so purchases are simulated and everything is unlocked. Prices shown are the US launch prices.
             </AppText>
@@ -303,6 +302,11 @@ export default function Paywall() {
               <AppText variant="caption" muted>{t.attribution}</AppText>
             </View>
           ))}
+
+          <View style={{ flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
+            <AppText variant="caption" muted>Cancel anytime · </AppText>
+            <FooterLink label="How to cancel" onPress={() => openDoc('cancel')} />
+          </View>
         </View>
       }
     >

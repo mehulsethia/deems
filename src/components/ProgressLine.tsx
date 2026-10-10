@@ -17,7 +17,7 @@ export function ProgressLine({ value }: { value: number }) {
       accessibilityRole="progressbar"
       accessibilityLabel="Setup progress"
       accessibilityValue={{ min: 0, max: 100, now: Math.round(value * 100) }}
-      style={{ height: sizes.progress, borderRadius: sizes.progress, backgroundColor: colors.hairline, overflow: 'hidden' }}
+      style={{ height: sizes.progress, borderRadius: sizes.progress, backgroundColor: 'rgba(10,10,10,0.1)', overflow: 'hidden' }}
     >
       <Animated.View style={[{ height: sizes.progress, borderRadius: sizes.progress, backgroundColor: colors.primary }, fill]} />
     </View>

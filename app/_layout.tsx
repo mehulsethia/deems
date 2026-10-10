@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
@@ -13,6 +13,9 @@ import { PaymentsProvider } from '@/purchases/PaymentsProvider';
 import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
+
+/** Navigation paints its own page colour (light grey) over everything; make it transparent so the Backdrop shows through. */
+const NAV_THEME = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'transparent', card: 'transparent' } };
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -44,15 +47,17 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <PaymentsProvider>
-        <StatusBar style="dark" />
-        <Backdrop />
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(onboarding)" />
-          <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />
-          <Stack.Screen name="paywall" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="legal/[doc]" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
-        </Stack>
+        <ThemeProvider value={NAV_THEME}>
+          <StatusBar style="dark" />
+          <Backdrop />
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(onboarding)" />
+            <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />
+            <Stack.Screen name="paywall" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="legal/[doc]" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
+          </Stack>
+        </ThemeProvider>
       </PaymentsProvider>
     </GestureHandlerRootView>
   );

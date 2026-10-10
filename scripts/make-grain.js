@@ -1,15 +1,17 @@
-// One-off generator for assets/grain.png: 128px tileable noise, 8-bit grey + alpha. No dependencies.
+// One-off generator for assets/grain.png: full-screen noise (usage: node make-grain.js out.png [width height]), 8-bit grey + alpha. No dependencies.
+// React Native's Image resizeMode="repeat" draws a single tile, so the grain is one screen-sized image.
 const fs = require('fs');
 const zlib = require('zlib');
 
-const SIZE = 128;
-const raw = Buffer.alloc((SIZE * 2 + 1) * SIZE);
+const W = Number(process.argv[3] ?? 480);
+const H = Number(process.argv[4] ?? 1040);
+const raw = Buffer.alloc((W * 2 + 1) * H);
 let seed = 7;
 const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
-for (let y = 0; y < SIZE; y++) {
-  const row = y * (SIZE * 2 + 1);
+for (let y = 0; y < H; y++) {
+  const row = y * (W * 2 + 1);
   raw[row] = 0; // filter: none
-  for (let x = 0; x < SIZE; x++) {
+  for (let x = 0; x < W; x++) {
     raw[row + 1 + x * 2] = rand() < 0.5 ? 0 : 255; // grey
     raw[row + 2 + x * 2] = 255; // alpha: opacity is applied by the Image
   }
@@ -34,8 +36,8 @@ const chunk = (type, data) => {
   return Buffer.concat([len, body, sum]);
 };
 const ihdr = Buffer.alloc(13);
-ihdr.writeUInt32BE(SIZE, 0);
-ihdr.writeUInt32BE(SIZE, 4);
+ihdr.writeUInt32BE(W, 0);
+ihdr.writeUInt32BE(H, 4);
 ihdr[8] = 8; // bit depth
 ihdr[9] = 4; // colour type: grey + alpha
 const png = Buffer.concat([

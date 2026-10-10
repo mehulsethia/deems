@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { Easing, FadeInDown, useReducedMotion } from 'react-native-reanimated';
 import { colors, EASE, motion, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
+import { Backdrop } from './Backdrop';
 import { GlassIconButton } from './GlassIconButton';
 import { BackIcon } from './Icons';
 import { ProgressLine } from './ProgressLine';
@@ -30,6 +31,8 @@ interface Props {
   headerRight?: ReactNode;
   /** Vertically centre the content when it is shorter than the screen. */
   centred?: boolean;
+  /** Draw the glow inside this screen. Needed for modals, which are presented outside the root Backdrop. */
+  ownBackdrop?: boolean;
 }
 
 /**
@@ -37,7 +40,7 @@ interface Props {
  * 24px gutters, always scrollable so nothing clips on small screens or at 130% text.
  * One centred column on phones; two panes split on the centre line when there is width to spare.
  */
-export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false }: Props) {
+export function Screen({ children, pane, paneFirst = true, back = true, progress, footer, footerNote, headerLeft, headerRight, centred = false, ownBackdrop = false }: Props) {
   const { contentWidth, spread, short } = useLayout();
   const router = useRouter();
   const showBack = back && router.canGoBack();
@@ -60,6 +63,7 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
 
   return (
     <SafeAreaView style={styles.root} edges={['top', 'bottom', 'left', 'right']}>
+      {ownBackdrop ? <Backdrop /> : null}
       <View style={[styles.column, { width: contentWidth }]}>
         {progress !== undefined && (
           <View style={{ paddingTop: spacing.sm }}>

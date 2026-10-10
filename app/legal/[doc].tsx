@@ -58,7 +58,7 @@ export default function LegalScreen() {
   );
 
   return (
-    <Screen back={false} headerRight={close} footer={doc === 'cancel' ? <Button label="Manage subscription" onPress={() => open(MANAGE_SUBSCRIPTIONS_URL)} /> : undefined}>
+    <Screen ownBackdrop back={false} headerRight={close} footer={doc === 'cancel' ? <Button label="Manage subscription" onPress={() => open(MANAGE_SUBSCRIPTIONS_URL)} /> : undefined}>
       <View style={{ gap: spacing.lg }}>
         <View style={{ gap: spacing.sm }}>
           {d.effective ? <AppText variant="label" muted>Effective {d.effective}</AppText> : null}

@@ -24,14 +24,14 @@ export function AppTile({ id, selected, onToggle }: { id: PlatformId; selected: 
     on.set(reduce ? to : withSpring(to, springs.sheet));
   }, [selected, reduce, on]);
 
-  const bloom = useAnimatedStyle(() => ({ opacity: on.get() * 0.7, transform: [{ scale: 0.92 + on.get() * 0.08 }] }));
+  const bloom = useAnimatedStyle(() => ({ opacity: on.get() * 0.95, transform: [{ scale: 0.92 + on.get() * 0.08 }] }));
   const tickStyle = useAnimatedStyle(() => ({ opacity: on.get(), transform: [{ scale: 0.4 + on.get() * 0.6 }] }));
 
   return (
     <View>
       <Animated.View
         pointerEvents="none"
-        style={[{ position: 'absolute', left: 10, right: 10, top: 14, bottom: -8, borderRadius: radius.tile, backgroundColor: platformBloom[id], shadowColor: platformBloom[id], shadowOpacity: 1, shadowRadius: 30, shadowOffset: { width: 0, height: 12 } }, bloom]}
+        style={[{ position: 'absolute', left: 6, right: 6, top: 12, bottom: -14, borderRadius: radius.tile, backgroundColor: platformBloom[id], shadowColor: platformBloom[id], shadowOpacity: 1, shadowRadius: 36, shadowOffset: { width: 0, height: 14 } }, bloom]}
       />
       <AnimatedPressable
         accessibilityRole="checkbox"

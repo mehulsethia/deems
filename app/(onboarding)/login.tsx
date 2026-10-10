@@ -4,6 +4,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
+import { Backdrop } from '@/components/Backdrop';
+import { GlassIconButton } from '@/components/GlassIconButton';
 import { CloseIcon, LockIcon, ReloadIcon } from '@/components/Icons';
 import { PlatformWebView, type PlatformWebViewHandle } from '@/components/PlatformWebView';
 import { isAllowedPath, isLoginPath, parseUrl } from '@/rules/matching';
@@ -55,15 +57,16 @@ export default function Login() {
   const touch = { minWidth: sizes.touch, minHeight: sizes.touch, alignItems: 'center' as const, justifyContent: 'center' as const };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top', 'bottom', 'left', 'right']}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close" hitSlop={6} onPress={() => router.back()} style={touch}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }} edges={['top', 'bottom', 'left', 'right']}>
+      <Backdrop />
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.md, paddingTop: spacing.sm, paddingBottom: spacing.md }}>
+        <GlassIconButton label="Close" onPress={() => router.back()}>
           <CloseIcon color={colors.text} />
-        </Pressable>
+        </GlassIconButton>
         <View
           accessible
           accessibilityLabel={`Address: ${address.secure ? 'secure, ' : ''}${address.host}${address.path}`}
-          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 40, borderWidth: 1, borderColor: colors.hairline }}
+          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: colors.glassFill, borderRadius: radius.pill, paddingHorizontal: spacing.md, minHeight: 44, borderWidth: 1, borderColor: colors.glassBorder }}
         >
           {address.secure && <LockIcon color={colors.primaryOnDark} />}
           <AppText variant="caption" numberOfLines={1} style={{ flex: 1, fontFamily: fonts.bodyMedium }}>
@@ -83,7 +86,7 @@ export default function Login() {
         <PlatformWebView ref={webRef} pack={pack} uri={pack.loginUrl} showProgress onUrlChange={onUrlChange} onRoute={onRoute} />
       </View>
 
-      <View style={{ borderTopWidth: 1, borderTopColor: colors.hairline, padding: spacing.md }}>
+      <View style={{ backgroundColor: colors.glassFill, borderTopWidth: 1, borderTopColor: colors.glassBorder, padding: spacing.md }}>
         <AppText variant="caption" muted center>
           {meta.label}'s own page. OnlyDM never reads your password.
         </AppText>

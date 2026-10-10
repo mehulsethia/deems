@@ -1,9 +1,10 @@
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeIn, SlideInDown, useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { GlassIconButton } from '@/components/GlassIconButton';
 import { BackIcon } from '@/components/Icons';
 import { PlatformWebView } from '@/components/PlatformWebView';
 import { FEATURES } from '@/config/features';
@@ -41,22 +42,17 @@ export default function Reveal() {
     : SlideInDown.delay(SHEET_DELAY).springify().damping(22).stiffness(180);
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }}>
+      {router.canGoBack() && (
+        <View style={{ height: 56, justifyContent: 'center', paddingHorizontal: spacing.md }}>
+          <GlassIconButton label="Go back" onPress={() => router.back()}>
+            <BackIcon color={colors.text} />
+          </GlassIconButton>
+        </View>
+      )}
       <View style={{ flex: 1 }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         <PlatformWebView pack={pack} />
       </View>
-
-      {router.canGoBack() && (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          onPress={() => router.back()}
-          hitSlop={8}
-          style={{ position: 'absolute', top: insets.top + spacing.sm, left: insets.left + spacing.md, width: sizes.touch, height: sizes.touch, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline }}
-        >
-          <BackIcon color={colors.text} />
-        </Pressable>
-      )}
 
       <Animated.View
         entering={entering}
