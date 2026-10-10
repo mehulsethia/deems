@@ -69,7 +69,7 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
           onAccessibilityAction={(e) => set(value + (e.nativeEvent.actionName === 'increment' ? step : -step))}
           style={{ height: sizes.button, justifyContent: 'center' }}
         >
-          <View style={{ height: TRACK, marginHorizontal: THUMB / 2, borderRadius: TRACK / 2, backgroundColor: colors.hairline }}>
+          <View style={{ height: TRACK, marginHorizontal: THUMB / 2, borderRadius: TRACK / 2, backgroundColor: 'rgba(10,10,10,0.1)' }}>
             <View style={{ width: `${ratio * 100}%`, height: TRACK, borderRadius: TRACK / 2, backgroundColor: colors.primary }} />
           </View>
           <View
@@ -82,7 +82,11 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
               borderRadius: THUMB / 2,
               backgroundColor: colors.primary,
               borderWidth: 4,
-              borderColor: colors.background,
+              borderColor: colors.surface,
+              shadowColor: colors.shadow,
+              shadowOpacity: 0.2,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 3 },
             }}
           />
         </View>

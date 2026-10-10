@@ -64,11 +64,9 @@ export default function ColdOpen() {
           {spread && headlineView}
         </View>
         <View style={{ flex: 1, minHeight: clock, justifyContent: 'center', alignItems: 'center' }}>
-          {spun && (
-            <Animated.View entering={FadeIn.duration(motion.fast)}>
-              <ClockFace size={clock} spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
-            </Animated.View>
-          )}
+          <Animated.View entering={FadeIn.delay(300).duration(motion.slow)}>
+            <ClockFace size={clock} spun={spun} minutes={MINUTES_LATER} onSettled={settle} />
+          </Animated.View>
         </View>
         {!spread && headlineView}
       </Pressable>

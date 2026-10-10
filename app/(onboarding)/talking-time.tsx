@@ -3,9 +3,11 @@ import { useRouter } from 'expo-router';
 import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { DurationSlider } from '@/components/onboarding/DurationSlider';
+import { GlassCard } from '@/components/GlassCard';
 import { Screen } from '@/components/Screen';
 import { clampTalking, clampTotal, TALKING_RANGE, TOTAL_RANGE } from '@/onboarding/maths';
 import { progressFor } from '@/state/onboardingSteps';
+import { spacing } from '@/theme/tokens';
 import { readProgress, saveTalking } from '@/state/progress';
 
 export default function TalkingTime() {
@@ -24,6 +26,7 @@ export default function TalkingTime() {
       paneFirst={false}
       centred
       pane={
+        <GlassCard style={{ paddingVertical: spacing.xl }}>
         <DurationSlider
           label="Time a day talking to someone"
           min={TALKING_RANGE.min}
@@ -32,6 +35,7 @@ export default function TalkingTime() {
           value={talking}
           onChange={setTalking}
         />
+        </GlassCard>
       }
       footer={<Button label="Add it up" onPress={next} />}
     >

@@ -57,9 +57,9 @@ export function ClockFace({ size = 200, spun, minutes, onSettled }: Props) {
   const hourStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${hAngle.value}deg` }] }));
 
   return (
-    <View style={{ width: size, height: size }} accessible={false} importantForAccessibility="no-hide-descendants">
+    <View style={{ width: size, height: size, shadowColor: colors.shadow, shadowOpacity: 0.08, shadowRadius: 24, shadowOffset: { width: 0, height: 12 } }} accessible={false} importantForAccessibility="no-hide-descendants">
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <Circle cx={c} cy={c} r={c - 2} fill={colors.surface} stroke={colors.hairline} strokeWidth={2} />
+        <Circle cx={c} cy={c} r={c - 2} fill={colors.glassFill} stroke={colors.glassBorder} strokeWidth={2} />
         {Array.from({ length: 12 }, (_, i) => {
           const a = (i * Math.PI) / 6;
           const outer = c - 12;
@@ -78,9 +78,11 @@ export function ClockFace({ size = 200, spun, minutes, onSettled }: Props) {
           );
         })}
       </Svg>
-      <Animated.View style={[hand(size * 0.26, 6), { backgroundColor: colors.text }, hourStyle]} />
-      <Animated.View style={[hand(size * 0.38, 4), { backgroundColor: colors.text }, minuteStyle]} />
-      <View style={{ position: 'absolute', left: c - 6, top: c - 6, width: 12, height: 12, borderRadius: 6, backgroundColor: colors.removed }} />
+      <Animated.View style={[hand(size * 0.24, 7), { backgroundColor: colors.text }, hourStyle]} />
+      <Animated.View style={[hand(size * 0.38, 4), { backgroundColor: colors.textMuted }, minuteStyle]} />
+      <View style={{ position: 'absolute', left: c - 7, top: c - 7, width: 14, height: 14, borderRadius: 7, backgroundColor: colors.text, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.background }} />
+      </View>
     </View>
   );
 }

@@ -5,6 +5,7 @@ import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ExitIcon, NoServerIcon, PageIcon } from '@/components/Icons';
+import { GlassCard } from '@/components/GlassCard';
 import { Screen } from '@/components/Screen';
 import type { PlatformId } from '@/rules/types';
 import { progressFor } from '@/state/onboardingSteps';
@@ -59,16 +60,16 @@ export default function Trust() {
       progress={progressFor('trust')}
       paneFirst={false}
       pane={
-        <View style={{ gap: spacing.md }}>
+        <GlassCard style={{ gap: spacing.md, paddingVertical: spacing.lg }}>
           {ROWS.map(({ Icon, text }) => (
             <View key={text} accessible accessibilityLabel={text} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 44 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline, alignItems: 'center', justifyContent: 'center' }}>
+              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: colors.lightSurface, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon color={colors.primaryOnDark} />
               </View>
               <AppText style={{ flex: 1 }}>{text}</AppText>
             </View>
           ))}
-        </View>
+        </GlassCard>
       }
       footer={
         !next ? (
