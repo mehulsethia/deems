@@ -14,6 +14,7 @@ import { scheduleTrialReminder } from '@/notifications/trialReminder';
 import { trialTimeline } from '@/notifications/timeline';
 import { formatDaysCaps } from '@/onboarding/maths';
 import { useBreakdown } from '@/onboarding/useAnswers';
+import { select, success } from '@/motion/haptics';
 import { usePayments } from '@/purchases/PaymentsProvider';
 import {
   billingSummary,
@@ -98,7 +99,10 @@ function PlanCard({
       accessibilityRole="radio"
       accessibilityState={{ selected: on }}
       accessibilityLabel={label}
-      onPress={onPress}
+      onPress={() => {
+        select();
+        onPress();
+      }}
       style={{
         flex: stacked ? undefined : 1,
         minHeight: stacked ? 96 : 150,
@@ -177,6 +181,7 @@ export default function Paywall() {
   const buy = async () => {
     if (!plan) return;
     if ((await purchase(plan.id)) === 'purchased') {
+      success();
       if (plan.trialDays && billingDate) await scheduleTrialReminder(new Date(), plan.trialDays, billingDate);
       finish();
     }

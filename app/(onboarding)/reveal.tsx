@@ -1,12 +1,13 @@
 import { Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import Animated, { Easing, FadeIn, SlideInDown, useReducedMotion } from 'react-native-reanimated';
+import Animated, { FadeIn, SlideInDown, useReducedMotion } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { BackIcon } from '@/components/Icons';
 import { PlatformWebView } from '@/components/PlatformWebView';
 import { FEATURES } from '@/config/features';
+import { success } from '@/motion/haptics';
 import { getPack } from '@/rules/store';
 import { getActivePlatform } from '@/state/platforms';
 import { markOnboardingComplete } from '@/state/progress';
@@ -26,6 +27,7 @@ export default function Reveal() {
   const pack = getPack(getActivePlatform());
 
   const keep = () => {
+    success();
     if (FEATURES.paywall) {
       router.push('/paywall');
     } else {
@@ -36,7 +38,7 @@ export default function Reveal() {
 
   const entering = reduce
     ? FadeIn.delay(SHEET_DELAY).duration(motion.base)
-    : SlideInDown.delay(SHEET_DELAY).duration(motion.slow).easing(Easing.out(Easing.cubic));
+    : SlideInDown.delay(SHEET_DELAY).springify().damping(22).stiffness(180);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right }}>
@@ -59,7 +61,7 @@ export default function Reveal() {
       <Animated.View
         entering={entering}
         accessibilityViewIsModal
-        style={{ position: 'absolute', bottom: 0, alignSelf: 'center', width: sheetWidth, maxWidth: '100%', maxHeight: height * 0.85, backgroundColor: colors.surface, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, paddingLeft: sizes.gutter + insets.left, paddingRight: sizes.gutter + insets.right, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.md, gap: spacing.md }}
+        style={{ position: 'absolute', bottom: 0, alignSelf: 'center', width: sheetWidth, maxWidth: '100%', maxHeight: height * 0.85, backgroundColor: colors.surface, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, shadowColor: colors.shadow, shadowOpacity: 0.12, shadowRadius: 30, paddingLeft: sizes.gutter + insets.left, paddingRight: sizes.gutter + insets.right, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.md, gap: spacing.md }}
       >
         <View style={{ alignSelf: 'center', width: 40, height: 4, borderRadius: 2, backgroundColor: colors.hairline }} />
         {/* Scrolls if the sheet runs out of room (landscape phones, 130% text). */}

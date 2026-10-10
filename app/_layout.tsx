@@ -50,8 +50,8 @@ export default function RootLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="(onboarding)" />
           <Stack.Screen name="(main)" options={{ gestureEnabled: false }} />
-          <Stack.Screen name="paywall" options={{ presentation: 'fullScreenModal' }} />
-          <Stack.Screen name="legal/[doc]" options={{ presentation: 'fullScreenModal' }} />
+          <Stack.Screen name="paywall" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="legal/[doc]" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
         </Stack>
       </PaymentsProvider>
     </GestureHandlerRootView>

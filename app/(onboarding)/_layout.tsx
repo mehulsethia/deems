@@ -22,14 +22,14 @@ export default function OnboardingLayout() {
         headerShown: false,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
-        animationDuration: motion.base,
+        animationDuration: 380,
         contentStyle: { backgroundColor: 'transparent' },
       }}
     >
       {RECEIPT_SCREENS.map((name) => (
         <Stack.Screen key={name} name={name} options={{ animation: 'fade' }} />
       ))}
-      <Stack.Screen name="login" options={{ presentation: 'fullScreenModal' }} />
+      <Stack.Screen name="login" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
       <Stack.Screen name="reveal" options={{ animation: 'fade' }} />
     </Stack>
   );
