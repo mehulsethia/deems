@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors, sizes, spacing } from '@/theme/tokens';
+import Animated, { Easing, FadeInDown, useReducedMotion } from 'react-native-reanimated';
+import { colors, EASE, motion, sizes, spacing } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
+import { GlassIconButton } from './GlassIconButton';
 import { BackIcon } from './Icons';
 import { ProgressLine } from './ProgressLine';
 
@@ -40,6 +42,8 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
   const router = useRouter();
   const showBack = back && router.canGoBack();
   const noteInScroll = short && footerNote;
+  const reduce = useReducedMotion();
+  const enter = (delay: number) => (reduce ? undefined : FadeInDown.delay(delay).duration(motion.slow).easing(Easing.bezier(...EASE)));
 
   const body = spread && pane ? (
     <View style={styles.spread}>
@@ -64,23 +68,25 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
         )}
         <View style={styles.header}>
           {showBack ? (
-            <Pressable accessibilityRole="button" accessibilityLabel="Go back" hitSlop={8} onPress={() => router.back()} style={styles.touch}>
+            <GlassIconButton label="Go back" onPress={() => router.back()}>
               <BackIcon color={colors.text} />
-            </Pressable>
+            </GlassIconButton>
           ) : (
             headerLeft ?? <View />
           )}
           {headerRight}
         </View>
         <ScrollView style={styles.body} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {body}
+          <Animated.View entering={enter(80)} style={{ flexGrow: 1 }}>
+            {body}
+          </Animated.View>
           {noteInScroll ? <View style={styles.note}>{footerNote}</View> : null}
         </ScrollView>
         {footer || (footerNote && !noteInScroll) ? (
-          <View style={styles.footer}>
+          <Animated.View entering={enter(220)} style={styles.footer}>
             {footer}
             {!noteInScroll ? footerNote : null}
-          </View>
+          </Animated.View>
         ) : null}
       </View>
     </SafeAreaView>
@@ -90,8 +96,7 @@ export function Screen({ children, pane, paneFirst = true, back = true, progress
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center', backgroundColor: 'transparent' },
   column: { flex: 1, maxWidth: '100%', paddingHorizontal: sizes.gutter },
-  header: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  touch: { minWidth: sizes.touch, minHeight: sizes.touch, justifyContent: 'center' },
+  header: { minHeight: 52, paddingTop: spacing.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   body: { flex: 1 },
   scrollContent: { flexGrow: 1, paddingBottom: spacing.lg },
   stack: { flexGrow: 1, gap: spacing.xl },
