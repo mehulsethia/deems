@@ -9,6 +9,7 @@ export default function WhatsLeft() {
   const router = useRouter();
   return (
     <Screen
+      centred
       progress={progressFor('whats-left')}
       paneFirst={false}
       pane={<ConversationStack />}

@@ -49,7 +49,7 @@ function MiniReceipt({ days }: { days: string }) {
     <View
       accessible
       accessibilityLabel={`Time refunded per year: ${days.toLowerCase()}.`}
-      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }] }}
+      style={{ alignSelf: 'flex-start', backgroundColor: colors.paper, borderRadius: 4, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, flexDirection: 'row', flexWrap: 'wrap', columnGap: spacing.lg, transform: [{ rotate: '-1.5deg' }], shadowColor: colors.shadow, shadowOpacity: 0.14, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } }}
     >
       <AppText variant="receipt" tone="onPaper">TIME REFUNDED PER YEAR</AppText>
       <AppText variant="receipt" tone="onPaper" style={{ fontFamily: fonts.monoBold }}>{days}</AppText>
@@ -108,9 +108,13 @@ function PlanCard({
         flex: stacked ? undefined : 1,
         minHeight: stacked ? 96 : 150,
         borderRadius: radius.card,
-        borderWidth: 2,
-        borderColor: on ? colors.primary : colors.hairline,
-        backgroundColor: colors.surface,
+        borderWidth: on ? 2 : 1,
+        borderColor: on ? colors.primary : colors.glassBorder,
+        backgroundColor: on ? colors.surface : colors.glassFill,
+        shadowColor: colors.shadow,
+        shadowOpacity: on ? 0.12 : 0.04,
+        shadowRadius: 20,
+        shadowOffset: { width: 0, height: 10 },
         padding: spacing.md,
         paddingTop: p.trialDays ? spacing.lg : spacing.md,
         gap: spacing.xs,

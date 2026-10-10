@@ -94,7 +94,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <View style={{ gap: spacing.sm }}>
       <AppText variant="label" muted accessibilityRole="header">{title}</AppText>
-      <View style={{ backgroundColor: colors.surface, borderRadius: radius.card, borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden' }}>{children}</View>
+      <View style={{ backgroundColor: colors.glassFill, borderRadius: radius.card, borderWidth: 1, borderColor: colors.glassBorder, borderTopColor: colors.glassEdge, overflow: 'hidden' }}>{children}</View>
     </View>
   );
 }

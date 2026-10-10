@@ -57,6 +57,7 @@ export default function Trust() {
 
   return (
     <Screen
+      centred
       progress={progressFor('trust')}
       paneFirst={false}
       pane={

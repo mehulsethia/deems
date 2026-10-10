@@ -28,6 +28,7 @@ export default function PickApps() {
 
   return (
     <Screen
+      centred
       progress={progressFor('pick-apps')}
       paneFirst={false}
       pane={

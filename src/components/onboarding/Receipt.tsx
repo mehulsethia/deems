@@ -250,7 +250,7 @@ export function Receipt({
         accessibilityRole="text"
         accessibilityLabel={receiptSummary(b, date, showYear, struck)}
         onLayout={onLayout}
-        style={[{ shadowColor: colors.shadow, shadowOpacity: 0.45, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } }, paperStyle]}
+        style={[{ shadowColor: colors.shadow, shadowOpacity: 0.14, shadowRadius: 24, shadowOffset: { width: 0, height: 14 } }, paperStyle]}
       >
         <Perforation width={width} />
         <View style={{ backgroundColor: colors.paper, paddingHorizontal: fit.padX, paddingVertical: spacing.md }}>

@@ -66,7 +66,7 @@ export default function LegalScreen() {
         </View>
 
         {d.summary ? (
-          <View style={{ gap: spacing.sm, padding: spacing.md, borderRadius: radius.card, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline }}>
+          <View style={{ gap: spacing.sm, padding: spacing.md, borderRadius: radius.card, backgroundColor: colors.glassFill, borderWidth: 1, borderColor: colors.glassBorder }}>
             {d.summary.map((s) => (
               <Bullet key={s} text={s} />
             ))}
@@ -83,7 +83,7 @@ export default function LegalScreen() {
               <Bullet key={b} text={b} />
             ))}
             {s.links?.length ? (
-              <View style={{ marginTop: spacing.xs, borderRadius: radius.card, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.hairline, overflow: 'hidden' }}>
+              <View style={{ marginTop: spacing.xs, borderRadius: radius.card, backgroundColor: colors.glassFill, borderWidth: 1, borderColor: colors.glassBorder, overflow: 'hidden' }}>
                 {s.links.map((l, j) => (
                   <LinkRow key={l.url} link={l} last={j === s.links!.length - 1} />
                 ))}

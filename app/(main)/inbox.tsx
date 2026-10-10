@@ -82,7 +82,7 @@ export default function Inbox() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right, alignItems: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top, paddingLeft: insets.left, paddingRight: insets.right, alignItems: 'center' }}>
       {/* One phone-width column on every screen: header, tabs and inbox line up on phones, tablets and desktops. */}
       <View style={{ flex: 1, width: webWidth, maxWidth: '100%' }}>
         <View style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md }}>
@@ -109,7 +109,7 @@ export default function Inbox() {
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={platformLabel(id)}
                   onPress={() => select(id)}
-                  style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.surface, borderWidth: 1, borderColor: on ? colors.primary : colors.hairline }}
+                  style={{ minHeight: sizes.touch, justifyContent: 'center', paddingHorizontal: spacing.md, borderRadius: radius.pill, backgroundColor: on ? colors.primary : colors.glassFill, borderWidth: 1, borderColor: on ? colors.primary : colors.glassBorder }}
                 >
                   <AppText variant="small" tone={on ? 'onPrimary' : 'text'} style={{ fontFamily: fonts.bodyMedium }}>{platformLabel(id)}</AppText>
                 </Pressable>
