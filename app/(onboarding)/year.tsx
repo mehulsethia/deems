@@ -55,7 +55,7 @@ export default function Year() {
     >
       {done && (
           <Animated.View entering={FadeIn.duration(motion.slow)} style={{ gap: spacing.md }}>
-            <AnimatedHeadline>{`That's ${b.days} full days a year. Not talking to a single person.`}</AnimatedHeadline>
+            <AnimatedHeadline live>{`That's ${b.days} full days a year. Not talking to a single person.`}</AnimatedHeadline>
             <AppText variant="small" muted>{formatDuration(b.other)} a day x 365 days</AppText>
           </Animated.View>
         )}

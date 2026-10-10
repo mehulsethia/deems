@@ -33,7 +33,7 @@ export default function Refund() {
     >
       {stamped && (
           <Animated.View entering={FadeIn.duration(motion.slow)}>
-            <AnimatedHeadline>{`Keep the ${formatDuration(b.talking)}. Refund the rest.`}</AnimatedHeadline>
+            <AnimatedHeadline live>{`Keep the ${formatDuration(b.talking)}. Refund the rest.`}</AnimatedHeadline>
           </Animated.View>
         )}
     </Screen>

@@ -36,7 +36,7 @@ export default function ReceiptScreen() {
     >
       {printed && (
         <Animated.View entering={FadeIn.duration(motion.slow)}>
-          <AnimatedHeadline>{line}</AnimatedHeadline>
+          <AnimatedHeadline live>{line}</AnimatedHeadline>
         </Animated.View>
       )}
     </Screen>
