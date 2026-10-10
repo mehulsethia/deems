@@ -6,6 +6,7 @@ import { tick } from '@/motion/haptics';
 import { colors, sizes, spacing, typeScale } from '@/theme/tokens';
 import { useLayout } from '@/theme/useLayout';
 import { AppText } from '../AppText';
+import { RollingNumber } from '../RollingNumber';
 
 interface Props {
   label: string;
@@ -54,19 +55,9 @@ export function DurationSlider({ label, min, max, step, value, onChange }: Props
 
   return (
     <View style={{ gap: spacing.lg }}>
-      <AppText
-        variant="readout"
-        center
-        // Already display-sized and fitted to the width; screen readers get the value from the slider.
-        maxFontSizeMultiplier={1}
-        adjustsFontSizeToFit
-        numberOfLines={1}
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-        style={{ fontSize: readoutSize, lineHeight: Math.round(readoutSize * 1.17) }}
-      >
-        {formatReadout(value)}
-      </AppText>
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <RollingNumber text={formatReadout(value)} style={{ fontSize: readoutSize, lineHeight: Math.round(readoutSize * 1.17) }} />
+      </View>
       <GestureDetector gesture={pan}>
         <View
           onLayout={onLayout}

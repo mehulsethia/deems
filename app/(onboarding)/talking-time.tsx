@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { AppText } from '@/components/AppText';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { DurationSlider } from '@/components/onboarding/DurationSlider';
 import { Screen } from '@/components/Screen';
@@ -35,7 +35,7 @@ export default function TalkingTime() {
       }
       footer={<Button label="Add it up" onPress={next} />}
     >
-      <AppText variant="title">How much of that is actually talking to someone?</AppText>
+      <AnimatedHeadline>How much of that is actually talking to someone?</AnimatedHeadline>
     </Screen>
   );
 }

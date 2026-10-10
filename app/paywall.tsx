@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { OnlyDMMark } from '@/components/OnlyDMMark';
@@ -303,7 +304,7 @@ export default function Paywall() {
       <View style={{ gap: spacing.lg }}>
         {days && <MiniReceipt days={days} />}
 
-        <AppText variant="title">{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AppText>
+        <AnimatedHeadline>{trialDays ? `Try it for ${trialDays} days.` : 'Keep it this way.'}</AnimatedHeadline>
 
         {timeline && billingDate && (
           <View>

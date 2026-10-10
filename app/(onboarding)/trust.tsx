@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ExitIcon, NoServerIcon, PageIcon } from '@/components/Icons';
@@ -83,7 +84,7 @@ export default function Trust() {
       }
     >
       <View style={{ gap: spacing.lg }}>
-        <AppText variant="title">You sign in on {label}'s own page.</AppText>
+        <AnimatedHeadline>{`You sign in on ${label}'s own page.`}</AnimatedHeadline>
         <AppText muted>OnlyDM never sees your password or your messages.</AppText>
       </View>
     </Screen>

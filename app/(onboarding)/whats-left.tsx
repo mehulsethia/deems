@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { AppText } from '@/components/AppText';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { InstagramInbox } from '@/components/onboarding/InstagramInbox';
 import { Screen } from '@/components/Screen';
@@ -14,7 +14,7 @@ export default function WhatsLeft() {
       pane={<InstagramInbox />}
       footer={<Button label="Connect my accounts" onPress={() => router.push('/(onboarding)/trust')} />}
     >
-      <AppText variant="title">Only your DMs. That's the whole app.</AppText>
+      <AnimatedHeadline>{"Only your DMs. That's the whole app."}</AnimatedHeadline>
     </Screen>
   );
 }

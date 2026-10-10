@@ -9,10 +9,10 @@ export function usePressScale(to = 0.97) {
   return {
     style,
     onPressIn: () => {
-      if (!reduce) s.value = withSpring(to, springs.press);
+      if (!reduce) s.set(withSpring(to, springs.press));
     },
     onPressOut: () => {
-      if (!reduce) s.value = withSpring(1, springs.press);
+      if (!reduce) s.set(withSpring(1, springs.press));
     },
   };
 }

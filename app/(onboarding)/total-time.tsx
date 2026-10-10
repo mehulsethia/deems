@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { AppText } from '@/components/AppText';
+import { AnimatedHeadline } from '@/components/AnimatedHeadline';
 import { Button } from '@/components/Button';
 import { DurationSlider } from '@/components/onboarding/DurationSlider';
 import { Screen } from '@/components/Screen';
@@ -37,7 +37,7 @@ export default function TotalTime() {
       }
       footer={<Button label="Next" onPress={next} />}
     >
-      <AppText variant="title">How long do these apps get from you a day?</AppText>
+      <AnimatedHeadline>How long do these apps get from you a day?</AnimatedHeadline>
     </Screen>
   );
 }
